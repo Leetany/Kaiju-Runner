@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
+using Photon.Pun;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -122,34 +124,43 @@ namespace StarterAssets
             }
         }
 
+        public PhotonView PV;
+        public TextMeshProUGUI NickNameText;
+
 
         private void Awake()
         {
-            // get a reference to our main camera
-            if (_mainCamera == null)
-            {
-                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
+            NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+            NickNameText.color = PV.IsMine ? Color.green : Color.red;
         }
 
         private void Start()
         {
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            if (PV.IsMine)
+            {
+                _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-            _hasAnimator = TryGetComponent(out _animator);
-            _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
-            _playerInput = GetComponent<PlayerInput>();
+                _hasAnimator = TryGetComponent(out _animator);
+                _controller = GetComponent<CharacterController>();
+                _input = GetComponent<StarterAssetsInputs>();
+#if ENABLE_INPUT_SYSTEM
+                _playerInput = GetComponent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
-            AssignAnimationIDs();
+                AssignAnimationIDs();
 
-            // reset our timeouts on start
-            _jumpTimeoutDelta = JumpTimeout;
-            _fallTimeoutDelta = FallTimeout;
+                // reset our timeouts on start
+                _jumpTimeoutDelta = JumpTimeout;
+                _fallTimeoutDelta = FallTimeout;
+
+                // get a reference to our main camera
+                if (_mainCamera == null)
+                {
+                    _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+                }
+            }
         }
 
         private void Update()
