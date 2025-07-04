@@ -5,7 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - CinemachineTarget
-  - CinemachineVirtualCamera
+  - Bullet
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
