@@ -37,7 +37,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //RespawnPanel.SetActive(false);
     }
 
-    void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
+    //void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
 
     public override void OnDisconnected(DisconnectCause cause)
     {

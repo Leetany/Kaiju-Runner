@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using Photon.Pun;
+using Cinemachine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -124,6 +125,7 @@ namespace StarterAssets
             }
         }
 
+        private CinemachineVirtualCamera _cinemachine;
         public PhotonView PV;
         public TextMeshProUGUI NickNameText;
 
@@ -155,6 +157,12 @@ namespace StarterAssets
                 _jumpTimeoutDelta = JumpTimeout;
                 _fallTimeoutDelta = FallTimeout;
 
+                if (_cinemachine == null)
+                {
+                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineVirtualCamera>();
+                    _cinemachine.Follow = CinemachineCameraTarget.transform;
+                }
+
                 // get a reference to our main camera
                 if (_mainCamera == null)
                 {
@@ -165,16 +173,20 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+            if (PV.IsMine)
+            {
+                _hasAnimator = TryGetComponent(out _animator);
 
-            JumpAndGravity();
-            GroundedCheck();
-            Move();
+                JumpAndGravity();
+                GroundedCheck();
+                Move();
+            }
         }
 
         private void LateUpdate()
         {
-            CameraRotation();
+            if (PV.IsMine)
+                CameraRotation();
         }
 
         private void AssignAnimationIDs()
@@ -386,8 +398,8 @@ namespace StarterAssets
             {
                 if (FootstepAudioClips.Length > 0)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    //var index = Random.Range(0, FootstepAudioClips.Length);
+                    //AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
                 }
             }
         }
@@ -396,7 +408,7 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                //AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
     }
