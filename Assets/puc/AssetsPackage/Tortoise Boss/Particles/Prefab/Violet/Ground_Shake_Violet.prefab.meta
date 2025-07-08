@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31421ef5b77d6b04989e44e99c5b15eb
+timeCreated: 1488735166
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Violet/Ground_Shake_Violet.prefab
+  uploadId: 172298

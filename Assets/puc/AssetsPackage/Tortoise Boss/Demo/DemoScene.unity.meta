@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f48fb0e242997c642bcfa154ddab7ac6
+timeCreated: 1488738047
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Demo/DemoScene.unity
+  uploadId: 172298

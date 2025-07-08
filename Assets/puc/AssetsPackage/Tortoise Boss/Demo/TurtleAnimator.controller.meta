@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 064b68482f8cd4d488b9eb3624d10b58
+timeCreated: 1488915120
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Demo/TurtleAnimator.controller
+  uploadId: 172298

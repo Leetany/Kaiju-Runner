@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: b48703ac9aba7774d97202da9d457ad0
+timeCreated: 1485743013
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Demo/CameraController/Scripts/CameraController.cs
+  uploadId: 172298
