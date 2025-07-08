@@ -18,7 +18,7 @@ MonoBehaviour:
   MaxVisibleDistance: 1000
   IgnoreZAxisForDistance2D: 1
   UseOffScreenIndicators: 1
-  ScreenEdgeMargin: 50
+  ScreenEdgeMargin: 40
   FlipOffScreenMarkerY: 1
   EnableDistanceScaling: 1
   DistanceForDefaultScale: 50
@@ -26,7 +26,7 @@ MonoBehaviour:
   MinScaleFactor: 0.131
   DefaultScaleFactor: 1
   DisplayDistanceText: 1
-  UnitSystem: 1
+  UnitSystem: 0
   DistanceDecimalPlaces: 0
   SuffixMeters: m
   SuffixKilometers: km
