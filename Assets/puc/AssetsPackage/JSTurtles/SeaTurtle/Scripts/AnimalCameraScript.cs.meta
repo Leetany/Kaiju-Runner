@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c1725a19b6b4c88439de925fc2afafa0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57461
+  packageName: Sea turtles
+  packageVersion: 1.1
+  assetPath: Assets/JSTurtles/SeaTurtle/Scripts/AnimalCameraScript.cs
+  uploadId: 602974

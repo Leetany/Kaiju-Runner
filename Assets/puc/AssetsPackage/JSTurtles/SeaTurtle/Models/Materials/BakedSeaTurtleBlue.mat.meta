@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4a8ac108a6af14e0a960fba06c7e82b4
+timeCreated: 1459825862
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57461
+  packageName: Sea turtles
+  packageVersion: 1.1
+  assetPath: Assets/JSTurtles/SeaTurtle/Models/Materials/BakedSeaTurtleBlue.mat
+  uploadId: 602974

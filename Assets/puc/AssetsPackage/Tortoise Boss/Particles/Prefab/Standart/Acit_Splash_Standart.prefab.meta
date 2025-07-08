@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0f8cde4751594d74892b282563feee8e
+timeCreated: 1488734117
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Standart/Acit_Splash_Standart.prefab
+  uploadId: 172298

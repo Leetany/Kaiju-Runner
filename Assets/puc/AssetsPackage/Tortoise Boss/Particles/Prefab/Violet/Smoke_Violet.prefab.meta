@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 360883716eb7671458d5a58eee99a2e5
+timeCreated: 1488735194
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Violet/Smoke_Violet.prefab
+  uploadId: 172298

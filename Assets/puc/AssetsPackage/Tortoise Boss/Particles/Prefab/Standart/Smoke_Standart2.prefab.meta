@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: aacfe325f61764f45a69c167fdca32bb
+timeCreated: 1488734868
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Standart/Smoke_Standart2.prefab
+  uploadId: 172298

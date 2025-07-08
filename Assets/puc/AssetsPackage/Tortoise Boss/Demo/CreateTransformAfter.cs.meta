@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 17b2b9a522bb2954fb273b64a4a70dfd
+timeCreated: 1488920627
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Demo/CreateTransformAfter.cs
+  uploadId: 172298
