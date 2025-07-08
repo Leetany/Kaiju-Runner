@@ -7,7 +7,7 @@ public enum DebuffType
     Stun
 }
 
-public class PlayerController : MonoBehaviour
+public class LHK_PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
