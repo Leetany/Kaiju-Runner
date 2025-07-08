@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ public enum RunSFXType
     Item,
     GameOver,
     UIButton,
-    // Ãß°¡µÈ »ç¿îµå Å¸ÀÔµé
+    // ì¶”ê°€ëœ ì‚¬ìš´ë“œ íƒ€ì…ë“¤
     DragonRoar,
     DragonAttack,
     DragonDeath,
@@ -78,7 +78,7 @@ public class RunSoundManager : SingletonBehaviour<RunSoundManager>, IPunObservab
     }
 
     /// <summary>
-    /// ·ÎÄÃ¿¡¼­¸¸ Àç»ı (¹ß¼Ò¸® µî)
+    /// ë¡œì»¬ì—ì„œë§Œ ì¬ìƒ (ë°œì†Œë¦¬ ë“±)
     /// </summary>
     public void PlayLocalSFX(RunSFXType type)
     {
@@ -86,7 +86,7 @@ public class RunSoundManager : SingletonBehaviour<RunSoundManager>, IPunObservab
     }
 
     /// <summary>
-    /// ¸ğµç À¯Àú¿¡°Ô Àç»ı (µå·¡°ï Æ÷È¿ µî)
+    /// ëª¨ë“  ìœ ì €ì—ê²Œ ì¬ìƒ (ë“œë˜ê³¤ í¬íš¨ ë“±)
     /// </summary>
     public void PlayNetworkSFX(RunSFXType type)
     {
@@ -114,6 +114,6 @@ public class RunSoundManager : SingletonBehaviour<RunSoundManager>, IPunObservab
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        // µ¿±âÈ­ÇÒ µ¥ÀÌÅÍ°¡ ¾ø´Ù¸é ºñ¿öµÒ
+        // ë™ê¸°í™”í•  ë°ì´í„°ê°€ ì—†ë‹¤ë©´ ë¹„ì›Œë‘ 
     }
 }
