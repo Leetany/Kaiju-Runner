@@ -7,7 +7,7 @@ public class TrackHealth : MonoBehaviour
     private int currentHealth;
 
     public Slider healthSlider;
-    public PlayerController player; // 상태이상 줄 대상
+    public LHK_PlayerController player; // 상태이상 줄 대상
 
     private bool stunTriggered = false; // 스턴 중복 방지
     private bool slowTriggered = false; // 슬로우 중복 방지
