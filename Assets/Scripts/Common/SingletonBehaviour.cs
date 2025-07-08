@@ -1,41 +1,51 @@
 using UnityEngine;
 
-public class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour
+public class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
 {
-    private static T instance;
-    private static object lockObj = new object();
+    protected bool m_IsDestroyOnLoad = false;
+    protected static T m_Instance;
 
     public static T Instance
     {
         get
         {
-            if (instance == null)
+            if (m_Instance == null)
             {
-                instance = FindAnyObjectByType<T>();
-                if (instance == null)
-                {
-                    var singletonObj = new GameObject(typeof(T).Name);
-                    instance = singletonObj.AddComponent<T>();
-                    DontDestroyOnLoad(singletonObj);
-                }
+                Debug.LogWarning($"{typeof(T).Name} has not been initialized yet.");
             }
-            return instance;
+            return m_Instance;
         }
     }
 
     protected virtual void Awake()
     {
-        lock (lockObj)
+        Init();
+    }
+
+    protected virtual void Init()
+    {
+        if (m_Instance != null && m_Instance != this)
         {
-            if (instance == null)
-            {
-                instance = this as T;
-                DontDestroyOnLoad(gameObject);
-            }
-            else if (instance != this)
-            {
-                Destroy(gameObject); // 중복 방지
-            }
+            Destroy(gameObject);
+            return;
         }
+
+        m_Instance = (T)this;
+
+        if (!m_IsDestroyOnLoad)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (m_Instance == this)
+            m_Instance = null;
+    }
+
+    protected virtual void Dispose()
+    {
+        m_Instance = null;
     }
 }

@@ -400,6 +400,7 @@ namespace StarterAssets
                 {
                     //var index = Random.Range(0, FootstepAudioClips.Length);
                     //AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    SoundManager.Instance.PlayFootstep(FootstepType.Road);
                 }
             }
         }
@@ -409,6 +410,7 @@ namespace StarterAssets
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 //AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                SoundManager.Instance.PlayFootstep(FootstepType.Landing);
             }
         }
     }
