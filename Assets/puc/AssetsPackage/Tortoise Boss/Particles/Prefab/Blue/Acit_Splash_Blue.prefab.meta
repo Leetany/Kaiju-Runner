@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0bfdae08aee730f4ab0d8b6294654f59
+timeCreated: 1488735338
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Blue/Acit_Splash_Blue.prefab
+  uploadId: 172298

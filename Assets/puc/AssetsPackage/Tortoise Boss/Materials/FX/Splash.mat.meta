@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4794d44531d65504ba7e3fa8034442ee
+timeCreated: 1488473512
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Materials/FX/Splash.mat
+  uploadId: 172298
