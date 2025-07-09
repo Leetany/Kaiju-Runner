@@ -9,27 +9,34 @@ public class CutsceneSceneManager : MonoBehaviour
     public string mainSceneName = "MainScene"; // 메인 게임 씬 이름
 
     private PlayableDirector currentDirector;
-
     private GameObject uiRoot; // UI 레이아웃 참조
+
+    // [추가] PlayerController 참조
+    private puc_PlayerController playerController;
+    void TryFindPlayerController()
+    {
+        if (playerController == null)
+            playerController = Object.FindFirstObjectByType<puc_PlayerController>();
+    }
 
     // 컷씬 시작 (씬 Additive로 불러온 후, 인덱스 혹은 이름으로 호출)
     public void PlayCutscene(int index)
     {
         if (index < 0 || index >= cutsceneObjects.Length) return;
 
-        // 모든 컷씬 오브젝트 비활성화
         foreach (var go in cutsceneObjects) go.SetActive(false);
-
-        // 해당 컷씬 오브젝트만 활성화
         GameObject target = cutsceneObjects[index];
         target.SetActive(true);
 
-        // === [추가] 메인씬의 "UI 레이아웃" 비활성화 ===
-        // (씬 간 접근, Additive라서 Find로 접근 가능)
+        // UI 레이아웃 비활성화
         uiRoot = GameObject.Find("Canvas");
         if (uiRoot != null) uiRoot.SetActive(false);
 
-        // PlayableDirector 찾아서 재생
+        // [추가] 컷씬 시작: 플레이어 비활성화
+        TryFindPlayerController();
+        if (playerController != null)
+            playerController.isCutscene = true;
+
         currentDirector = target.GetComponent<PlayableDirector>();
         if (currentDirector != null)
         {
@@ -41,21 +48,25 @@ public class CutsceneSceneManager : MonoBehaviour
     void OnCutsceneEnd(PlayableDirector director)
     {
         director.stopped -= OnCutsceneEnd;
-        // 컷씬 종료 시 현재 씬만 Unload (게임 복귀)
+
+        // [추가] 컷씬 끝: 플레이어 활성화
+        TryFindPlayerController();
+        if (playerController != null)
+            playerController.isCutscene = false;
+
         StartCoroutine(UnloadSelf());
     }
 
     IEnumerator UnloadSelf()
     {
-        yield return null; // 한 프레임 대기 (안정성)
+        yield return null;
 
-        // === [추가] 컷씬 종료 시 "UI 레이아웃" 다시 활성화 ===
+        // UI 레이아웃 다시 활성화
         if (uiRoot == null)
             uiRoot = GameObject.Find("Canvas");
         if (uiRoot != null)
             uiRoot.SetActive(true);
 
-        // 컷씬 Scene만 언로드(Additive로 불러온 경우)
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 }
