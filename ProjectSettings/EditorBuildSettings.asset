@@ -8,12 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Jino_PhotonTest.unity
     guid: ee417efb7aece9941b298b20d23e62d5
-  - enabled: 1
-    path: Assets/puc/Scenes/Stage.unity
-    guid: ff035d4bf586119468a687e84027b68c
-  - enabled: 1
-    path: Assets/puc/Scenes/Cutscenes.unity
-    guid: 832b5ed7fed382b43917d0aa525d98da
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
