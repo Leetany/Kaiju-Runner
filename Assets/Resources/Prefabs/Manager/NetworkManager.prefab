@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b3eb230f2f87f942a5798c5213618b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpawnPoint: {x: 0, y: 0, z: 0}
   NickNameInput: {fileID: 0}
   DisconnectPanel: {fileID: 0}
