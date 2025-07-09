@@ -5,6 +5,7 @@ using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public Vector3 SpawnPoint;
     public TMP_InputField NickNameInput;
     public GameObject DisconnectPanel;
     //public GameObject RespawnPanel;
@@ -33,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Spawn()
     {
-        PhotonNetwork.Instantiate("Player", new Vector3(Random.Range(-6f, 19f), 4, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(SpawnPoint.x + Random.Range(-10, 10), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
         //RespawnPanel.SetActive(false);
     }
 
