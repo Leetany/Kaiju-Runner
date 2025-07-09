@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace WriteAngle.PingSystem
+namespace WriteAngle.Ping
 {
     /// <summary>
     /// 자신의 머리 위에 핑을 보이게 하면서 화면에 안 보일 시 UI 근처에 핑이 보이게 만듦
     /// 'Assets -> Create -> WriteAngle -> PingSettings를 통해 생성
     /// </summary>
     [CreateAssetMenu(fileName = "PingSettings", menuName = "WriteAngle/Ping Settings", order = 1)]
-    public class PingtSettings : ScriptableObject
+    public class PingSettings : ScriptableObject
     {
         /// <summary> 프로젝트의 카메라 타입 선택 </summary>
         public enum ProjectionMode { Mode3D, Mode2D }

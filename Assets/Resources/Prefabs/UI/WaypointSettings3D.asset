@@ -18,7 +18,7 @@ MonoBehaviour:
   MaxVisibleDistance: 1000
   IgnoreZAxisForDistance2D: 1
   UseOffScreenIndicators: 1
-  ScreenEdgeMargin: 40
+  ScreenEdgeMargin: 44.2
   FlipOffScreenMarkerY: 1
   EnableDistanceScaling: 1
   DistanceForDefaultScale: 50

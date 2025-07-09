@@ -148,7 +148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 81853365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c3d679889cdced47b6277c97b961ca8, type: 3}
+  m_Script: {fileID: 11500000, guid: 786275cff06c6f34e901a8602b6cee3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayName: 
@@ -268,11 +268,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 210839355}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c856431e65d89154ab2363d484ebd976, type: 3}
+  m_Script: {fileID: 11500000, guid: 85469556489621f409787daf0331f656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: f909612d7452c8d47a1484d9a000eb65, type: 2}
-  waypointCamera: {fileID: 1221041504}
+  PingCamera: {fileID: 1221041504}
   markerParentCanvas: {fileID: 459864594}
 --- !u!4 &210839357
 Transform:
@@ -430,7 +430,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 402056574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c3d679889cdced47b6277c97b961ca8, type: 3}
+  m_Script: {fileID: 11500000, guid: 786275cff06c6f34e901a8602b6cee3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayName: 
@@ -1137,7 +1137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1095393970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c3d679889cdced47b6277c97b961ca8, type: 3}
+  m_Script: {fileID: 11500000, guid: 786275cff06c6f34e901a8602b6cee3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayName: 
