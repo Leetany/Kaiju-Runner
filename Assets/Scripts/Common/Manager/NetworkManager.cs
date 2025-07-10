@@ -8,7 +8,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Vector3 SpawnPoint;
     public TMP_InputField NickNameInput;
     public GameObject DisconnectPanel;
-    //public GameObject RespawnPanel;
+    public GameObject RespawnPanel;
+
+    private string SelectedChar;
+    private GameObject PreviewCharacter;
 
 
     void Awake()
@@ -34,15 +37,34 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Spawn()
     {
-        PhotonNetwork.Instantiate("Player", new Vector3(SpawnPoint.x + Random.Range(-10, 10), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
-        //RespawnPanel.SetActive(false);
+        // if (SelectedChar == null)
+        // {
+        //     Debug.LogError("SelectedChar string이 비어있습니다 확인하세요.");
+        //     return;
+        // }
+        PhotonNetwork.Instantiate("Player", new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+        RespawnPanel.SetActive(false);
     }
 
-    //void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
+    void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         DisconnectPanel.SetActive(true);
-        //RespawnPanel.SetActive(false);
+        RespawnPanel.SetActive(false);
+    }
+
+    public void SelectChar(string charname)
+    {
+        SelectedChar = charname;
+        if (PreviewCharacter == null)
+        {
+            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+        }
+        else
+        {
+            Destroy(PreviewCharacter);
+            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+        }
     }
 }

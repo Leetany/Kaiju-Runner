@@ -25,7 +25,7 @@ MonoBehaviour:
   MaxScalingDistance: 200
   MinScaleFactor: 0.131
   DefaultScaleFactor: 1
-  DisplayDistanceText: 1
+  DisplayDistanceText: 0
   UnitSystem: 0
   DistanceDecimalPlaces: 0
   SuffixMeters: m
