@@ -2,6 +2,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -42,7 +43,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //     Debug.LogError("SelectedChar string이 비어있습니다 확인하세요.");
         //     return;
         // }
-        PhotonNetwork.Instantiate("Player", new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+        Destroy(PreviewCharacter);
+        PhotonNetwork.Instantiate(SelectedChar, new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
         RespawnPanel.SetActive(false);
     }
 
@@ -59,12 +61,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         SelectedChar = charname;
         if (PreviewCharacter == null)
         {
-            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), SpawnPoint, Quaternion.Euler(0, Random.Range(0, 180f), 0));
         }
         else
         {
             Destroy(PreviewCharacter);
-            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+            PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), SpawnPoint, Quaternion.Euler(0, Random.Range(0, 180f), 0));
         }
     }
 }
