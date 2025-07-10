@@ -328,6 +328,7 @@ MonoBehaviour:
   maxHP: 50
   moveSpeed: 3
   chaseRange: 15
+  stopDistance: 1
   attackInterval: 1
 --- !u!54 &1453960403884975890
 Rigidbody:

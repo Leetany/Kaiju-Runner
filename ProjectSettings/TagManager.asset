@@ -7,7 +7,6 @@ TagManager:
   - CinemachineTarget
   - Bullet
   - MovingPlatform
-  - CinemachineVirtualCamera
   layers:
   - Default
   - TransparentFX
