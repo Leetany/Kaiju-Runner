@@ -190,25 +190,36 @@ namespace StarterAssets
             }
         }
 
+        private float _targetCameraYaw;
+
         private void CameraRotation()
         {
-            // if there is an input and camera position is not fixed
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
-                //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
                 _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
                 _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+                _targetCameraYaw = _cinemachineTargetYaw; // 직접 시점 조작시 목표값 동기화
             }
 
-            // clamp our rotations so our values are limited 360 degrees
+            if (LockCameraPosition)
+            {
+                if (_input.move.sqrMagnitude > 0.1f) // 아주 약한 입력은 무시
+                {
+                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                    float desiredYaw = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
+
+                    // 여기서 '목표값'만 업데이트. 실제 적용은 아래에서 보간
+                    _targetCameraYaw = desiredYaw;
+                }
+                // 카메라 yaw를 목표값으로 부드럽게 보간 (속도 2f~3f 정도가 자연스러움)
+                _cinemachineTargetYaw = Mathf.LerpAngle(_cinemachineTargetYaw, _targetCameraYaw, Time.deltaTime * 2.5f);
+            }
+
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-            // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride, _cinemachineTargetYaw, 0.0f);
         }
 
         private void Move()
