@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31718dc5920d06641a3ae02475726748
+timeCreated: 1444472598
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47735
+  packageName: Character Model Jelly Fish GIrl
+  packageVersion: 2.0
+  assetPath: Assets/Character/Animations/JellyFishGirl.controller
+  uploadId: 92227
