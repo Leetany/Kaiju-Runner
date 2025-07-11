@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61908ccd224533641b99a8cc0fd68679, type: 3}
-  m_Name: WaypointSettings3D
+  m_Name: PingSettings3D
   m_EditorClassIdentifier: 
   UpdateFrequency: 0.01
   GameMode: 0

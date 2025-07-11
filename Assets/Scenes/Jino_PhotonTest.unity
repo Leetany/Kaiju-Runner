@@ -1436,7 +1436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &913176309
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2833,7 +2833,7 @@ PrefabInstance:
     - target: {fileID: 4842504180975709376, guid: 684403ecb40f0aa4bafcc3831e1ef67b, type: 3}
       propertyPath: sceneBGMSettings.Array.data[0].bgmClip
       value: 
-      objectReference: {fileID: 8300000, guid: b0d5560f9c6cb2e43a8b5153977d312c, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4842504180975709376, guid: 684403ecb40f0aa4bafcc3831e1ef67b, type: 3}
       propertyPath: sceneBGMSettings.Array.data[0].sceneName
       value: Jino_PhotonTest

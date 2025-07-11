@@ -44,11 +44,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //     return;
         // }
         Destroy(PreviewCharacter);
-        PhotonNetwork.Instantiate(SelectedChar, new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
+        PhotonNetwork.Instantiate("ClazyPro", new Vector3(SpawnPoint.x + Random.Range(-1, 1), SpawnPoint.y, SpawnPoint.z), Quaternion.identity);
         RespawnPanel.SetActive(false);
     }
 
-    void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
+    //void Update() { if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected) PhotonNetwork.Disconnect(); }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
