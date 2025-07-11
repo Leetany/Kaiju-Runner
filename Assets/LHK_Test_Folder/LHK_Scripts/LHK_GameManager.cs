@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class LHK_GameManager : MonoBehaviour
 {
     public float gameTime = 60f;
     private float currentTime;
     public TextMeshProUGUI timerText;
-    public TrackHealth bossTrack;
+    public LHK_TrackHealth bossTrack;
     public GameObject gameOverUI;
     public GameObject gameClearUI;
 
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (bossTrack != null && bossTrack.IsDead())
-        {
+        { 
             GameClear();
         }
     }

@@ -9,7 +9,7 @@ public class CameraCurveSequence : MonoBehaviour
     public Camera openingCamera;
     public GameObject playerCamera;
     public GameObject playerController;
-    public GameManager gameManager;
+    public LHK_GameManager gameManager;
 
     void Start()
     {

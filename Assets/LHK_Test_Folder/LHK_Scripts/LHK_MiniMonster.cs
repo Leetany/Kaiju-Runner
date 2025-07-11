@@ -9,7 +9,7 @@ public class MiniMonster : MonoBehaviour
         if (other.CompareTag("PlayerAttack")) // 공격 이펙트 또는 무기 태그
         {
             
-            TrackHealth trackHealth = Object.FindFirstObjectByType<TrackHealth>();
+            LHK_TrackHealth trackHealth = Object.FindFirstObjectByType<LHK_TrackHealth>();
             if (trackHealth != null)
             {
                 trackHealth.TakeDamage(damageToBoss);
