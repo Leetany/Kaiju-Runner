@@ -9,7 +9,7 @@ public class ItemBonusTime : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             
-            GameManager gameManager = Object.FindFirstObjectByType<GameManager>();
+            LHK_GameManager gameManager = Object.FindFirstObjectByType<LHK_GameManager>();
             if (gameManager != null)
             {
                 gameManager.AddBonusTime(bonusTime);
