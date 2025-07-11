@@ -56,7 +56,7 @@ namespace WriteAngle.Ping
 
             // 이벤트 구독 동적인 등록과 등록 해제를 위해
             PingTarget.OnTargetEnabled += HandleTargetEnabled;
-            PingTarget.OntargetDisabled += HandleTargetDisabled;
+            PingTarget.OnTargetDisabled += HandleTargetDisabled;
 
             isInitialized = true; // 성공적인 초기화 표시
             Debug.Log($"<b>[{gameObject.name}] PingUIManager:</b> Initialized.", this);
@@ -75,7 +75,7 @@ namespace WriteAngle.Ping
             // --- Cleanup ---
             // 이벤트들 구독 취소 메모리 해제
             PingTarget.OnTargetEnabled -= HandleTargetDisabled;
-            PingTarget.OntargetDisabled -= HandleTargetDisabled;
+            PingTarget.OnTargetDisabled -= HandleTargetDisabled;
 
             // 오브젝트 풀 청소 및 내부 트래킹 collections들 해제
             markerPool?.Clear();
@@ -85,14 +85,14 @@ namespace WriteAngle.Ping
             activeMarkers.Clear();
         }
 
-        /// <summary> 모든 게 잘 들어갔는지 확인</summary>
+        /// <summary> 모든 게 잘 들어갔는지 확인 </summary>
         private bool ValidateSetup()
         {
             bool error = false;
             if (PingCamera == null) { Debug.LogError("PingUIManager Error: Ping Camera not assigend!", this); error = true; }
             if (settings == null) { Debug.LogError("PingUIManager Error: PingSettings not assigend!", this); error = true; }
             else if (settings.GetMarkerPrefab() == null) { Debug.LogError($"PingUIManager Error: Marker Prefab missing in PingSettings '{settings.name}'!", this); error = true; }
-            if (markerParentCanvas == null) { Debug.LogError("PingUIManager Error: Marker PArent Canvas not assigned!", this); error = true; }
+            if (markerParentCanvas == null) { Debug.LogError("PingUIManager Error: Marker Parent Canvas not assigned!", this); error = true; }
             else if (markerParentCanvas.GetComponentInParent<Canvas>() == null) { Debug.LogError("PingUIManager Error: Marker Parent Canvas must be a child of a UI Canvas!", this); error = true; }
             return error;
         }

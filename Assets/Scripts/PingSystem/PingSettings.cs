@@ -72,13 +72,9 @@ namespace WriteAngle.Ping
         [Range(0, 3)]
         public int DistanceDecimalPlaces = 0;
 
-        [Tooltip("Meter 표기")]
         public string SuffixMeters = "m";
-        [Tooltip("kilometer 표기")]
         public string SuffixKilometers = "km";
-        [Tooltip("feet 표기")]
         public string SuffixFeet = "ft";
-        [Tooltip("miles 표기")]
         public string SuffixMiles = "mi";
 
         // 변환 상수
