@@ -9,6 +9,7 @@ TagManager:
   - MovingPlatform
   - CinemachineVirtualCamera
   - Dragon
+  - Enemy
   layers:
   - Default
   - TransparentFX

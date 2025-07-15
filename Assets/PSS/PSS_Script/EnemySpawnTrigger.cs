@@ -16,13 +16,17 @@ public class EnemySpawnTrigger : MonoBehaviour
         public float spacing = 2.0f;
         public float spawnInterval = 0.3f;
 
-        public Vector3 manualStartOffset = Vector3.zero; // ✨ 직접 설정하는 위치 오프셋
+        public Vector3 manualStartOffset = Vector3.zero;
+
+        [Header("🔁 Enemy Facing Direction")]
+        public Vector3 rotationDirection = Vector3.forward; // 적이 바라볼 방향
     }
 
     public Transform spawnPoint;
     public List<SpawnSet> spawnSets = new List<SpawnSet>();
 
     private bool hasSpawned = false;
+    private List<GameObject> spawnedEnemies = new List<GameObject>(); // 방향 시각화용
 
     private void OnTriggerEnter(Collider other)
     {
@@ -37,18 +41,20 @@ public class EnemySpawnTrigger : MonoBehaviour
     {
         Vector3 right = spawnPoint.right.normalized;
 
-        for (int i = 0; i < spawnSets.Count; i++)
+        foreach (var set in spawnSets)
         {
-            SpawnSet set = spawnSets[i];
             Vector3 dir = (set.direction == SpawnDirection.Right) ? right : -right;
-
-            // 💡 기준 위치 = spawnPoint 위치 + 수동 오프셋
             Vector3 lineStart = spawnPoint.position + set.manualStartOffset;
 
             for (int j = 0; j < set.count; j++)
             {
                 Vector3 spawnPos = lineStart + dir * set.spacing * j;
-                Instantiate(set.enemyPrefab, spawnPos, Quaternion.identity);
+
+                // 적이 바라볼 방향 설정
+                Quaternion rotation = Quaternion.LookRotation(set.rotationDirection.normalized);
+
+                GameObject enemy = Instantiate(set.enemyPrefab, spawnPos, rotation);
+                spawnedEnemies.Add(enemy); // Gizmo용 저장
                 yield return new WaitForSeconds(set.spawnInterval);
             }
         }
@@ -70,6 +76,26 @@ public class EnemySpawnTrigger : MonoBehaviour
                 Vector3 pos = lineStart + dir * set.spacing * j;
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(pos, 0.4f);
+
+                // 방향 Gizmo
+                Vector3 lookDir = set.rotationDirection.normalized;
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawLine(pos, pos + lookDir * 1.5f);
+                Gizmos.DrawSphere(pos + lookDir * 1.5f, 0.08f);
+            }
+        }
+
+        // 생성된 적들의 forward 방향 시각화
+        if (Application.isPlaying && spawnedEnemies != null)
+        {
+            Gizmos.color = Color.yellow;
+            foreach (var enemy in spawnedEnemies)
+            {
+                if (enemy == null) continue;
+
+                Vector3 from = enemy.transform.position;
+                Vector3 to = from + enemy.transform.forward * 2f;
+                Gizmos.DrawLine(from, to);
             }
         }
     }
