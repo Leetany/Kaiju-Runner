@@ -1,117 +1,46 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class EnemyB : MonoBehaviour
 {
-    [Header("Stats")]
-    public int maxHP = 50;
-    public int CurrentHP { get; private set; }
+    [Header("이동 속도 설정")]
+    [SerializeField]
+    private float moveSpeed = 3f;
 
-    [Header("Charge Settings")]
-    public float detectRange = 5f;
-    public float chargeSpeed = 10f;
-    public float chargeDuration = 3.0f;     // 돌진 시간
-    public float chargeCooldown = 2.0f;     // 돌진 후 딜레이
+    public float MoveSpeed
+    {
+        get => moveSpeed;
+        set => moveSpeed = value;
+    }
 
-    [Header("Animation")]
-    public Animator animator;
-
-    private bool isCharging = false;
-    private bool isDead = false;
-    private bool isCooldown = false;
-    private GameObject player;
+    private Rigidbody rb;
     private Renderer rend;
-    private Color originalColor;
+    private bool hasAppeared = false;
 
-    private void Awake()
+    void Start()
     {
-        CurrentHP = maxHP;
-        player = GameObject.FindGameObjectWithTag("Player");
-
-        rend = GetComponentInChildren<Renderer>();
-        if (rend != null)
-            originalColor = rend.material.color;
+        rb = GetComponent<Rigidbody>();
+        rend = GetComponentInChildren<Renderer>(); // 자식 포함
     }
 
-    private void Update()
+    void FixedUpdate()
     {
-        if (isDead || isCharging || isCooldown || player == null) return;
-
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-        if (distance <= detectRange)
-        {
-            Vector3 dir = (player.transform.position - transform.position).normalized;
-            dir.y = 0f;
-            transform.rotation = Quaternion.LookRotation(dir);
-
-            StartCoroutine(Charge(dir));
-        }
+        rb.MovePosition(rb.position + transform.forward * moveSpeed * Time.fixedDeltaTime);
     }
 
-    private IEnumerator Charge(Vector3 direction)
+    void Update()
     {
-        isCharging = true;
-        animator.SetBool("isWalk", true);
+        if (rend == null) return;
 
-        float timer = 0f;
-        while (timer < chargeDuration)
+        if (rend.isVisible)
         {
-            transform.Translate(direction * chargeSpeed * Time.deltaTime, Space.World);
-            timer += Time.deltaTime;
-            yield return null;
+            hasAppeared = true;
         }
 
-        animator.SetBool("isWalk", false);
-        isCharging = false;
-
-        // 쿨타임 시작
-        StartCoroutine(ChargeCooldown());
-    }
-
-    private IEnumerator ChargeCooldown()
-    {
-        isCooldown = true;
-        yield return new WaitForSeconds(chargeCooldown);
-        isCooldown = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (isDead) return;
-
-        if (collision.gameObject.CompareTag("Player"))
+        if (!rend.isVisible && hasAppeared)
         {
-            animator.SetTrigger("isAttacking");
-            Debug.Log("돌진 적이 플레이어를 공격!");
+            Destroy(gameObject);
         }
-    }
-
-    public void TakeDamage(int damage)
-    {
-        if (isDead) return;
-
-        CurrentHP -= damage;
-        animator.SetTrigger("Hit");
-        StartCoroutine(FlashRed());
-
-        if (CurrentHP <= 0)
-            Die();
-    }
-
-    private IEnumerator FlashRed()
-    {
-        if (rend != null)
-        {
-            rend.material.color = Color.red;
-            yield return new WaitForSeconds(0.15f);
-            rend.material.color = originalColor;
-        }
-    }
-
-    private void Die()
-    {
-        isDead = true;
-        animator.SetTrigger("Die");
-        Debug.Log("돌진 적 사망");
     }
 }

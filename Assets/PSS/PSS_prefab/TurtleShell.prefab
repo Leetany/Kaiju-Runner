@@ -627,7 +627,7 @@ GameObject:
   - component: {fileID: 1230958207393717563}
   m_Layer: 0
   m_Name: TurtleShell
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -683,12 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bcb3c64bdee12f46a95a7583227764a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 50
-  detectRange: 1
-  chargeSpeed: 10
-  chargeDuration: 1
-  chargeCooldown: 2
-  animator: {fileID: 3787700692454252393}
+  moveSpeed: 15
 --- !u!54 &3515295575159001108
 Rigidbody:
   m_ObjectHideFlags: 0

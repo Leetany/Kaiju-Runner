@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5994583397711752756
+--- !u!1 &7845412187222318613
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1168093322360260518}
-  - component: {fileID: 5507554007937398023}
-  - component: {fileID: 2259760131185874087}
+  - component: {fileID: 3314653861414613563}
+  - component: {fileID: 7093272481140571984}
+  - component: {fileID: 5467606176003836660}
   m_Layer: 0
-  m_Name: 'EnemyTriggerZone '
+  m_Name: EnemySpawnLineRandom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1168093322360260518
+--- !u!4 &3314653861414613563
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5994583397711752756}
+  m_GameObject: {fileID: 7845412187222318613}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.02187, y: 5.9, z: -37.57}
+  m_LocalRotation: {x: -0, y: -0.00000046193594, z: -0, w: 1}
+  m_LocalPosition: {x: 2.07, y: 5.55, z: -91.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5507554007937398023
+--- !u!65 &7093272481140571984
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5994583397711752756}
+  m_GameObject: {fileID: 7845412187222318613}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -52,23 +52,27 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7, y: 5, z: 1}
+  m_Size: {x: 1, y: 3, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2259760131185874087
+--- !u!114 &5467606176003836660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5994583397711752756}
+  m_GameObject: {fileID: 7845412187222318613}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 954ef140c7bfacd43920c591478f1ddf, type: 3}
+  m_Script: {fileID: 11500000, guid: f9b0be06f5aa07c4eaa42f46713ca911, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 7868441819796269418, guid: 5fb807483e416cc438ee83ad98a79459, type: 3}
-  spawnPoint: {fileID: 8442377040077177179, guid: 2751b07aed0dbff48a6dfdcaddc65470, type: 3}
-  enemyCount: 3
-  spawnInterval: 2
-  spacing: 2
-  direction: 0
+  enemyPrefab: {fileID: 7300639290923855328, guid: 924b3b0be5d0b8549a1d9d64400f7bb1, type: 3}
+  spawnPoint: {fileID: 0}
+  enemyCount: 9
+  groupSize: 3
+  spacing: 1.5
+  groupSpacing: 0
+  groupInterval: 1
+  spawnDirection: {x: 0, y: 0, z: 1}
+  spawnRotationDirection: {x: -1, y: 0, z: 0}
+  lookAtDirection: 1
