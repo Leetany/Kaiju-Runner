@@ -24,18 +24,14 @@ public class PhaseManager : MonoBehaviour
             if (step.stepType == StepType.PermanentDestroy && step.checker != null)
             {
                 int objectCount = step.checker.objects.Count;
+                float totalHp = boss != null ? boss.maxHp : 1000f;
 
-                // 1. 보스 전체 HP를 기준으로 개별 HP 차감량 곱하기
-                float perObjectDecrease = step.checker.hpDecreasePerObject; // Inspector에 입력한 값 (예: 25)
-                float totalHp = boss != null ? boss.maxHp : 1000f; // 보스의 전체 HP(혹은 기본값)
-
-                // 2. 전체 HP 차감량 자동 계산 (1개 오브젝트 HP감소량 * 오브젝트 개수, 단 보스 HP를 넘지 않게)
-                float totalHpDecrease = perObjectDecrease * objectCount;
-                if (totalHpDecrease > totalHp)
-                    totalHpDecrease = totalHp; // 최대치 제한
+                // 전체 HP의 25%만 깎이도록
+                float totalHpDecrease = totalHp * 0.25f;
+                float perObjectDecrease = totalHpDecrease / objectCount;
 
                 step.totalHpDecrease = totalHpDecrease;
-                step.checker.hpDecreasePerObject = perObjectDecrease; // 그대로 유지
+                step.checker.hpDecreasePerObject = perObjectDecrease;
 
                 step.checker.boss = boss;
             }
@@ -68,12 +64,7 @@ public class PhaseManager : MonoBehaviour
         {
             Debug.Log($"Step {currentStepIndex + 1} 완료!");
             currentStepIndex++;
-
-            // 마지막 Step이면 보스 HP 75%로 (예시)
-            if (currentStepIndex >= steps.Count)
-            {
-                SetBossHpTo75Percent();
-            }
+                        
         }
     }
 

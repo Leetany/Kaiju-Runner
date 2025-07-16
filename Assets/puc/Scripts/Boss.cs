@@ -19,10 +19,14 @@ public class Boss : MonoBehaviour
     {
         currentHp -= amount;
         currentHp = Mathf.Max(0, currentHp);
+
+        // 소수점 완전히 버리고 정수로 변환
+        currentHp = Mathf.Floor(currentHp);
+
         Debug.Log($"[Boss] HP: {currentHp}/{maxHp}");
         OnHpChanged?.Invoke(currentHp / maxHp);
 
-        // 컷씬 트리거 조건 연결 예시 (index는 등록 순서 기준)
+        // 컷씬 트리거 조건 연결
         if (!played75 && currentHp / maxHp <= 0.75f)
         {
             played75 = true;
