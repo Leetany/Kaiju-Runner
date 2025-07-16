@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     private bool isGameOver = false;
 
+    public static int PlayerCount { get; internal set; }
+
     void Start()
     {
         currentTime = gameTime;

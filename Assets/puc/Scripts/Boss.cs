@@ -19,6 +19,7 @@ public class Boss : MonoBehaviour
     {
         currentHp -= amount;
         currentHp = Mathf.Max(0, currentHp);
+        Debug.Log($"[Boss] HP: {currentHp}/{maxHp}");
         OnHpChanged?.Invoke(currentHp / maxHp);
 
         // 컷씬 트리거 조건 연결 예시 (index는 등록 순서 기준)

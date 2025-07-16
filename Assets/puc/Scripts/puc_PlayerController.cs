@@ -7,6 +7,7 @@ public class puc_PlayerController : MonoBehaviour
     private Vector3 lastPosition;
     private float accumulatedDistance = 0f;
     public bool isCutscene = false;
+    public int playerId;
 
     void Start()
     {

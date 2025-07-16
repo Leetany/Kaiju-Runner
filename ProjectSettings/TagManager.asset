@@ -9,6 +9,7 @@ TagManager:
   - MovingPlatform
   - CinemachineVirtualCamera
   - Dragon
+  - Water
   layers:
   - Default
   - TransparentFX
