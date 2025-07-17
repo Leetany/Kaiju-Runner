@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1cd1714b8dc31485381f7fd1da4ab557
+timeCreated: 1457521980
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57461
+  packageName: Sea turtles
+  packageVersion: 1.1
+  assetPath: Assets/JSTurtles/SeaTurtle/readme.txt
+  uploadId: 602974

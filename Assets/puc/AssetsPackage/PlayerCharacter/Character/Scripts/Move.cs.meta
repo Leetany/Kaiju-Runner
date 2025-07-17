@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 7953487de8baee741860f4a26861c4cd
+timeCreated: 1448115182
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 47735
+  packageName: Character Model Jelly Fish GIrl
+  packageVersion: 2.0
+  assetPath: Assets/Character/Scripts/Move.cs
+  uploadId: 92227

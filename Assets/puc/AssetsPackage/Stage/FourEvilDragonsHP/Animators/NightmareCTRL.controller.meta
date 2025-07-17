@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 955643f623543a243a99a9c570581b38
+timeCreated: 1476234570
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79398
+  packageName: Evil Dragon Pack HP
+  packageVersion: 1.2
+  assetPath: Assets/FourEvilDragonsHP/Animators/NightmareCTRL.controller
+  uploadId: 422271
