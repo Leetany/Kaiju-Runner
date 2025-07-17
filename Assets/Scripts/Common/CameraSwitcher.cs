@@ -21,4 +21,10 @@ public class CameraSwitcher : MonoBehaviour
         m_CarSelectionCamera.Priority = 10;
         m_MainCamera.Priority = 6;
     }
+
+    public void DefaultSet()
+    {
+        m_CarSelectionCamera.Priority = 6;
+        m_MainCamera.Priority = 10;
+    }
 }
