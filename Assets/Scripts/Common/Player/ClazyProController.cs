@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using Photon.Pun;
 using StarterAssets;
 using TMPro;
@@ -92,7 +92,7 @@ namespace ClayPro
             }
         }
 
-        private CinemachineVirtualCamera _cinemachine;
+        private CinemachineCamera _cinemachine;
         public PhotonView PV;
         public TextMeshProUGUI NickNameText;
 
@@ -126,7 +126,7 @@ namespace ClayPro
 
                 if (_cinemachine == null)
                 {
-                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineVirtualCamera>();
+                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
                     _cinemachine.Follow = CinemachineCameraTarget.transform;
                 }
 
@@ -285,15 +285,12 @@ namespace ClayPro
                 if (_jumpOnceMore)
                 {
                     _fallTimeoutDelta = FallTimeout;
+
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDFreeFall, false);
                     }
-                    if (_verticalVelocity < 0.0f)
-                    {
-                        _verticalVelocity = -2f;
-                        // _input.jump = true; // 이 줄을 삭제하세요
-                    }
+
                     if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                     {
                         _verticalVelocity = Mathf.Sqrt(JumpHeight * -8f * Gravity);
@@ -304,6 +301,7 @@ namespace ClayPro
                         }
                         _input.jump = false; // 점프 후 입력 초기화
                     }
+
                     if (_fallTimeoutDelta >= 0.0f)
                     {
                         _fallTimeoutDelta -= Time.deltaTime;

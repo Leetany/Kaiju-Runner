@@ -2,7 +2,6 @@
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -20,6 +19,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Screen.SetResolution(1920, 1080, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
@@ -27,7 +27,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, null);
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
     }
 
     public override void OnJoinedRoom()
@@ -68,5 +68,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Destroy(PreviewCharacter);
             PreviewCharacter = Instantiate((GameObject)Resources.Load(SelectedChar), SpawnPoint, Quaternion.Euler(0, Random.Range(0, 180f), 0));
         }
+    }
+
+    public void ClickStart()
+    {
+        PhotonNetwork.LoadLevel("Photon_Stage");
+    }
+
+    public void BackToLobby()
+    {
+        PhotonNetwork.LoadLevel("Jino_PhotonTest");
     }
 }

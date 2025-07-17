@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using Photon.Pun;
-using Cinemachine;
+using Unity.Cinemachine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -121,7 +121,7 @@ namespace StarterAssets
             }
         }
 
-        private CinemachineVirtualCamera _cinemachine;
+        private CinemachineCamera _cinemachine;
         public PhotonView PV;
         public TextMeshProUGUI NickNameText;
 
@@ -155,7 +155,7 @@ namespace StarterAssets
 
                 if (_cinemachine == null)
                 {
-                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineVirtualCamera>();
+                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
                     _cinemachine.Follow = CinemachineCameraTarget.transform;
                 }
 
