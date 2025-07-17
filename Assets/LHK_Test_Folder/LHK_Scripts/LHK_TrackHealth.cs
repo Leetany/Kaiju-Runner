@@ -1,75 +1,55 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class TrackHealth : MonoBehaviour
-{
-    public int maxHealth = 100;
-    private int currentHealth;
 
-    public Slider healthSlider;
-    public LHK_PlayerController player; // 상태이상 줄 대상
-
-    private bool stunTriggered = false; // 스턴 중복 방지
-    private bool slowTriggered = false; // 슬로우 중복 방지
-
-    void Start()
+    public class LHK_TrackHealth : MonoBehaviour
     {
-        currentHealth = maxHealth;
-        if (healthSlider != null)
+        [SerializeField] int maxHp = 100;
+        [SerializeField] Slider hpSlider;
+        [SerializeField] LHK_PlayerController player;
+
+        [Header("Debuff Thresholds (% of Max)")]
+        [SerializeField] float slowPct = 0.60f;
+        [SerializeField] float stunPct = 0.40f;
+        [SerializeField] float flashPct = 0.30f;
+        [SerializeField] float scramblePct = 0.20f;
+        [SerializeField] float swapPct = 0.10f;
+
+        int hp;
+        bool slowDone, stunDone, flashDone, scrambleDone, swapDone;
+
+        void Awake()
         {
-            healthSlider.maxValue = maxHealth;
-            healthSlider.value = currentHealth;
-        }
-    }
-
-    void Update()
-    {
-        
-    }
-    public bool IsDead()
-    {
-        return currentHealth <= 0;
-    }
-    public void TakeDamage(int amount)
-    {
-        currentHealth -= amount;
-        currentHealth = Mathf.Max(0, currentHealth);
-
-        if (healthSlider != null)
-            healthSlider.value = currentHealth;
-
-        Debug.Log($"[트랙] 데미지 {amount} ▶ 남은 체력: {currentHealth}");
-
-        // 스턴 조건 (체력 70% 이하, 한 번만)
-        if (!stunTriggered && currentHealth <= maxHealth * 0.7f)
-        {
-            stunTriggered = true;
-            if (player != null)
+            hp = maxHp;
+            if (hpSlider)
             {
-                player.ApplyDebuff(DebuffType.Stun, 3f);
-                player.ShowDebuffEffect(DebuffType.Stun);
+                hpSlider.maxValue = maxHp;
+                hpSlider.value = hp;
             }
         }
 
-        // 슬로우 조건 (체력 50% 이하, 한 번만)
-        if (!slowTriggered && currentHealth <= maxHealth * 0.5f)
+        public void TakeDamage(int dmg)
         {
-            slowTriggered = true;
-            if (player != null)
-            {
-                player.ApplyDebuff(DebuffType.Slow, 5f);
-                player.ShowDebuffEffect(DebuffType.Slow);
-            }
+            if (hp <= 0) return;
+            hp = Mathf.Max(hp - dmg, 0);
+            if (hpSlider) hpSlider.value = hp;
+            Debug.Log($"Track HP → {hp}/{maxHp}");
+
+            float p = (float)hp / maxHp;
+            if (!slowDone && p <= slowPct) { slowDone = true; player.ApplyDebuff(DebuffType.Slow, 5f); }
+            if (!stunDone && p <= stunPct) { stunDone = true; player.ApplyDebuff(DebuffType.Stun, 3f); }
+            if (!flashDone && p <= flashPct) { flashDone = true; player.ApplyDebuff(DebuffType.Flashbang, 2f); }
+            if (!scrambleDone && p <= scramblePct) { scrambleDone = true; player.ApplyDebuff(DebuffType.ScrambleInput, 10f); }
+            if (!swapDone && p <= swapPct) { swapDone = true; PositionSwapUtility.SwapAllPlayers(); }
+
+            if (hp == 0) Debug.Log("<color=red>Track Destroyed!</color>");
         }
 
-        if (currentHealth <= 0)
+   
+        internal bool IsDead()
         {
-            Die();
+            return hp <= 0;
         }
-    }
-
-    private void Die()
-    {
-        Debug.Log("트랙 파괴됨!");
-    }
+    
 }

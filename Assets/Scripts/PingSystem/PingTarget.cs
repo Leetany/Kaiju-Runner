@@ -16,7 +16,7 @@ namespace WriteAngle.Ping
         public string DisplayName = "";
 
         [Tooltip("만약에 체크되있다면, 자동적으로 PingUIManager에 씬이 시작하면서 등록이 됩니다.")]
-        public bool ActivateOnStart = true;
+        public bool ActivateOnStart = false;
 
         /// <summary>
         /// PingUIManager에 의해 타겟이 어디에 있든지 확인시켜줍니다. (Read-Only)
@@ -30,7 +30,7 @@ namespace WriteAngle.Ping
         /// <summary> 타겟이 켜지면 매니저에 의해 따라가게 해야한다. </summary>
         public static event Action<PingTarget> OnTargetEnabled;
         /// <summary> 타겟이 꺼지면 매니저가 안 따라가게 해야 함 </summary>
-        public static event Action<PingTarget> OntargetDisabled;
+        public static event Action<PingTarget> OnTargetDisabled;
 
         // --- Unity Lifecycle Callbacks ---
 
@@ -91,14 +91,14 @@ namespace WriteAngle.Ping
             if (!IsRegistered) return;
 
             // PingUIManager가 그만 따라가게 알려줌
-            OntargetDisabled?.Invoke(this);
+            OnTargetDisabled?.Invoke(this);
             IsRegistered = false; // 내부 상태 업데이트
         }
 
 
         // --- Editor Visualization ---
         // Scene에서 시각적인 피드백을 제공한다 선택된 오브젝트에 한해
-        private void ODrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             // Draw a wire sphere gizmo around the target's position.
             // Color changes based on whether it's currently registered with the manager.

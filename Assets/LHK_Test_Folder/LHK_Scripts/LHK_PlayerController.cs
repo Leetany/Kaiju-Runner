@@ -1,177 +1,170 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
-public enum DebuffType
-{
-    None,
-    Slow,
-    Stun
-}
+//─────────────────────────────────────────────────────────────────
+public enum DebuffType { None, Slow, Stun, Flashbang, ScrambleInput, PositionSwap }
 
+//─────────────────────────────────────────────────────────────────
+[RequireComponent(typeof(CharacterController))]
 public class LHK_PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 6f;
-    public float rotationSpeed = 10f;
-    public float jumpForce = 5f;
-    public float gravity = -9.81f;
-    public Transform cameraTransform;
-    private bool isGrounded;
+    [SerializeField] float moveSpeed = 6f;
+    [SerializeField] float rotationSpeed = 10f;
+    [SerializeField] float jumpForce = 5f;
+    [SerializeField] float gravity = -9.81f;
+    [SerializeField] Transform cameraTf;
 
-    [Header("Effects")]
-    public GameObject stunEffectPrefab;  // 번개 이펙트(스턴용)
-    public GameObject slowEffectPrefab;  // 번개 이펙트(슬로우용)
+    [Header("FX Prefabs")]
+    [SerializeField] GameObject stunFX;
+    [SerializeField] GameObject slowFX;
 
-    [Header("TrackHealth")]
-    public TrackHealth trackHealth;
+    [Header("Track Interaction")]
+    [SerializeField] LHK_TrackHealth track;
+    [SerializeField] float distancePerHit = 5f;
 
-    private CharacterController controller;
-    private Vector3 velocity;
-    private Vector3 lastPosition;
-    private float distanceRan = 0f;
-    public float distancePerHit = 5f;
+    CharacterController cc;
+    Vector3 velocity;
+    Vector3 lastPos;
+    float runDist;
 
-    private DebuffType currentDebuff = DebuffType.None;
-    private bool isDebuffed = false;
+    float baseSpeed;
+    DebuffType curDebuff = DebuffType.None;
+    Coroutine debuffCo;
+    GameObject fxInstance;
 
-    private GameObject currentEffectInstance;
-    private float originalMoveSpeed;
+    Dictionary<KeyCode, KeyCode> scrambleMap;
 
-    void Start()
+    void Awake()
     {
-        controller = GetComponent<CharacterController>();
-        originalMoveSpeed = moveSpeed;
-
-        if (cameraTransform == null)
-            cameraTransform = Camera.main.transform;
-
-        lastPosition = transform.position; // 초기 위치 셋팅
+        cc = GetComponent<CharacterController>();
+        baseSpeed = moveSpeed;
+        cameraTf ??= Camera.main.transform;
+        lastPos = transform.position;
     }
 
     void Update()
     {
-        if (currentDebuff == DebuffType.Stun)
-            return; // 마비 상태면 움직임 불가
-
-        HandleMovement();
-        HandleDistanceDamage();
+        if (curDebuff == DebuffType.Stun) return;
+        Move();
+        DealTrackDamage();
         ApplyGravity();
     }
 
-    private void HandleMovement()
+    #region Movement
+    void Move()
     {
-        isGrounded = controller.isGrounded;
-        if (isGrounded && velocity.y < 0)
-            velocity.y = -2f;
+        bool grounded = cc.isGrounded;
+        if (grounded && velocity.y < 0) velocity.y = -2f;
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        Vector3 inputDirection = new Vector3(horizontal, 0f, vertical).normalized;
+        float h = GetAxis("Horizontal");
+        float v = GetAxis("Vertical");
+        Vector3 input = new Vector3(h, 0, v);
 
-        if (inputDirection.magnitude >= 0.1f)
+        if (input.sqrMagnitude > 0.01f)
         {
-            Vector3 cameraForward = cameraTransform.forward;
-            Vector3 cameraRight = cameraTransform.right;
-            cameraForward.y = 0;
-            cameraRight.y = 0;
+            Vector3 camF = Vector3.Scale(cameraTf.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 camR = Vector3.Scale(cameraTf.right, new Vector3(1, 0, 1)).normalized;
+            Vector3 dir = (camF * input.z + camR * input.x).normalized;
 
-            Vector3 moveDir = (cameraForward * inputDirection.z + cameraRight * inputDirection.x).normalized;
-
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-            controller.Move(moveDir * moveSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
+            cc.Move(dir * moveSpeed * Time.deltaTime);
         }
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
-        {
+        if (grounded && Input.GetButtonDown("Jump"))
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
-        }
     }
 
-    private void HandleDistanceDamage()
+    float GetAxis(string axis)
     {
-        float distanceThisFrame = Vector3.Distance(transform.position, lastPosition);
-        distanceRan += distanceThisFrame;
+        if (curDebuff != DebuffType.ScrambleInput) return Input.GetAxis(axis);
 
-        if (distanceRan >= distancePerHit)
+        int val = 0;
+        if (axis == "Horizontal")
         {
-            distanceRan = 0f;
-            if (trackHealth != null)
-            {
-                trackHealth.TakeDamage(1);
-            }
+            if (Input.GetKey(MapKey(KeyCode.D))) val += 1;
+            if (Input.GetKey(MapKey(KeyCode.A))) val -= 1;
         }
-
-        lastPosition = transform.position;
+        else if (axis == "Vertical")
+        {
+            if (Input.GetKey(MapKey(KeyCode.W))) val += 1;
+            if (Input.GetKey(MapKey(KeyCode.S))) val -= 1;
+        }
+        return val;
     }
 
-    private void ApplyGravity()
+    KeyCode MapKey(KeyCode orig)
+        => scrambleMap != null && scrambleMap.ContainsKey(orig) ? scrambleMap[orig] : orig;
+    #endregion
+
+    #region Track Damage
+    void DealTrackDamage()
+    {
+        if (!track) return;
+        runDist += Vector3.Distance(transform.position, lastPos);
+        lastPos = transform.position;
+        if (runDist >= distancePerHit)
+        {
+            runDist = 0;
+            track.TakeDamage(1);
+        }
+    }
+    #endregion
+
+    #region Gravity
+    void ApplyGravity()
     {
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        cc.Move(velocity * Time.deltaTime);
     }
+    #endregion
 
-    // 반드시 필요했던 메서드! ApplyDebuff가 정의되어 있지 않아 에러 발생
-    public void ApplyDebuff(DebuffType debuff, float duration)
+    #region Debuffs
+    public void ApplyDebuff(DebuffType type, float duration)
     {
-        if (isDebuffed) return;
-
-        isDebuffed = true;
-        currentDebuff = debuff;
-
-        switch (debuff)
-        {
-            case DebuffType.Slow:
-                moveSpeed = originalMoveSpeed * 0.3f;
-                Debug.Log("슬로우 상태 돌입!");
-                break;
-            case DebuffType.Stun:
-                Debug.Log("마비 상태 돌입!");
-                break;
-        }
-
-        Invoke(nameof(ClearDebuff), duration);
+        if (debuffCo != null && type != DebuffType.Flashbang) return;
+        curDebuff = type;
+        debuffCo = StartCoroutine(DebuffRoutine(type, duration));
     }
 
-    public void ShowDebuffEffect(DebuffType debuff)
+    IEnumerator DebuffRoutine(DebuffType type, float dur)
     {
-        if (currentEffectInstance != null)
+        SpawnFX(type);
+        switch (type)
         {
-            Destroy(currentEffectInstance);
-            currentEffectInstance = null;
+            case DebuffType.Slow: moveSpeed = baseSpeed * 0.3f; break;
+            case DebuffType.Flashbang: LHK_FlashbangEffect.Instance.Play(dur); break;
+            case DebuffType.ScrambleInput: CreateScrambleMap(); break;
         }
-
-        GameObject effectPrefab = null;
-        switch (debuff)
-        {
-            case DebuffType.Stun:
-                effectPrefab = stunEffectPrefab;
-                break;
-            case DebuffType.Slow:
-                effectPrefab = slowEffectPrefab;
-                break;
-        }
-
-        if (effectPrefab != null)
-        {
-            currentEffectInstance = Instantiate(effectPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity, transform);
-        }
+        yield return new WaitForSeconds(dur);
+        ClearDebuff(type);
     }
 
-    private void ClearDebuff()
+    void ClearDebuff(DebuffType type)
     {
-        if (currentDebuff == DebuffType.Slow)
-            moveSpeed = originalMoveSpeed;
-
-        if (currentEffectInstance != null)
-        {
-            Destroy(currentEffectInstance);
-            currentEffectInstance = null;
-        }
-
-        Debug.Log("상태이상 해제됨");
-
-        currentDebuff = DebuffType.None;
-        isDebuffed = false;
+        if (type == DebuffType.Slow) moveSpeed = baseSpeed;
+        if (type == DebuffType.ScrambleInput) scrambleMap = null;
+        if (fxInstance) Destroy(fxInstance);
+        curDebuff = DebuffType.None;
+        debuffCo = null;
     }
+
+    void SpawnFX(DebuffType type)
+    {
+        if (fxInstance) Destroy(fxInstance);
+        GameObject prefab = type switch { DebuffType.Slow => slowFX, DebuffType.Stun => stunFX, _ => null };
+        if (prefab) fxInstance = Instantiate(prefab, transform.position + Vector3.up * 1.5f, Quaternion.identity, transform);
+    }
+
+    void CreateScrambleMap()
+    {
+        var keys = new[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+        var shuffle = keys.OrderBy(_ => Random.value).ToArray();
+        scrambleMap = new();
+        for (int i = 0; i < keys.Length; i++) scrambleMap[keys[i]] = shuffle[i];
+    }
+    #endregion
 }

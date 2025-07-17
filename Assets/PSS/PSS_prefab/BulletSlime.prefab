@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2984484652492273826}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1553901970903149114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8963708700835198682}
+  m_Layer: 0
+  m_Name: BulletPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8963708700835198682
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553901970903149114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.354, z: 0.688}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8040643949355977350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3060406893641301496
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,12 +295,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8040643949355977350}
   - component: {fileID: 7033795793029773025}
-  - component: {fileID: 989922466807252982}
+  - component: {fileID: 7985927156899694226}
   - component: {fileID: 1453960403884975890}
   - component: {fileID: 4977540608030998444}
   m_Layer: 0
-  m_Name: Slime
-  m_TagString: Untagged
+  m_Name: BulletSlime
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -283,12 +314,13 @@ Transform:
   m_GameObject: {fileID: 7868441819796269418}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.869562, y: -0.009, z: -14.87}
+  m_LocalPosition: {x: -2.1415825, y: 0.00000047683716, z: -16.308817}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8763735177929536438}
   - {fileID: 5029647790847642740}
+  - {fileID: 8963708700835198682}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &7033795793029773025
@@ -313,7 +345,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &989922466807252982
+--- !u!114 &7985927156899694226
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -322,13 +354,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7868441819796269418}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfc742ce6ae23424081ce8a58a9a609e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8643116b636e7fc41a43a74ac979e6ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 50
-  moveSpeed: 3
-  chaseRange: 15
-  attackInterval: 1
+  bulletPrefab: {fileID: 6273116622800414127, guid: de934492b65aaf3429a7614efe3f32ae, type: 3}
+  firePoint: {fileID: 8963708700835198682}
+  shootInterval: 1
 --- !u!54 &1453960403884975890
 Rigidbody:
   m_ObjectHideFlags: 0

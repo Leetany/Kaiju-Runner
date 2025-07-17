@@ -11,7 +11,7 @@ public class OpeningCameraSequence : MonoBehaviour
     public GameObject playerCamera; // 플레이어 추적용 메인 카메라
     public GameObject playerController; // 플레이어 비활성 → 활성
 
-    public GameManager gameManager; // 타이머 시작
+    public LHK_GameManager gameManager; // 타이머 시작
 
     void Start()
     {
