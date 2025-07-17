@@ -96,7 +96,7 @@ MonoBehaviour:
     volume: 0.2
     stereoPan: 0
     spatialBlend: 0
---- !u!114 &-2071416733464633680
+--- !u!114 &-2590560698819317421
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,10 +120,10 @@ MonoBehaviour:
   - m_Version: 1
     m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: 8188877666389721652}
+    m_Asset: {fileID: 6253553216134307890}
     m_Duration: 5
     m_TimeScale: 1
-    m_ParentTrack: {fileID: -2071416733464633680}
+    m_ParentTrack: {fileID: -2590560698819317421}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
     m_BlendInDuration: -1
@@ -185,9 +185,10 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: Virtual Camera
+    m_DisplayName: Virtual Camera_75
   m_Markers:
     m_Objects: []
+  TrackPriority: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 0
   m_Tracks:
-  - {fileID: -2071416733464633680}
+  - {fileID: -2590560698819317421}
   - {fileID: 5282046463728601238}
   - {fileID: -3355072647650891485}
   m_FixedDuration: 0
@@ -269,7 +270,7 @@ MonoBehaviour:
   m_OpenClipOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
   m_ApplyOffsets: 0
---- !u!114 &8188877666389721652
+--- !u!114 &6253553216134307890
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,5 +284,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisplayName: 
   VirtualCamera:
-    exposedName: 2cc48c70fe7fae146bd612fc9c5824e3
+    exposedName: e86707cd7a7a60b4d81fba23675820ec
     defaultValue: {fileID: 0}
