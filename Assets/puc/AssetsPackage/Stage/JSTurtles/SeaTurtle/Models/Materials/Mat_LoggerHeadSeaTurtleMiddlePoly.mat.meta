@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5145bd3eead4c4f09be5ca1355d09069
+timeCreated: 1485361449
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57461
+  packageName: Sea turtles
+  packageVersion: 1.1
+  assetPath: Assets/JSTurtles/SeaTurtle/Models/Materials/Mat_LoggerHeadSeaTurtleMiddlePoly.mat
+  uploadId: 602974

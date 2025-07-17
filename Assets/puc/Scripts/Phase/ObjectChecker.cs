@@ -40,8 +40,8 @@ public class ObjectChecker : MonoBehaviour
         }
     }
 
-    // 모든 오브젝트가 모드별로 완료됐는지 확인
-    public bool IsAllCleared()
+    // 모든 오브젝트가 모드별로 완료됐는지 확인 (playerCount 파라미터로 받음)
+    public bool IsAllCleared(int playerCount)
     {
         foreach (var o in objects)
         {
@@ -51,10 +51,10 @@ public class ObjectChecker : MonoBehaviour
                     if (!o.destroyed) return false;
                     break;
                 case ObjectMode.CountOnce:
-                    if (o.passedPlayers.Count < GameManager.PlayerCount) return false;
+                    if (o.passedPlayers.Count < playerCount) return false;
                     break;
                 case ObjectMode.CountN:
-                    if (o.passCounts.Count < GameManager.PlayerCount) return false;
+                    if (o.passCounts.Count < playerCount) return false;
                     foreach (var cnt in o.passCounts.Values)
                         if (cnt < requiredCount) return false;
                     break;
@@ -96,6 +96,7 @@ public class ObjectChecker : MonoBehaviour
         }
     }
 
+    // 아래 두 함수는 아직 사용처가 없으므로, 필요하면 로직 추가
     internal bool IsAllPlayersOnce(int playerCount)
     {
         throw new NotImplementedException();

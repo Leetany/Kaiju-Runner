@@ -50,7 +50,7 @@ public class PhaseManager : MonoBehaviour
         {
             case StepType.PermanentDestroy:
                 // 모든 오브젝트가 파괴되었는지
-                stepComplete = current.checker.IsAllCleared();
+                stepComplete = current.checker.IsAllCleared(playerCount);
                 break;
             case StepType.AllOnce:
                 stepComplete = current.checker.IsAllPlayersOnce(playerCount);
@@ -64,7 +64,7 @@ public class PhaseManager : MonoBehaviour
         {
             Debug.Log($"Step {currentStepIndex + 1} 완료!");
             currentStepIndex++;
-                        
+
         }
     }
 

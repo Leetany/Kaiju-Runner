@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0f0d2226d9599a34282d87d6ff0d4da9
+timeCreated: 1488734996
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Particles/Prefab/Standart/Ground_Shake_Standart.prefab
+  uploadId: 172298

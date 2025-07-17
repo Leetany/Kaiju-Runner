@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c3cb65657e3f94ec7a1dfe7136d58846
+timeCreated: 1459072844
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57461
+  packageName: Sea turtles
+  packageVersion: 1.1
+  assetPath: Assets/JSTurtles/SeaTurtle/Animator/SeaTurtleAC.controller
+  uploadId: 602974

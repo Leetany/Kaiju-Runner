@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 345ae87d127c69f499ee6ad2666cc006
+timeCreated: 1489253936
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 85267
+  packageName: RPG - Tortoise Boss Pack
+  packageVersion: 1.0
+  assetPath: Assets/Tortoise Boss/Demo/Scene Demo/LightingData.asset
+  uploadId: 172298
