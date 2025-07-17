@@ -74,4 +74,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel("Photon_Stage");
     }
+
+    public void BackToLobby()
+    {
+        PhotonNetwork.LoadLevel("Jino_PhotonTest");
+    }
 }

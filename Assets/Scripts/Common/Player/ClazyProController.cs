@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using Photon.Pun;
 using StarterAssets;
 using TMPro;
@@ -92,7 +92,7 @@ namespace ClayPro
             }
         }
 
-        private CinemachineVirtualCamera _cinemachine;
+        private CinemachineCamera _cinemachine;
         public PhotonView PV;
         public TextMeshProUGUI NickNameText;
 
@@ -126,7 +126,7 @@ namespace ClayPro
 
                 if (_cinemachine == null)
                 {
-                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineVirtualCamera>();
+                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
                     _cinemachine.Follow = CinemachineCameraTarget.transform;
                 }
 
