@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
+using System;
 
 
 public class PlayerSpawnManager : MonoBehaviour
@@ -10,7 +12,7 @@ public class PlayerSpawnManager : MonoBehaviour
     [SerializeField] private string selectCharacter;
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
-    private Vector3 spawnPoint;
+    [SerializeField] private Vector3 spawnPoint;
 
 
     private void Awake()
@@ -28,6 +30,7 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         previewCharacter = null;
         spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
     }
@@ -63,7 +66,17 @@ public class PlayerSpawnManager : MonoBehaviour
     public void SpawnAtEachScenePoint()
     {
         PhotonNetwork.Instantiate(selectCharacter, spawnPoint, Quaternion.identity);
-        SelectCharUI.SetActive(false);
+
+        if (SelectCharUI != null)
+        {
+            SelectCharUI.SetActive(false);
+        }
+    }
+
+    void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
+        SpawnAtEachScenePoint();
     }
 }
 
