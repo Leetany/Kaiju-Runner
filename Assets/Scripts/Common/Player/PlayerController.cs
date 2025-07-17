@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using Photon.Pun;
-using Cinemachine;
+using Unity.Cinemachine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -31,16 +31,12 @@ namespace StarterAssets
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
-        public AudioClip LandingAudioClip;
-        public AudioClip[] FootstepAudioClips;
-        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-
         [Space(10)]
         [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
 
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-        public float Gravity = -1500.0f;
+        public float Gravity = -15f;
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
@@ -125,7 +121,7 @@ namespace StarterAssets
             }
         }
 
-        private CinemachineVirtualCamera _cinemachine;
+        private CinemachineCamera _cinemachine;
         public PhotonView PV;
         public TextMeshProUGUI NickNameText;
 
@@ -159,7 +155,7 @@ namespace StarterAssets
 
                 if (_cinemachine == null)
                 {
-                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineVirtualCamera>();
+                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
                     _cinemachine.Follow = CinemachineCameraTarget.transform;
                 }
 
@@ -216,14 +212,14 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-            {
-                //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            // if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            // {
+            //     //Don't multiply mouse input by Time.deltaTime;
+            //     float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-            }
+            //     _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
+            //     _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+            // }
 
             // clamp our rotations so our values are limited 360 degrees
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
@@ -319,7 +315,7 @@ namespace StarterAssets
                 // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
                 {
-                    _verticalVelocity = -15000f;
+                    _verticalVelocity = -15f;
                 }
 
                 // Jump
@@ -396,7 +392,7 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (FootstepAudioClips.Length > 0)
+                if (SoundManager.Instance != null)
                 {
                     //var index = Random.Range(0, FootstepAudioClips.Length);
                     //AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
