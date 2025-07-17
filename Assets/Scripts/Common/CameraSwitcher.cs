@@ -1,0 +1,24 @@
+using Unity.Cinemachine;
+using UnityEngine;
+
+public class CameraSwitcher : MonoBehaviour
+{
+    public static CameraSwitcher Instance;
+
+    [SerializeField] private CinemachineCamera m_MainCamera;
+    [SerializeField] private CinemachineCamera m_CarSelectionCamera;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
+    public void ShowCharacterSelection()
+    {
+        m_CarSelectionCamera.Priority = 10;
+        m_MainCamera.Priority = 6;
+    }
+}

@@ -6,6 +6,7 @@ public class PlayerSpawnManager : MonoBehaviour
     public static PlayerSpawnManager Instance;
 
     [SerializeField] private string selectCharacter;
+    public GameObject SelectCharUI;
     private GameObject previewCharacter;
     private Vector3 spawnPoint;
 
@@ -29,6 +30,11 @@ public class PlayerSpawnManager : MonoBehaviour
         {
 
         }
+    }
+
+    public void ShowSelectUI()
+    {
+        SelectCharUI.SetActive(true);
     }
 
     public void SelectChar(string charname)
