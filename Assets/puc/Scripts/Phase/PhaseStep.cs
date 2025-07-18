@@ -3,9 +3,11 @@ using UnityEngine;
 
 public enum StepType
 {
-    PermanentDestroy, // 새로운 타입
+    PermanentDestroy,
     AllOnce,
     AllN,
+    AnyOnce,
+    AnyN
 }
 
 [System.Serializable]

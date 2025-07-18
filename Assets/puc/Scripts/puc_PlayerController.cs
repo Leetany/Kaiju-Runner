@@ -8,16 +8,18 @@ public class puc_PlayerController : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     void Update()
     {
         if (isCutscene)
-        {            
             return;
-        }
-                
+
+        // 아래는 입력 처리!
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        // 움직임 적용 코드
     }
 
     public void StartCutscene()
@@ -27,6 +29,6 @@ public class puc_PlayerController : MonoBehaviour
 
     public void EndCutscene()
     {
-        isCutscene = false;        
+        isCutscene = false;
     }
 }

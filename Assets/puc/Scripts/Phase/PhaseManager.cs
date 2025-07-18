@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class PhaseManager : MonoBehaviour
 {
     [System.Serializable]
@@ -9,7 +10,7 @@ public class PhaseManager : MonoBehaviour
     {
         public ObjectChecker checker;
         public StepType stepType;
-        public int requiredCount = 1;      // AllN용 n값
+        public int requiredCount = 1;      // AllN, AnyOnce, AnyN용 n값
         public float totalHpDecrease = 0;  // PermanentDestroy 전용: HP 전체 감소량
     }
 
@@ -75,6 +76,12 @@ public class PhaseManager : MonoBehaviour
                 break;
             case StepType.AllN:
                 stepComplete = current.checker.IsAllPlayersN(playerCount, current.requiredCount);
+                break;
+            case StepType.AnyOnce:
+                stepComplete = current.checker.IsAnyPlayersOnce(current.requiredCount);
+                break;
+            case StepType.AnyN:
+                stepComplete = current.checker.IsAnyPlayersN(current.requiredCount, current.requiredCount);
                 break;
         }
 
