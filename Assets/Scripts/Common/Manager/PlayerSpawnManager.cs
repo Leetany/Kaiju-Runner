@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
-using System;
 
 
 public class PlayerSpawnManager : MonoBehaviour
@@ -40,6 +39,11 @@ public class PlayerSpawnManager : MonoBehaviour
         SelectCharUI.SetActive(true);
     }
 
+    public void HideSelectUI()
+    {
+        SelectCharUI.SetActive(false);
+    }
+
     public void SelectChar(string charName)
     {
         selectCharacter = charName;
@@ -65,12 +69,17 @@ public class PlayerSpawnManager : MonoBehaviour
 
     public void SpawnAtEachScenePoint()
     {
-        PhotonNetwork.Instantiate(selectCharacter, spawnPoint, Quaternion.identity);
+        if (previewCharacter != null)
+        {
+            Destroy(previewCharacter);
+        }
 
         if (SelectCharUI != null)
         {
             SelectCharUI.SetActive(false);
         }
+
+        PhotonNetwork.Instantiate(selectCharacter, spawnPoint, Quaternion.identity);
     }
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)

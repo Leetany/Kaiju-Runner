@@ -41,6 +41,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         DisconnectPanel.SetActive(false);
+        PlayerSpawnManager.Instance.SpawnAtEachScenePoint();
     }
 
     // public void Spawn()
