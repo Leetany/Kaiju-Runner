@@ -63,6 +63,67 @@ public class ObjectChecker : MonoBehaviour
         return true;
     }
 
+    // 지정된 모든 플레이어가 한 번씩 통과해야 완료 (AllOnce)
+    public bool IsAllPlayersOnce(int playerCount)
+    {
+        foreach (var o in objects)
+        {
+            if (o.mode == ObjectMode.CountOnce)
+            {
+                if (o.passedPlayers.Count < playerCount)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // 지정된 모든 플레이어가 n회씩 통과해야 완료 (AllN)
+    public bool IsAllPlayersN(int playerCount, int requiredCount)
+    {
+        foreach (var o in objects)
+        {
+            if (o.mode == ObjectMode.CountN)
+            {
+                if (o.passCounts.Count < playerCount)
+                    return false;
+                foreach (var cnt in o.passCounts.Values)
+                    if (cnt < requiredCount) return false;
+            }
+        }
+        return true;
+    }
+
+    // 지정된 인원 이상이 한 번씩 통과해야 완료 (AnyOnce)
+    public bool IsAnyPlayersOnce(int requiredPlayerCount)
+    {
+        HashSet<int> totalPassedPlayers = new HashSet<int>();
+        foreach (var o in objects)
+        {
+            if (o.mode == ObjectMode.CountOnce)
+                foreach (var id in o.passedPlayers)
+                    totalPassedPlayers.Add(id);
+        }
+        return totalPassedPlayers.Count >= requiredPlayerCount;
+    }
+
+    // 지정된 인원 이상이 n회씩 통과해야 완료 (AnyN)
+    public bool IsAnyPlayersN(int requiredPlayerCount, int requiredCount)
+    {
+        HashSet<int> playersPassedN = new HashSet<int>();
+        foreach (var o in objects)
+        {
+            if (o.mode == ObjectMode.CountN)
+            {
+                foreach (var kvp in o.passCounts)
+                {
+                    if (kvp.Value >= requiredCount)
+                        playersPassedN.Add(kvp.Key);
+                }
+            }
+        }
+        return playersPassedN.Count >= requiredPlayerCount;
+    }
+
     // 트리거에서 호출할 함수
     public void OnObjectTrigger(GameObject obj, int playerId)
     {
@@ -94,16 +155,5 @@ public class ObjectChecker : MonoBehaviour
                 info.passCounts[playerId]++;
                 break;
         }
-    }
-
-    // 아래 두 함수는 아직 사용처가 없으므로, 필요하면 로직 추가
-    internal bool IsAllPlayersOnce(int playerCount)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal bool IsAllPlayersN(int playerCount, int requiredCount)
-    {
-        throw new NotImplementedException();
     }
 }

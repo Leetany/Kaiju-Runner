@@ -65,7 +65,7 @@ MonoBehaviour:
   - m_Version: 1
     m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: 6262970905786013829}
+    m_Asset: {fileID: 3697427666170618518}
     m_Duration: 5
     m_TimeScale: 1
     m_ParentTrack: {fileID: -6713968888331174688}
@@ -130,9 +130,10 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: Virtual Camera
+    m_DisplayName: Virtual Camera_50
   m_Markers:
     m_Objects: []
+  TrackPriority: 0
 --- !u!114 &-2619857897774185394
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -269,7 +270,7 @@ MonoBehaviour:
   m_bufferingTime: 0.1
   m_ClipProperties:
     volume: 1
---- !u!114 &6262970905786013829
+--- !u!114 &3697427666170618518
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,5 +284,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisplayName: 
   VirtualCamera:
-    exposedName: 967932409a32f5642a09a83b8db3c11d
+    exposedName: 95263b1bacc52a74e8b0f867b980f84c
     defaultValue: {fileID: 0}
