@@ -3,7 +3,7 @@
 public class LHK_ItemSpawner : MonoBehaviour
 {
     public GameObject[] itemPrefabs;
-    public float spawnInterval = 8f;
+    public float spawnInterval = 2f;
     public Transform[] spawnPoints;
 
     float timer;
