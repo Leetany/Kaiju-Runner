@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PhaseManager : MonoBehaviour
 {
     [System.Serializable]
@@ -16,9 +17,18 @@ public class PhaseManager : MonoBehaviour
     public int currentStepIndex = 0;
     public Boss boss;
     public int playerCount = 4;
+    public PhaseManager nextPhaseManager; // 다음 페이즈로 연결
 
     void Start()
     {
+        // 모든 Step의 오브젝트를 비활성화(초기화)
+        foreach (var step in steps)
+        {
+            if (step.checker != null)
+                step.checker.gameObject.SetActive(false);
+        }
+
+        // PermanentDestroy 스텝이면 HP 감소 계산 및 세팅
         foreach (var step in steps)
         {
             if (step.stepType == StepType.PermanentDestroy && step.checker != null)
@@ -36,12 +46,21 @@ public class PhaseManager : MonoBehaviour
                 step.checker.boss = boss;
             }
         }
+
+        // 첫 Step 활성화
+        ActivateCurrentStep();
     }
 
     void Update()
     {
+        // 모든 Step 완료시 페이즈 종료 & 다음 페이즈 활성화
         if (currentStepIndex >= steps.Count)
+        {
+            if (nextPhaseManager != null)
+                nextPhaseManager.gameObject.SetActive(true);
+            this.gameObject.SetActive(false);
             return;
+        }
 
         Step current = steps[currentStepIndex];
         bool stepComplete = false;
@@ -49,7 +68,6 @@ public class PhaseManager : MonoBehaviour
         switch (current.stepType)
         {
             case StepType.PermanentDestroy:
-                // 모든 오브젝트가 파괴되었는지
                 stepComplete = current.checker.IsAllCleared(playerCount);
                 break;
             case StepType.AllOnce:
@@ -63,11 +81,29 @@ public class PhaseManager : MonoBehaviour
         if (stepComplete)
         {
             Debug.Log($"Step {currentStepIndex + 1} 완료!");
+
+            // 현재 Step 비활성화
+            if (current.checker != null)
+                current.checker.gameObject.SetActive(false);
+
             currentStepIndex++;
 
+            // 다음 Step 활성화
+            ActivateCurrentStep();
         }
     }
 
+    void ActivateCurrentStep()
+    {
+        if (currentStepIndex < steps.Count)
+        {
+            var step = steps[currentStepIndex];
+            if (step.checker != null)
+                step.checker.gameObject.SetActive(true);
+        }
+    }
+
+    // (예시) 보스 HP 75%로 만드는 함수 (필요시 사용)
     void SetBossHpTo75Percent()
     {
         if (boss != null)
