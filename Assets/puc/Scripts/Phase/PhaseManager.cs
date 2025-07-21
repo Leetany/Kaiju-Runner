@@ -1,7 +1,8 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
-
-
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -10,26 +11,39 @@ public class PhaseManager : MonoBehaviour
     {
         public ObjectChecker checker;
         public StepType stepType;
-        public int requiredCount = 1;      // AllN, AnyOnce, AnyN¿ë n°ª
-        public float totalHpDecrease = 0;  // PermanentDestroy Àü¿ë: HP ÀüÃ¼ °¨¼Ò·®
+        public int requiredCount = 1;      // AllN, AnyOnce, AnyNìš© nê°’
+        public float totalHpDecrease = 0;  // PermanentDestroy ì „ìš©: HP ì „ì²´ ê°ì†ŒëŸ‰
+
+        public bool useTimeLimit = false;  // ì‹œê°„ ì œí•œ ì‚¬ìš© ì—¬ë¶€
+        public float timeLimit = 30f;      // ì œí•œ ì‹œê°„ (ì´ˆ)
+        [HideInInspector] public float timer; // í˜„ì¬ ì¹´ìš´íŠ¸ë‹¤ìš´
     }
 
     public List<Step> steps;
     public int currentStepIndex = 0;
     public Boss boss;
     public int playerCount = 4;
-    public PhaseManager nextPhaseManager; // ´ÙÀ½ ÆäÀÌÁî·Î ¿¬°á
+    public PhaseManager nextPhaseManager;
+
+    [Header("Game Over UI ì„¤ì •")]
+    public GameObject gameOverPanel;      // ê²Œì„ ì˜¤ë²„ UI íŒ¨ë„
+    public float gameOverDelay = 3f;
+
+    [Header("íƒ€ì´ë¨¸ UI ì„¤ì •")]
+    public TextMeshProUGUI timerText;                // ë‚¨ì€ ì‹œê°„ í‘œì‹œìš© í…ìŠ¤íŠ¸
+
+    private bool isGameOver = false;
 
     void Start()
     {
-        // ¸ğµç StepÀÇ ¿ÀºêÁ§Æ®¸¦ ºñÈ°¼ºÈ­(ÃÊ±âÈ­)
+        // ëª¨ë“  Stepì˜ ì˜¤ë¸Œì íŠ¸ë¥¼ ë¹„í™œì„±í™”(ì´ˆê¸°í™”)
         foreach (var step in steps)
         {
             if (step.checker != null)
                 step.checker.gameObject.SetActive(false);
         }
 
-        // PermanentDestroy ½ºÅÜÀÌ¸é HP °¨¼Ò °è»ê ¹× ¼¼ÆÃ
+        // PermanentDestroy ìŠ¤í…ì´ë©´ HP ê°ì†Œ ê³„ì‚° ë° ì„¸íŒ…
         foreach (var step in steps)
         {
             if (step.stepType == StepType.PermanentDestroy && step.checker != null)
@@ -37,7 +51,6 @@ public class PhaseManager : MonoBehaviour
                 int objectCount = step.checker.objects.Count;
                 float totalHp = boss != null ? boss.maxHp : 1000f;
 
-                // ÀüÃ¼ HPÀÇ 25%¸¸ ±ğÀÌµµ·Ï
                 float totalHpDecrease = totalHp * 0.25f;
                 float perObjectDecrease = totalHpDecrease / objectCount;
 
@@ -46,15 +59,21 @@ public class PhaseManager : MonoBehaviour
 
                 step.checker.boss = boss;
             }
+
+            if (step.useTimeLimit)
+            {
+                step.timer = step.timeLimit;
+            }
         }
 
-        // Ã¹ Step È°¼ºÈ­
         ActivateCurrentStep();
     }
 
     void Update()
     {
-        // ¸ğµç Step ¿Ï·á½Ã ÆäÀÌÁî Á¾·á & ´ÙÀ½ ÆäÀÌÁî È°¼ºÈ­
+        if (isGameOver)
+            return;
+
         if (currentStepIndex >= steps.Count)
         {
             if (nextPhaseManager != null)
@@ -64,6 +83,33 @@ public class PhaseManager : MonoBehaviour
         }
 
         Step current = steps[currentStepIndex];
+
+        if (current.useTimeLimit)
+        {
+            current.timer -= Time.deltaTime;
+
+            if (timerText != null)
+            {
+                int seconds = Mathf.CeilToInt(current.timer);
+                int min = seconds / 60;
+                int sec = seconds % 60;
+                timerText.text = $"{min:00}:{sec:00}";
+            }
+
+            if (current.timer <= 0f && !isGameOver)
+            {
+                TriggerGameOver();
+                return;
+            }
+        }
+        else
+        {
+            
+            // âœ… ë¬´í•œ ë£¨í”„ ê¸°í˜¸ í‘œì‹œ
+            if (timerText != null)
+                timerText.text = "<size=300%>âˆ</size>";
+        }
+
         bool stepComplete = false;
 
         switch (current.stepType)
@@ -87,15 +133,12 @@ public class PhaseManager : MonoBehaviour
 
         if (stepComplete)
         {
-            Debug.Log($"Step {currentStepIndex + 1} ¿Ï·á!");
+            Debug.Log($"Step {currentStepIndex + 1} ì™„ë£Œ!");
 
-            // ÇöÀç Step ºñÈ°¼ºÈ­
             if (current.checker != null)
                 current.checker.gameObject.SetActive(false);
 
             currentStepIndex++;
-
-            // ´ÙÀ½ Step È°¼ºÈ­
             ActivateCurrentStep();
         }
     }
@@ -107,10 +150,42 @@ public class PhaseManager : MonoBehaviour
             var step = steps[currentStepIndex];
             if (step.checker != null)
                 step.checker.gameObject.SetActive(true);
+
+            if (step.useTimeLimit)
+                step.timer = step.timeLimit;
         }
     }
 
-    // (¿¹½Ã) º¸½º HP 75%·Î ¸¸µå´Â ÇÔ¼ö (ÇÊ¿ä½Ã »ç¿ë)
+    void TriggerGameOver()
+    {
+        Debug.Log("ì‹œê°„ ì´ˆê³¼ë¡œ ê²Œì„ ì˜¤ë²„!");
+
+        isGameOver = true;
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        Time.timeScale = 0f;
+
+        StartCoroutine(WaitAndQuitGame());
+    }
+
+    System.Collections.IEnumerator WaitAndQuitGame()
+    {
+        float timer = 0f;
+        while (timer < gameOverDelay)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     void SetBossHpTo75Percent()
     {
         if (boss != null)
