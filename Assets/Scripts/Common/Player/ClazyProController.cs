@@ -107,34 +107,39 @@ namespace ClayPro
         {
             if (PV.IsMine)
             {
-                _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+                Initializing();
+            }
+        }
 
-                _hasAnimator = TryGetComponent(out _animator);
-                _controller = GetComponent<CharacterController>();
-                _input = GetComponent<StarterAssetsInputs>();
+        private void Initializing()
+        {
+            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+            _hasAnimator = TryGetComponent(out _animator);
+            _controller = GetComponent<CharacterController>();
+            _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
-                _playerInput = GetComponent<PlayerInput>();
+            _playerInput = GetComponent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
-                AssignAnimationIDs();
+            AssignAnimationIDs();
 
-                // reset our timeouts on start
-                _jumpTimeoutDelta = JumpTimeout;
-                _fallTimeoutDelta = FallTimeout;
+            // reset our timeouts on start
+            _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutDelta = FallTimeout;
 
-                if (_cinemachine == null)
-                {
-                    _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
-                    _cinemachine.Follow = CinemachineCameraTarget.transform;
-                }
+            if (_cinemachine == null)
+            {
+                _cinemachine = GameObject.FindGameObjectWithTag("CinemachineVirtualCamera").GetComponent<CinemachineCamera>();
+                _cinemachine.Follow = CinemachineCameraTarget.transform;
+            }
 
-                // get a reference to our main camera
-                if (_mainCamera == null)
-                {
-                    _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-                }
+            // get a reference to our main camera
+            if (_mainCamera == null)
+            {
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
         }
 

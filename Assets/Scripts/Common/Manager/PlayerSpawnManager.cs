@@ -1,4 +1,7 @@
+﻿using System.Collections;
 using UnityEngine;
+using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 
 public class PlayerSpawnManager : MonoBehaviour
@@ -6,8 +9,9 @@ public class PlayerSpawnManager : MonoBehaviour
     public static PlayerSpawnManager Instance;
 
     [SerializeField] private string selectCharacter;
+    public GameObject SelectCharUI;
     private GameObject previewCharacter;
-    private Vector3 spawnPoint;
+    [SerializeField] private Vector3 spawnPoint;
 
 
     private void Awake()
@@ -25,30 +29,64 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void Start()
     {
-        if (spawnPoint == null)
-        {
-
-        }
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        previewCharacter = null;
+        spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
     }
 
-    public void SelectChar(string charname)
+    public void ShowSelectUI()
     {
-        selectCharacter = charname;
+        SelectCharUI.SetActive(true);
+    }
 
-        if (previewCharacter == null)
-        {
-            previewCharacter = Instantiate((GameObject)Resources.Load(selectCharacter), spawnPoint, Quaternion.Euler(0, Random.Range(0, 180f), 0));
-        }
-        else
+    public void HideSelectUI()
+    {
+        SelectCharUI.SetActive(false);
+        NetworkManager.Instance.DisconnectPanel.SetActive(true);
+    }
+
+    public void SelectChar(string charName)
+    {
+        selectCharacter = charName;
+
+        ShowPreviewCharacter(charName);
+    }
+
+    private void ShowPreviewCharacter(string charName)
+    {
+        StartCoroutine(ShowingCharacter(charName));
+    }
+
+    IEnumerator ShowingCharacter(string charName)
+    {
+        if (previewCharacter != null)
         {
             Destroy(previewCharacter);
-            previewCharacter = Instantiate((GameObject)Resources.Load(selectCharacter), spawnPoint, Quaternion.Euler(0, Random.Range(0, 180f), 0));
+            yield return new WaitForSeconds(0.1f);
         }
+        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint, Quaternion.identity);
+        yield return null;
     }
 
-    private void SpawnAtEachScenePoint()
+    public void SpawnAtEachScenePoint()
     {
+        if (previewCharacter != null)
+        {
+            Destroy(previewCharacter);
+        }
 
+        if (SelectCharUI != null)
+        {
+            SelectCharUI.SetActive(false);
+        }
+
+        PhotonNetwork.Instantiate(selectCharacter, spawnPoint, Quaternion.identity);
+    }
+
+    void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
+        SpawnAtEachScenePoint();
     }
 }
 

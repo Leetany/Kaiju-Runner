@@ -9,7 +9,9 @@ TagManager:
   - MovingPlatform
   - CinemachineVirtualCamera
   - Dragon
+  - Enemy
   - Water
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
