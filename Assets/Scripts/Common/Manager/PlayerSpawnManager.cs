@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
@@ -42,6 +42,7 @@ public class PlayerSpawnManager : MonoBehaviour
     public void HideSelectUI()
     {
         SelectCharUI.SetActive(false);
+        NetworkManager.Instance.DisconnectPanel.SetActive(true);
     }
 
     public void SelectChar(string charName)

@@ -5,6 +5,8 @@ using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public static NetworkManager Instance;
+
     public TMP_InputField NickNameInput;
     public GameObject DisconnectPanel;
     public GameObject RespawnPanel;
@@ -16,18 +18,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
         PhotonNetwork.AutomaticallySyncScene = true;
-    }
 
-    void Start()
-    {
-        if (PhotonNetwork.LocalPlayer.NickName == "")
-        {
-            DisconnectPanel.SetActive(true);
-        }
-        else
-        {
-            // 플레이어 선택 화면 이동
-        }
+        Instance = this;
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
