@@ -123,14 +123,8 @@ namespace StarterAssets
 
         private CinemachineCamera _cinemachine;
         public PhotonView PV;
-        public TextMeshProUGUI NickNameText;
+        [SerializeField] PlayerNameUpdator PlayerNameUpdater;
 
-
-        private void Awake()
-        {
-            NickNameText.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
-            NickNameText.color = PV.IsMine ? Color.green : Color.red;
-        }
 
         private void Start()
         {
@@ -165,6 +159,8 @@ namespace StarterAssets
                     _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
                 }
             }
+
+            PlayerNameUpdater.Label.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
         }
 
         private void Update()
