@@ -36,6 +36,10 @@ public class LHK_PlayerController : MonoBehaviour
     [Header("FX Prefabs & UI")]
     [SerializeField] GameObject stunFX;
     [SerializeField] GameObject slowFX;
+    [SerializeField] GameObject scrambleFX;
+    [SerializeField] GameObject flipVertigoFX;
+    /*[SerializeField] GameObject positionSwapFX;*/
+    [SerializeField] GameObject uiGlitchFX;
     [SerializeField] GameObject tunnelVisionPrefab; // Canvas prefab with TunnelVisionEffect
 
     [Header("Track Interaction")]
@@ -189,6 +193,10 @@ public class LHK_PlayerController : MonoBehaviour
         {
             DebuffType.Slow => slowFX,
             DebuffType.Stun => stunFX,
+            DebuffType.ScrambleInput => scrambleFX,
+            DebuffType.FlipVertigo => flipVertigoFX,
+            /*DebuffType.PositionSwap => positionSwapFX,*/
+            DebuffType.UiGlitch => uiGlitchFX,
             _ => null
         };
         if (prefab) fxInstance = Instantiate(prefab, transform.position + Vector3.up * 1.5f, Quaternion.identity, transform);
