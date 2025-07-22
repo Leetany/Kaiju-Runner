@@ -3,25 +3,24 @@ using UnityEngine;
 public class MonsterUIPreview : MonoBehaviour
 {
     public Camera monsterUICamera;
-    public Transform spawnPoint;
-    public GameObject[] monsterPrefabs;
+    public Transform targetPlayer;
+    private Vector3 offset; // 플레이어 기준 상대 위치
+    public Vector3 lookOffset = Vector3.up;
 
-    private GameObject currentPreview;
-
-    public void ShowMonster(GameObject prefab)
+    void Start()
     {
-        if (currentPreview != null) Destroy(currentPreview);
-
-        currentPreview = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
-        SetLayerRecursively(currentPreview, LayerMask.NameToLayer("MonsterUI"));
-        currentPreview.transform.localScale = Vector3.one;   // 스케일도 1로!
-        currentPreview.transform.rotation = Quaternion.identity; // 회전도 0으로!
+        if (monsterUICamera != null && targetPlayer != null)
+            offset = monsterUICamera.transform.position - targetPlayer.position;
     }
 
-    void SetLayerRecursively(GameObject obj, int layer)
+    void LateUpdate()
     {
-        obj.layer = layer;
-        foreach (Transform child in obj.transform)
-            SetLayerRecursively(child.gameObject, layer);
+        if (monsterUICamera != null && targetPlayer != null)
+        {
+            // 플레이어 기준 상대 위치로 이동
+            monsterUICamera.transform.position = targetPlayer.position + offset;
+            // 항상 플레이어를 바라봄
+            monsterUICamera.transform.LookAt(targetPlayer.position + lookOffset);
+        }
     }
 }

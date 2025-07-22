@@ -21,6 +21,7 @@ public class BossHpBar : MonoBehaviour
 
     void UpdateHpBar(float ratio)
     {
+        Debug.Log($"[BossHpBar] HPBar Update: {ratio}");
         if (hpSlider != null)
             hpSlider.value = ratio;
     }
