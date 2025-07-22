@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PhaseManager : MonoBehaviour
 {
+    [Header("오브젝트 진행률 UI 설정")]
+    public TextMeshProUGUI objectProgressText;
+
     [System.Serializable]
     public class Step
     {
@@ -90,10 +94,11 @@ public class PhaseManager : MonoBehaviour
 
             if (timerText != null)
             {
-                int seconds = Mathf.CeilToInt(current.timer);
-                int min = seconds / 60;
-                int sec = seconds % 60;
-                timerText.text = $"{min:00}:{sec:00}";
+                float t = Mathf.Max(0f, current.timer);
+                int minutes = (int)(t / 60);
+                int seconds = (int)(t % 60);
+                int milliseconds = (int)((t * 1000) % 1000);
+                timerText.text = $"{minutes:00}:{seconds:00}:{milliseconds:000}";
             }
 
             if (current.timer <= 0f && !isGameOver)
@@ -131,6 +136,8 @@ public class PhaseManager : MonoBehaviour
                 break;
         }
 
+        UpdateObjectProgressUI();
+
         if (stepComplete)
         {
             Debug.Log($"Step {currentStepIndex + 1} 완료!");
@@ -143,6 +150,36 @@ public class PhaseManager : MonoBehaviour
         }
     }
 
+    void UpdateObjectProgressUI()
+    {
+        if (objectProgressText == null || currentStepIndex >= steps.Count) return;
+
+        var current = steps[currentStepIndex];
+        if (current.checker == null) return;
+
+        int total = current.checker.objects.Count;
+        int completed = 0;
+
+        foreach (var obj in current.checker.objects)
+        {
+            switch (obj.mode)
+            {
+                case ObjectMode.PermanentDestroy:
+                    if (obj.destroyed) completed++;
+                    break;
+                case ObjectMode.CountOnce:
+                    if (obj.passedPlayers.Count >= playerCount) completed++;
+                    break;
+                case ObjectMode.CountN:
+                    if (obj.passCounts.Count >= playerCount &&
+                        obj.passCounts.Values.All(cnt => cnt >= current.requiredCount))
+                        completed++;
+                    break;
+            }
+        }
+
+        objectProgressText.text = $"{completed} / {total}";
+    }
     void ActivateCurrentStep()
     {
         if (currentStepIndex < steps.Count)
