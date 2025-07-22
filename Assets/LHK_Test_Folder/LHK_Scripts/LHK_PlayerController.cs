@@ -5,7 +5,22 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //─────────────────────────────────────────────────────────────────
-public enum DebuffType { None, Slow, Stun, Flashbang, ScrambleInput, PositionSwap }
+public enum DebuffType
+{
+    None,
+    Slow,
+    Stun,
+    Flashbang,
+    ScrambleInput,
+    PositionSwap,
+    FlipVertigo,
+    TunnelVision,
+    UiGlitch
+}
+
+//─────────────────────────────────────────────────────────────────
+
+public enum BuffType { None, SpeedBoost, ExtraDamage }
 
 //─────────────────────────────────────────────────────────────────
 [RequireComponent(typeof(CharacterController))]
@@ -18,13 +33,24 @@ public class LHK_PlayerController : MonoBehaviour
     [SerializeField] float gravity = -9.81f;
     [SerializeField] Transform cameraTf;
 
-    [Header("FX Prefabs")]
+    [Header("FX Prefabs & UI")]
     [SerializeField] GameObject stunFX;
     [SerializeField] GameObject slowFX;
+    [SerializeField] GameObject scrambleFX;
+    [SerializeField] GameObject flipVertigoFX;
+    /*[SerializeField] GameObject positionSwapFX;*/
+    [SerializeField] GameObject uiGlitchFX;
+    [SerializeField] GameObject tunnelVisionPrefab; // Canvas prefab with TunnelVisionEffect
 
     [Header("Track Interaction")]
     [SerializeField] LHK_TrackHealth track;
     [SerializeField] float distancePerHit = 5f;
+
+    // ───── Buff variables ─────
+    float speedMultiplier = 1f;
+    float speedBuffTimer = 0f;
+    int trackDamageMultiplier = 1;
+    float damageBuffTimer = 0f;
 
     CharacterController cc;
     Vector3 velocity;
@@ -35,26 +61,34 @@ public class LHK_PlayerController : MonoBehaviour
     DebuffType curDebuff = DebuffType.None;
     Coroutine debuffCo;
     GameObject fxInstance;
-
     Dictionary<KeyCode, KeyCode> scrambleMap;
+
+    Quaternion camOriginalRot;
+    GameObject tunnelInstance;
 
     void Awake()
     {
         cc = GetComponent<CharacterController>();
         baseSpeed = moveSpeed;
         cameraTf ??= Camera.main.transform;
+        camOriginalRot = cameraTf.localRotation;
         lastPos = transform.position;
     }
 
     void Update()
     {
+        // Buff 타이머
+        if (speedBuffTimer > 0 && (speedBuffTimer -= Time.deltaTime) <= 0) speedMultiplier = 1f;
+        if (damageBuffTimer > 0 && (damageBuffTimer -= Time.deltaTime) <= 0) trackDamageMultiplier = 1;
+
+
         if (curDebuff == DebuffType.Stun) return;
         Move();
         DealTrackDamage();
         ApplyGravity();
     }
 
-    #region Movement
+    #region Movement & Helpers
     void Move()
     {
         bool grounded = cc.isGrounded;
@@ -71,7 +105,7 @@ public class LHK_PlayerController : MonoBehaviour
             Vector3 dir = (camF * input.z + camR * input.x).normalized;
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
-            cc.Move(dir * moveSpeed * Time.deltaTime);
+            cc.Move(dir * moveSpeed * speedMultiplier * Time.deltaTime);
         }
 
         if (grounded && Input.GetButtonDown("Jump"))
@@ -81,7 +115,6 @@ public class LHK_PlayerController : MonoBehaviour
     float GetAxis(string axis)
     {
         if (curDebuff != DebuffType.ScrambleInput) return Input.GetAxis(axis);
-
         int val = 0;
         if (axis == "Horizontal")
         {
@@ -95,12 +128,10 @@ public class LHK_PlayerController : MonoBehaviour
         }
         return val;
     }
-
-    KeyCode MapKey(KeyCode orig)
-        => scrambleMap != null && scrambleMap.ContainsKey(orig) ? scrambleMap[orig] : orig;
+    KeyCode MapKey(KeyCode k) => scrambleMap != null && scrambleMap.ContainsKey(k) ? scrambleMap[k] : k;
     #endregion
 
-    #region Track Damage
+    #region Track Damage & Gravity
     void DealTrackDamage()
     {
         if (!track) return;
@@ -109,12 +140,10 @@ public class LHK_PlayerController : MonoBehaviour
         if (runDist >= distancePerHit)
         {
             runDist = 0;
-            track.TakeDamage(1);
+            int dmg = trackDamageMultiplier;          // 1 또는 2
+            track.TakeDamage(dmg);
         }
     }
-    #endregion
-
-    #region Gravity
     void ApplyGravity()
     {
         velocity.y += gravity * Time.deltaTime;
@@ -122,10 +151,10 @@ public class LHK_PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region Debuffs
+    #region Debuff System
     public void ApplyDebuff(DebuffType type, float duration)
     {
-        if (debuffCo != null && type != DebuffType.Flashbang) return;
+        if (debuffCo != null && type != DebuffType.Flashbang) return; // 플래시/터널 등 일부만 중첩 허용
         curDebuff = type;
         debuffCo = StartCoroutine(DebuffRoutine(type, duration));
     }
@@ -138,6 +167,8 @@ public class LHK_PlayerController : MonoBehaviour
             case DebuffType.Slow: moveSpeed = baseSpeed * 0.3f; break;
             case DebuffType.Flashbang: LHK_FlashbangEffect.Instance.Play(dur); break;
             case DebuffType.ScrambleInput: CreateScrambleMap(); break;
+            case DebuffType.FlipVertigo: cameraTf.localRotation = camOriginalRot * Quaternion.Euler(0, 0, 180); break;
+            case DebuffType.TunnelVision: StartTunnelVision(dur); break;
         }
         yield return new WaitForSeconds(dur);
         ClearDebuff(type);
@@ -147,6 +178,9 @@ public class LHK_PlayerController : MonoBehaviour
     {
         if (type == DebuffType.Slow) moveSpeed = baseSpeed;
         if (type == DebuffType.ScrambleInput) scrambleMap = null;
+        if (type == DebuffType.FlipVertigo) cameraTf.localRotation = camOriginalRot;
+        if (type == DebuffType.TunnelVision && tunnelInstance) Destroy(tunnelInstance);
+
         if (fxInstance) Destroy(fxInstance);
         curDebuff = DebuffType.None;
         debuffCo = null;
@@ -155,7 +189,16 @@ public class LHK_PlayerController : MonoBehaviour
     void SpawnFX(DebuffType type)
     {
         if (fxInstance) Destroy(fxInstance);
-        GameObject prefab = type switch { DebuffType.Slow => slowFX, DebuffType.Stun => stunFX, _ => null };
+        GameObject prefab = type switch
+        {
+            DebuffType.Slow => slowFX,
+            DebuffType.Stun => stunFX,
+            DebuffType.ScrambleInput => scrambleFX,
+            DebuffType.FlipVertigo => flipVertigoFX,
+            /*DebuffType.PositionSwap => positionSwapFX,*/
+            DebuffType.UiGlitch => uiGlitchFX,
+            _ => null
+        };
         if (prefab) fxInstance = Instantiate(prefab, transform.position + Vector3.up * 1.5f, Quaternion.identity, transform);
     }
 
@@ -165,6 +208,30 @@ public class LHK_PlayerController : MonoBehaviour
         var shuffle = keys.OrderBy(_ => Random.value).ToArray();
         scrambleMap = new();
         for (int i = 0; i < keys.Length; i++) scrambleMap[keys[i]] = shuffle[i];
+    }
+
+    void StartTunnelVision(float dur)
+    {
+        if (!tunnelVisionPrefab) return;
+        tunnelInstance = Instantiate(tunnelVisionPrefab);
+        if (tunnelInstance.TryGetComponent(out LHK_TunnelVisionEffect tv))
+            tv.Play(dur);
+    }
+
+    public void ApplyBuff(BuffType type, float duration)
+    {
+        switch (type)
+        {
+            case BuffType.SpeedBoost:
+                speedMultiplier = 1.5f;
+                speedBuffTimer = duration;
+                break;
+            case BuffType.ExtraDamage:
+                trackDamageMultiplier = 2;
+                damageBuffTimer = duration;
+                break;
+        }
+        Debug.Log($" Buff {type} for {duration}s");
     }
     #endregion
 }
