@@ -1,5 +1,6 @@
-ï»¿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 public enum ObjectMode
 {
@@ -8,136 +9,122 @@ public enum ObjectMode
     CountN
 }
 
-[System.Serializable]
-public class ObjectInfo
-{
-    public GameObject obj;
-    public ObjectMode mode;
-    public bool destroyed = false;
-    public HashSet<int> passedPlayers = new HashSet<int>();
-    public Dictionary<int, int> passCounts = new Dictionary<int, int>();
-}
-
 public class ObjectChecker : MonoBehaviour
 {
+    [System.Serializable]
+    public class ObjectInfo
+    {
+        public GameObject obj;
+        public ObjectMode mode;
+        [HideInInspector] public bool destroyed; // ÆÄ±«µÊ Ã¼Å©¿ë
+        [HideInInspector] public HashSet<int> passedPlayers = new HashSet<int>();
+        [HideInInspector] public Dictionary<int, int> passCounts = new Dictionary<int, int>();
+    }
+
     public List<ObjectInfo> objects = new List<ObjectInfo>();
     public Boss boss;
-    public float hpDecreasePerObject = 0;
-    public int requiredCount = 1;
-
-    [Header("ìë™ ë“±ë¡ ì‹œ ì‚¬ìš©í•  StepType ì§€ì •")]
-    public StepType stepTypeForThisChecker = StepType.PermanentDestroy;
-
-    public int playerCount = 4; // PhaseManagerì—ì„œ ì„¤ì •
-
-    private Color[] stepColors = new Color[]
-    {
-        Color.red,
-        new Color(1f, 0.5f, 0f),
-        Color.green,
-        Color.cyan
-    };
+    public float hpDecreasePerObject = 0; // PermanentDestroy¿ë
+    public int requiredCount = 1;         // CountN¿ë
 
     void Awake()
     {
-        // Inspectorì— objectsê°€ ë¹„ì–´ ìˆìœ¼ë©´ ìë™ ë“±ë¡
-        if (objects.Count == 0)
+        if (objects.Count == 0) // ÀÎ½ºÆåÅÍ¿¡¼­ ºñ¾î ÀÖÀ¸¸é ÀÚµ¿ µî·Ï
         {
             foreach (Transform child in transform)
             {
-                if (!child.gameObject.activeSelf) continue;
-
-                var info = new ObjectInfo { obj = child.gameObject };
-                switch (stepTypeForThisChecker)
-                {
-                    case StepType.PermanentDestroy:
-                        info.mode = ObjectMode.PermanentDestroy;
-                        break;
-                    case StepType.AllOnce:
-                    case StepType.AllN:
-                    case StepType.AnyOnce:
-                    case StepType.AnyN:
-                        info.mode = ObjectMode.CountOnce;
-                        break;
-                    default:
-                        info.mode = ObjectMode.PermanentDestroy;
-                        break;
-                }
+                ObjectInfo info = new ObjectInfo();
+                info.obj = child.gameObject;
+                info.mode = ObjectMode.PermanentDestroy; // ±âº»°ª(¼öÁ¤ °¡´É)
                 objects.Add(info);
             }
         }
     }
 
-    public void ResetProgress()
-    {
-        foreach (var o in objects)
-        {
-            o.destroyed = false;
-            o.passedPlayers.Clear();
-            o.passCounts.Clear();
-        }
-    }
-
+    // ¸ğµç ¿ÀºêÁ§Æ®°¡ ¸ğµåº°·Î ¿Ï·áµÆ´ÂÁö È®ÀÎ (playerCount ÆÄ¶ó¹ÌÅÍ·Î ¹ŞÀ½)
     public bool IsAllCleared(int playerCount)
     {
-        if (objects.Count == 0) return false;
         foreach (var o in objects)
-            if (!o.destroyed) return false;
+        {
+            switch (o.mode)
+            {
+                case ObjectMode.PermanentDestroy:
+                    if (!o.destroyed) return false;
+                    break;
+                case ObjectMode.CountOnce:
+                    if (o.passedPlayers.Count < playerCount) return false;
+                    break;
+                case ObjectMode.CountN:
+                    if (o.passCounts.Count < playerCount) return false;
+                    foreach (var cnt in o.passCounts.Values)
+                        if (cnt < requiredCount) return false;
+                    break;
+            }
+        }
         return true;
     }
 
+    // ÁöÁ¤µÈ ¸ğµç ÇÃ·¹ÀÌ¾î°¡ ÇÑ ¹ø¾¿ Åë°úÇØ¾ß ¿Ï·á (AllOnce)
     public bool IsAllPlayersOnce(int playerCount)
     {
-        if (objects.Count == 0)
+        foreach (var o in objects)
         {
-            Debug.LogWarning($"{name} has no objects assigned to check (IsAllPlayersOnce).");
-            return false;
+            if (o.mode == ObjectMode.CountOnce)
+            {
+                if (o.passedPlayers.Count < playerCount)
+                    return false;
+            }
         }
-        foreach (var o in objects)
-            if (o.mode == ObjectMode.CountOnce && o.passedPlayers.Count < playerCount)
-                return false;
         return true;
     }
 
-    public bool IsAllPlayersN(int playerCount, int n)
+    // ÁöÁ¤µÈ ¸ğµç ÇÃ·¹ÀÌ¾î°¡ nÈ¸¾¿ Åë°úÇØ¾ß ¿Ï·á (AllN)
+    public bool IsAllPlayersN(int playerCount, int requiredCount)
     {
-        if (objects.Count == 0) return false;
         foreach (var o in objects)
+        {
             if (o.mode == ObjectMode.CountN)
             {
-                if (o.passCounts.Count < playerCount) return false;
+                if (o.passCounts.Count < playerCount)
+                    return false;
                 foreach (var cnt in o.passCounts.Values)
-                    if (cnt < n) return false;
+                    if (cnt < requiredCount) return false;
             }
+        }
         return true;
     }
 
-    public bool IsAnyPlayersOnce(int requiredCount)
+    // ÁöÁ¤µÈ ÀÎ¿ø ÀÌ»óÀÌ ÇÑ ¹ø¾¿ Åë°úÇØ¾ß ¿Ï·á (AnyOnce)
+    public bool IsAnyPlayersOnce(int requiredPlayerCount)
     {
-        if (objects.Count == 0) return false;
-        int count = 0;
+        HashSet<int> totalPassedPlayers = new HashSet<int>();
         foreach (var o in objects)
-            if (o.mode == ObjectMode.CountOnce && o.passedPlayers.Count > 0)
-                count++;
-        return count >= requiredCount;
+        {
+            if (o.mode == ObjectMode.CountOnce)
+                foreach (var id in o.passedPlayers)
+                    totalPassedPlayers.Add(id);
+        }
+        return totalPassedPlayers.Count >= requiredPlayerCount;
     }
 
-    public bool IsAnyPlayersN(int requiredCount, int n)
+    // ÁöÁ¤µÈ ÀÎ¿ø ÀÌ»óÀÌ nÈ¸¾¿ Åë°úÇØ¾ß ¿Ï·á (AnyN)
+    public bool IsAnyPlayersN(int requiredPlayerCount, int requiredCount)
     {
-        if (objects.Count == 0) return false;
-        int count = 0;
+        HashSet<int> playersPassedN = new HashSet<int>();
         foreach (var o in objects)
+        {
             if (o.mode == ObjectMode.CountN)
             {
-                int validPlayer = 0;
-                foreach (var cnt in o.passCounts.Values)
-                    if (cnt >= n) validPlayer++;
-                if (validPlayer > 0)
-                    count++;
+                foreach (var kvp in o.passCounts)
+                {
+                    if (kvp.Value >= requiredCount)
+                        playersPassedN.Add(kvp.Key);
+                }
             }
-        return count >= requiredCount;
+        }
+        return playersPassedN.Count >= requiredPlayerCount;
     }
 
+    // Æ®¸®°Å¿¡¼­ È£ÃâÇÒ ÇÔ¼ö
     public void OnObjectTrigger(GameObject obj, int playerId)
     {
         var info = objects.Find(x => x.obj == obj);
@@ -159,33 +146,14 @@ public class ObjectChecker : MonoBehaviour
                         boss.TakeDamage(hpDecreasePerObject);
                 }
                 break;
-
             case ObjectMode.CountOnce:
-                if (!info.passedPlayers.Contains(playerId))
-                {
-                    info.passedPlayers.Add(playerId);
-                    ApplyProgressColor(info);
-                }
+                info.passedPlayers.Add(playerId);
                 break;
-
             case ObjectMode.CountN:
                 if (!info.passCounts.ContainsKey(playerId))
                     info.passCounts[playerId] = 0;
                 info.passCounts[playerId]++;
-                ApplyProgressColor(info);
                 break;
-        }
-    }
-
-    private void ApplyProgressColor(ObjectInfo info)
-    {
-        if (info.obj.TryGetComponent<Renderer>(out var renderer))
-        {
-            int current = info.passedPlayers.Count;
-            int total = Mathf.Max(1, playerCount);
-            float percent = (float)current / total;
-            int index = Mathf.Clamp(Mathf.FloorToInt(percent * stepColors.Length), 0, stepColors.Length - 1);
-            renderer.material.color = stepColors[index];
         }
     }
 }
