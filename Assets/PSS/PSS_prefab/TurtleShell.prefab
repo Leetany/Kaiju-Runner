@@ -624,7 +624,7 @@ GameObject:
   - component: {fileID: 3787700692454252393}
   - component: {fileID: 752042322489083432}
   - component: {fileID: 3515295575159001108}
-  - component: {fileID: 1230958207393717563}
+  - component: {fileID: 7360860717933053070}
   m_Layer: 0
   m_Name: TurtleShell
   m_TagString: Enemy
@@ -711,8 +711,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &1230958207393717563
-SphereCollider:
+--- !u!65 &7360860717933053070
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -730,8 +730,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0.5, z: -0.1}
+  m_Size: {x: 0.8, y: 0.8, z: 1}
+  m_Center: {x: 0, y: 0.4, z: -0.1}
 --- !u!1 &7387197221813360310
 GameObject:
   m_ObjectHideFlags: 0
