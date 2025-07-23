@@ -1,7 +1,9 @@
+ï»¿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
-
-
+using TMPro;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -10,62 +12,129 @@ public class PhaseManager : MonoBehaviour
     {
         public ObjectChecker checker;
         public StepType stepType;
-        public int requiredCount = 1;      // AllN, AnyOnce, AnyN¿ë n°ª
-        public float totalHpDecrease = 0;  // PermanentDestroy Àü¿ë: HP ÀüÃ¼ °¨¼Ò·®
+        public int requiredCount = 1;
+
+        [Range(0f, 1f)]
+        public float hpPercent = 0.1f;
+
+        [HideInInspector]
+        public float totalHpDecrease;
+        [HideInInspector]
+        public float timer;
+        [HideInInspector]
+        public bool hpApplied;
+
+        public bool useTimeLimit = false;
+        public float timeLimit = 30f;
+
+        [TextArea(1, 3)]
+        public string description;
     }
 
+    [Header("Step ì„¤ì •")]
     public List<Step> steps;
     public int currentStepIndex = 0;
     public Boss boss;
     public int playerCount = 4;
-    public PhaseManager nextPhaseManager; // ´ÙÀ½ ÆäÀÌÁî·Î ¿¬°á
+    public PhaseManager nextPhaseManager;
+
+    [Header("Game Over UI ì„¤ì •")]
+    public GameObject gameOverPanel;
+    public float gameOverDelay = 3f;
+
+    [Header("íƒ€ì´ë¨¸ UI ì„¤ì •")]
+    public TextMeshProUGUI timerText;
+
+    [Header("ì˜¤ë¸Œì íŠ¸ ì§„í–‰ë¥  UI ì„¤ì •")]
+    public TextMeshProUGUI objectProgressText;
+
+    [Header("í˜ì´ì¦ˆ ì •ë³´ UI")]
+    public TextMeshProUGUI phaseInfoText;
+
+    [Header("ì»¤ìŠ¤í…€ í˜ì´ì¦ˆ ì œëª© (ì˜µì…˜)")]
+    public string overridePhaseTitle;
+
+    private bool isGameOver = false;
 
     void Start()
     {
-        // ¸ğµç StepÀÇ ¿ÀºêÁ§Æ®¸¦ ºñÈ°¼ºÈ­(ÃÊ±âÈ­)
-        foreach (var step in steps)
+        float totalHp = boss != null ? boss.maxHp : 1000f;
+
+        // ëª¨ë“  Step ì´ˆê¸°í™”
+        for (int i = 0; i < steps.Count; i++)
         {
+            var step = steps[i];
             if (step.checker != null)
-                step.checker.gameObject.SetActive(false);
-        }
-
-        // PermanentDestroy ½ºÅÜÀÌ¸é HP °¨¼Ò °è»ê ¹× ¼¼ÆÃ
-        foreach (var step in steps)
-        {
-            if (step.stepType == StepType.PermanentDestroy && step.checker != null)
             {
+                // íŠ¸ë¦¬ê±° ì˜¤ë¸Œì íŠ¸ ë¹„í™œì„±í™”
+                step.checker.gameObject.SetActive(false);
+                foreach (Transform child in step.checker.transform)
+                    child.gameObject.SetActive(false);
+
                 int objectCount = step.checker.objects.Count;
-                float totalHp = boss != null ? boss.maxHp : 1000f;
+                float stepTotalDamage = totalHp * step.hpPercent;
+                step.totalHpDecrease = stepTotalDamage;
 
-                // ÀüÃ¼ HPÀÇ 25%¸¸ ±ğÀÌµµ·Ï
-                float totalHpDecrease = totalHp * 0.25f;
-                float perObjectDecrease = totalHpDecrease / objectCount;
-
-                step.totalHpDecrease = totalHpDecrease;
-                step.checker.hpDecreasePerObject = perObjectDecrease;
+                // PermanentDestroy ëª¨ë“œì¼ ë•Œ ê°œë³„ ë°ë¯¸ì§€ ì„¤ì •
+                if (step.stepType == StepType.PermanentDestroy && objectCount > 0)
+                    step.checker.hpDecreasePerObject = stepTotalDamage / objectCount;
 
                 step.checker.boss = boss;
             }
+
+            if (step.useTimeLimit)
+                step.timer = step.timeLimit;
         }
 
-        // Ã¹ Step È°¼ºÈ­
         ActivateCurrentStep();
+        UpdatePhaseInfoUI();
     }
 
     void Update()
     {
-        // ¸ğµç Step ¿Ï·á½Ã ÆäÀÌÁî Á¾·á & ´ÙÀ½ ÆäÀÌÁî È°¼ºÈ­
+        if (isGameOver) return;
+
+        // ëª¨ë“  Step ì™„ë£Œ ì‹œ ë‹¤ìŒ Phaseë¡œ ì „í™˜
         if (currentStepIndex >= steps.Count)
         {
             if (nextPhaseManager != null)
                 nextPhaseManager.gameObject.SetActive(true);
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
             return;
         }
 
-        Step current = steps[currentStepIndex];
-        bool stepComplete = false;
+        var current = steps[currentStepIndex];
 
+        // íƒ€ì´ë¨¸ ì²˜ë¦¬
+        if (current.useTimeLimit)
+        {
+            current.timer -= Time.deltaTime;
+            if (timerText != null)
+            {
+                float t = Mathf.Max(0f, current.timer);
+                int minutes = (int)(t / 60f);
+                int seconds = (int)(t % 60f);
+                int milliseconds = (int)((t * 1000f) % 1000f);
+                timerText.text = $"{minutes:00}:{seconds:00}:{milliseconds:000}";
+            }
+
+            if (current.timer <= 0f)
+            {
+                TriggerGameOver();
+                return;
+            }
+        }
+        else if (timerText != null)
+        {
+            timerText.text = "<size=300%>âˆ</size>";
+        }
+
+        // UI ê°±ì‹ 
+        UpdateObjectProgressUI();
+        UpdatePhaseInfoUI();
+
+        // Step ì™„ë£Œ ì²´í¬
+        bool stepComplete = false;
         switch (current.stepType)
         {
             case StepType.PermanentDestroy:
@@ -87,15 +156,30 @@ public class PhaseManager : MonoBehaviour
 
         if (stepComplete)
         {
-            Debug.Log($"Step {currentStepIndex + 1} ¿Ï·á!");
+            // í•œ ë²ˆë§Œ ë³´ìŠ¤ì— ë°ë¯¸ì§€ ì ìš©
+            if (!current.hpApplied)
+            {
+                current.hpApplied = true;
+                if (current.stepType != StepType.PermanentDestroy)
+                {
+                    if (boss == null)
+                    {
+                        Debug.LogError("[PhaseManager] Boss ì°¸ì¡°ê°€ ì—†ìŠµë‹ˆë‹¤!");
+                    }
+                    else if (current.totalHpDecrease <= 0f)
+                    {
+                        Debug.LogError($"[PhaseManager] totalHpDecreaseê°€ ë¹„ì •ìƒê°’ì…ë‹ˆë‹¤: {current.totalHpDecrease}");
+                    }
+                    else
+                    {
+                        boss.TakeDamage(current.totalHpDecrease);
+                    }
+                }
+            }
 
-            // ÇöÀç Step ºñÈ°¼ºÈ­
-            if (current.checker != null)
-                current.checker.gameObject.SetActive(false);
-
+            // ë‹¤ìŒ Stepìœ¼ë¡œ ì´ë™
+            current.checker.gameObject.SetActive(false);
             currentStepIndex++;
-
-            // ´ÙÀ½ Step È°¼ºÈ­
             ActivateCurrentStep();
         }
     }
@@ -106,19 +190,111 @@ public class PhaseManager : MonoBehaviour
         {
             var step = steps[currentStepIndex];
             if (step.checker != null)
+            {
+                step.checker.ResetProgress();
                 step.checker.gameObject.SetActive(true);
+                foreach (var t in step.checker.GetComponentsInChildren<Transform>(true))
+                    if (t != step.checker.transform)
+                        t.gameObject.SetActive(true);
+
+                step.checker.playerCount = playerCount;
+            }
+
+            if (step.useTimeLimit)
+                step.timer = step.timeLimit;
         }
     }
 
-    // (¿¹½Ã) º¸½º HP 75%·Î ¸¸µå´Â ÇÔ¼ö (ÇÊ¿ä½Ã »ç¿ë)
-    void SetBossHpTo75Percent()
+    void TriggerGameOver()
     {
-        if (boss != null)
+        isGameOver = true;
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
+        StartCoroutine(WaitAndQuitGame());
+    }
+
+    IEnumerator WaitAndQuitGame()
+    {
+        float wait = 0f;
+        while (wait < gameOverDelay)
         {
-            float targetHp = boss.maxHp * 0.75f;
-            float damage = boss.currentHp - targetHp;
-            if (damage > 0)
-                boss.TakeDamage(damage);
+            wait += Time.unscaledDeltaTime;
+            yield return null;
         }
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    void UpdateObjectProgressUI()
+    {
+        if (objectProgressText == null || currentStepIndex >= steps.Count)
+            return;
+
+        var current = steps[currentStepIndex];
+        if (current.checker == null) return;
+
+        int total = current.checker.objects.Count;
+        int completed = 0;
+
+        foreach (var obj in current.checker.objects)
+        {
+            switch (obj.mode)
+            {
+                case ObjectMode.PermanentDestroy:
+                    if (obj.destroyed) completed++;
+                    break;
+                case ObjectMode.CountOnce:
+                    if (obj.passedPlayers.Count >= playerCount) completed++;
+                    break;
+                case ObjectMode.CountN:
+                    if (obj.passCounts.Count >= playerCount &&
+                        obj.passCounts.Values.All(cnt => cnt >= current.requiredCount))
+                        completed++;
+                    break;
+            }
+        }
+
+        objectProgressText.text = $"{completed} / {total}";
+    }
+
+    void UpdatePhaseInfoUI()
+    {
+        if (phaseInfoText == null)
+            return;
+
+        var sb = new StringBuilder();
+
+        // ì»¤ìŠ¤í…€ ì œëª© ì‚¬ìš© ì—¬ë¶€
+        string title = !string.IsNullOrWhiteSpace(overridePhaseTitle)
+            ? overridePhaseTitle
+            : $"PHASE {currentStepIndex + 1}";
+        sb.AppendLine($"<size=32><b>{title}</b></size>\n");
+
+        // Step ë¦¬ìŠ¤íŠ¸
+        for (int i = 0; i < steps.Count; i++)
+        {
+            string desc = steps[i].description;
+            if (string.IsNullOrEmpty(desc))
+                desc = "[ì„¤ëª… ì—†ìŒ]";
+
+            if (i < currentStepIndex)
+            {
+                sb.AppendLine($"<size=22><color=grey><s>{i + 1}. {desc} - ì™„ë£Œë¨</s></color></size>");
+            }
+            else if (i == currentStepIndex)
+            {
+                sb.AppendLine($"<size=22><color=yellow>{i + 1}. {desc} - ì§„í–‰ì¤‘</color></size>");
+            }
+            else
+            {
+                sb.AppendLine($"<size=22>{i + 1}. {desc} - ëŒ€ê¸°ì¤‘</size>");
+            }
+        }
+
+        phaseInfoText.text = sb.ToString();
     }
 }

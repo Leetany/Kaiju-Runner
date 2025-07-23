@@ -91,7 +91,7 @@ public class PlayerSpawnManager : MonoBehaviour
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
+        spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
         SpawnAtEachScenePoint();
     }
 }
