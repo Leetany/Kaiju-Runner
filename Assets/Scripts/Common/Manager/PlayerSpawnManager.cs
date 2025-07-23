@@ -41,12 +41,18 @@ public class PlayerSpawnManager : MonoBehaviour
 
     public void HideSelectUI()
     {
+        CameraSwitcher.Instance.DefaultSet();
         SelectCharUI.SetActive(false);
         NetworkManager.Instance.DisconnectPanel.SetActive(true);
     }
 
     public void SelectChar(string charName)
     {
+        if(!CameraSwitcher.Instance.GetCameraSwitched())
+        {
+            CameraSwitcher.Instance.ShowCharacterSelection();
+        }
+        
         selectCharacter = charName;
 
         ShowPreviewCharacter(charName);
