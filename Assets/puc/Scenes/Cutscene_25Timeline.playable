@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4071495370475285507
+--- !u!114 &-3663591409813042584
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisplayName: 
   VirtualCamera:
-    exposedName: f30f4e2f5afdfea4db36e87d6686c7b1
+    exposedName: b896f57b8ff6bb64486194fa32f92021
     defaultValue: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -217,7 +217,7 @@ MonoBehaviour:
   - m_Version: 1
     m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: -4071495370475285507}
+    m_Asset: {fileID: -3663591409813042584}
     m_Duration: 5
     m_TimeScale: 1
     m_ParentTrack: {fileID: 8856113697837532392}
@@ -282,6 +282,7 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: Virtual Camera
+    m_DisplayName: Virtual Camera_25
   m_Markers:
     m_Objects: []
+  TrackPriority: 0
