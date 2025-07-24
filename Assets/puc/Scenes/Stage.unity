@@ -1185,6 +1185,7 @@ MonoBehaviour:
   requiredCount: 1
   hpDecreasePerObject: 10
   colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!4 &172134920 stripped
@@ -2118,6 +2119,7 @@ MonoBehaviour:
   requiredCount: 1
   hpDecreasePerObject: 5
   colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &246124097 stripped
@@ -2734,6 +2736,7 @@ MonoBehaviour:
   requiredCount: 1
   hpDecreasePerObject: 5
   colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &328359381
@@ -3790,6 +3793,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  track: {fileID: 502556211}
+  isInitialPhase: 0
+  nextPhaseManager: {fileID: 1118730477}
+  boss: {fileID: 1224078530}
+  playerCount: 1
+  gameOverPanel: {fileID: 1776811850}
+  gameOverDelay: 3
+  timerText: {fileID: 2120996443}
+  objectProgressText: {fileID: 852304498}
+  phaseInfoText: {fileID: 1407516319}
+  phaseTitle: "\uC6A9\uC758 \uBE44\uB298 \uD30C\uAD34\uD558\uB77C! - II"
   steps:
   - checker: {fileID: 445718115}
     stepType: 0
@@ -3801,6 +3815,11 @@ MonoBehaviour:
     useTimeLimit: 1
     timeLimit: 120
     timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 I"
   - checker: {fileID: 126707895}
     stepType: 0
@@ -3812,6 +3831,11 @@ MonoBehaviour:
     useTimeLimit: 1
     timeLimit: 120
     timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 II"
   - checker: {fileID: 321943879}
     stepType: 0
@@ -3823,19 +3847,13 @@ MonoBehaviour:
     useTimeLimit: 1
     timeLimit: 120
     timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 III"
   currentStepIndex: 0
-  isInitialPhase: 0
-  track: {fileID: 502556211}
-  nextPhaseManager: {fileID: 1118730477}
-  boss: {fileID: 1224078530}
-  playerCount: 1
-  gameOverPanel: {fileID: 1776811850}
-  gameOverDelay: 3
-  timerText: {fileID: 2120996443}
-  objectProgressText: {fileID: 852304498}
-  phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC6A9\uC758 \uBE44\uB298 \uD30C\uAD34\uD558\uB77C! - II"
 --- !u!1 &445718113
 GameObject:
   m_ObjectHideFlags: 0
@@ -3886,6 +3904,7 @@ MonoBehaviour:
   requiredCount: 1
   hpDecreasePerObject: 10
   colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &447552077 stripped
@@ -4512,6 +4531,7 @@ MonoBehaviour:
   requiredCount: 2
   hpDecreasePerObject: 10
   colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &541526306 stripped
@@ -6852,6 +6872,81 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 944183476}
   m_SourcePrefab: {fileID: 100100000, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+--- !u!1 &811365536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811365537}
+  - component: {fileID: 811365539}
+  - component: {fileID: 811365538}
+  m_Layer: 5
+  m_Name: ColorInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &811365537
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811365536}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 982085983}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10, y: 10}
+  m_SizeDelta: {x: 200, y: 60}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &811365538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811365536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 736654843, guid: 3d6aab2d692108e4abaaa5f82d5fa082, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &811365539
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811365536}
+  m_CullTransparentMesh: 1
 --- !u!1 &815142100 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
@@ -9078,6 +9173,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  track: {fileID: 1078492077}
+  isInitialPhase: 1
+  nextPhaseManager: {fileID: 397195371}
+  boss: {fileID: 1224078530}
+  playerCount: 1
+  gameOverPanel: {fileID: 1776811850}
+  gameOverDelay: 3
+  timerText: {fileID: 2120996443}
+  objectProgressText: {fileID: 852304498}
+  phaseInfoText: {fileID: 1407516319}
+  phaseTitle: "\uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
   steps:
   - checker: {fileID: 1485739827}
     stepType: 0
@@ -9089,6 +9195,11 @@ MonoBehaviour:
     useTimeLimit: 0
     timeLimit: 180
     timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8 \uD1B5\uACFC"
   - checker: {fileID: 536235984}
     stepType: 0
@@ -9100,8 +9211,12 @@ MonoBehaviour:
     useTimeLimit: 1
     timeLimit: 180
     timer: 0
-    description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
-      \uD1B5\uACFC"
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
+    description: "\uCE59\uCE59\uD3ED\uD3ED \uAE30\uCC28\uB180\uC774(All)"
   - checker: {fileID: 236449399}
     stepType: 0
     requiredPlayers: 1
@@ -9112,20 +9227,14 @@ MonoBehaviour:
     useTimeLimit: 1
     timeLimit: 180
     timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
       \uD1B5\uACFC"
   currentStepIndex: 0
-  isInitialPhase: 1
-  track: {fileID: 1078492077}
-  nextPhaseManager: {fileID: 397195371}
-  boss: {fileID: 1224078530}
-  playerCount: 1
-  gameOverPanel: {fileID: 1776811850}
-  gameOverDelay: 3
-  timerText: {fileID: 2120996443}
-  objectProgressText: {fileID: 852304498}
-  phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
 --- !u!4 &869897757
 Transform:
   m_ObjectHideFlags: 0
@@ -11085,6 +11194,7 @@ RectTransform:
   m_Children:
   - {fileID: 1296321996}
   - {fileID: 1977428639}
+  - {fileID: 811365537}
   m_Father: {fileID: 935780918}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -12598,10 +12708,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
-  currentStepIndex: 2
-  isInitialPhase: 0
   track: {fileID: 0}
+  isInitialPhase: 0
   nextPhaseManager: {fileID: 1375784114}
   boss: {fileID: 1224078530}
   playerCount: 1
@@ -12611,6 +12719,8 @@ MonoBehaviour:
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
   phaseTitle: PHASE 1
+  steps: []
+  currentStepIndex: 2
 --- !u!1001 &1123913948
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16730,10 +16840,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
-  currentStepIndex: 3
-  isInitialPhase: 0
   track: {fileID: 0}
+  isInitialPhase: 0
   nextPhaseManager: {fileID: 0}
   boss: {fileID: 1224078530}
   playerCount: 1
@@ -16743,6 +16851,8 @@ MonoBehaviour:
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
   phaseTitle: PHASE 1
+  steps: []
+  currentStepIndex: 3
 --- !u!1001 &1398979889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17831,9 +17941,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  requiredCount: 1
+  requiredCount: 3
   hpDecreasePerObject: 10
   colorChangeCooldown: 3
+  transparencyAlpha: 0.475
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1001 &1509435910
@@ -24298,7 +24409,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 00:00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -25319,6 +25430,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: 3061037065313971332, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (1)
