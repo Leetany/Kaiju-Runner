@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -122,6 +122,7 @@ namespace StarterAssets
             }
         }
 
+
         private void Awake()
         {
             // get a reference to our main camera
@@ -134,7 +135,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-
+            
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -155,8 +156,8 @@ namespace StarterAssets
         {
             _hasAnimator = TryGetComponent(out _animator);
 
-            GroundedCheck();     // 반드시 점프/중력 처리보다 먼저 호출
             JumpAndGravity();
+            GroundedCheck();
             Move();
         }
 
@@ -174,71 +175,40 @@ namespace StarterAssets
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
-        // ★ 경사 대응 GroundedCheck
         private void GroundedCheck()
         {
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+            // set sphere position, with offset
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+                transform.position.z);
+            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
+                QueryTriggerInteraction.Ignore);
 
-            // 1차: Sphere로 바닥 확인
-            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
-
-            // 2차: 경사 대응 여러 방향 Raycast
-            if (!Grounded)
-            {
-                float extraDistance = 0.2f;
-                Vector3[] checkDirs = {
-                    Vector3.down,
-                    (Vector3.down + Vector3.forward).normalized,
-                    (Vector3.down + Vector3.back).normalized,
-                    (Vector3.down + Vector3.left).normalized,
-                    (Vector3.down + Vector3.right).normalized
-                };
-                foreach (var dir in checkDirs)
-                {
-                    if (Physics.Raycast(transform.position, dir, GroundedRadius + extraDistance, GroundLayers, QueryTriggerInteraction.Ignore))
-                    {
-                        Grounded = true;
-                        break;
-                    }
-                }
-            }
-
+            // update animator if using character
             if (_hasAnimator)
             {
                 _animator.SetBool(_animIDGrounded, Grounded);
             }
         }
 
-        private float _targetCameraYaw;
-
         private void CameraRotation()
         {
+            // if there is an input and camera position is not fixed
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
+                //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+
                 _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
                 _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-                _targetCameraYaw = _cinemachineTargetYaw; // 직접 시점 조작시 목표값 동기화
             }
 
-            if (LockCameraPosition)
-            {
-                if (_input.move.sqrMagnitude > 0.1f) // 아주 약한 입력은 무시
-                {
-                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-                    float desiredYaw = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
-
-                    // 여기서 '목표값'만 업데이트. 실제 적용은 아래에서 보간
-                    _targetCameraYaw = desiredYaw;
-                }
-                // 카메라 yaw를 목표값으로 부드럽게 보간 (속도 2f~3f 정도가 자연스러움)
-                _cinemachineTargetYaw = Mathf.LerpAngle(_cinemachineTargetYaw, _targetCameraYaw, Time.deltaTime * 2.5f);
-            }
-
+            // clamp our rotations so our values are limited 360 degrees
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride, _cinemachineTargetYaw, 0.0f);
+            // Cinemachine will follow this target
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+                _cinemachineTargetYaw, 0.0f);
         }
 
         private void Move()
@@ -246,6 +216,9 @@ namespace StarterAssets
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
+            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+
+            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -259,9 +232,12 @@ namespace StarterAssets
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                 currentHorizontalSpeed > targetSpeed + speedOffset)
             {
+                // creates curved result rather than a linear one giving a more organic speed change
+                // note T in Lerp is clamped, so we don't need to clamp our speed
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
                     Time.deltaTime * SpeedChangeRate);
 
+                // round speed to 3 decimal places
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
             }
             else
@@ -269,12 +245,13 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.MoveTowards(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate * 3f);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
+            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
@@ -287,6 +264,7 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
+
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
@@ -296,64 +274,78 @@ namespace StarterAssets
             // update animator if using character
             if (_hasAnimator)
             {
-                float normalizedSpeed = _speed / SprintSpeed;
-                normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
-                _animator.SetFloat(_animIDSpeed, normalizedSpeed);
+                _animator.SetFloat(_animIDSpeed, _animationBlend);
+                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
         }
 
-        // ★ 경사/낙하 오인 방지
         private void JumpAndGravity()
         {
             if (Grounded)
             {
+                // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
+                // update animator if using character
                 if (_hasAnimator)
                 {
                     _animator.SetBool(_animIDJump, false);
                     _animator.SetBool(_animIDFreeFall, false);
                 }
 
-                // 경사 위에서 떨어지지 않게 -2f 이하로 떨어뜨리지 않음
-                if (_verticalVelocity < -2f)
+                // stop our velocity dropping infinitely when grounded
+                if (_verticalVelocity < 0.0f)
+                {
                     _verticalVelocity = -2f;
+                }
 
-                // 점프 입력 시에만 점프 처리
+                // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
+                    // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
+                    // update animator if using character
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDJump, true);
                     }
                 }
 
+                // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
+                {
                     _jumpTimeoutDelta -= Time.deltaTime;
+                }
             }
             else
             {
+                // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
 
+                // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
                     _fallTimeoutDelta -= Time.deltaTime;
                 }
                 else
                 {
+                    // update animator if using character
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDFreeFall, true);
                     }
                 }
+
+                // if we are not grounded, do not jump
                 _input.jump = false;
             }
 
-            // 중력 적용 (terminalVelocity 미만일 때만)
+            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < _terminalVelocity)
+            {
                 _verticalVelocity += Gravity * Time.deltaTime;
+            }
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
@@ -371,6 +363,7 @@ namespace StarterAssets
             if (Grounded) Gizmos.color = transparentGreen;
             else Gizmos.color = transparentRed;
 
+            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
                 new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
                 GroundedRadius);

@@ -972,7 +972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 560230652}
   m_Layer: 0
-  m_Name: ========UI========
+  m_Name: '================[UI]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1589,6 +1589,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1754091184938402028, guid: 4eff2622602b89d4682ce9d88a40a9f8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5788295380727220905, guid: 4eff2622602b89d4682ce9d88a40a9f8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1984,7 +1988,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1343300966}
   m_Layer: 0
-  m_Name: ========Camera========
+  m_Name: '================[Camera]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2015,7 +2019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1364949209}
   m_Layer: 0
-  m_Name: ========ETC========
+  m_Name: '================[ETC]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2294,7 +2298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1874549710}
   m_Layer: 0
-  m_Name: ========Manager========
+  m_Name: '================[Manager]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
