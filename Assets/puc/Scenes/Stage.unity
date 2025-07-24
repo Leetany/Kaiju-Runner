@@ -1182,8 +1182,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 10
   requiredCount: 1
+  hpDecreasePerObject: 10
+  colorChangeCooldown: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!4 &172134920 stripped
@@ -2114,8 +2115,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 5
   requiredCount: 1
+  hpDecreasePerObject: 5
+  colorChangeCooldown: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &246124097 stripped
@@ -2729,8 +2731,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 5
   requiredCount: 1
+  hpDecreasePerObject: 5
+  colorChangeCooldown: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &328359381
@@ -3787,43 +3790,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  track: {fileID: 502556211}
-  isInitialPhase: 0
   steps:
   - checker: {fileID: 445718115}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 1
     timeLimit: 120
+    timer: 0
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 I"
   - checker: {fileID: 126707895}
     stepType: 0
-    requiredCount: 2
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 1
     timeLimit: 120
+    timer: 0
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 II"
   - checker: {fileID: 321943879}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.05
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 1
     timeLimit: 120
+    timer: 0
     description: "\uC655 \uBE44\uB298 \uD30C\uAD34 III"
   currentStepIndex: 0
+  isInitialPhase: 0
+  track: {fileID: 502556211}
+  nextPhaseManager: {fileID: 1118730477}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 1118730477}
   gameOverPanel: {fileID: 1776811850}
   gameOverDelay: 3
   timerText: {fileID: 2120996443}
@@ -3877,8 +3883,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 10
   requiredCount: 1
+  hpDecreasePerObject: 10
+  colorChangeCooldown: 0.5
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &447552077 stripped
@@ -4502,9 +4509,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
+  requiredCount: 2
   hpDecreasePerObject: 10
-  requiredCount: 4
-  stepTypeForThisChecker: 4
+  colorChangeCooldown: 0.5
+  stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1 &541526306 stripped
 GameObject:
@@ -9070,45 +9078,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  track: {fileID: 1078492077}
-  isInitialPhase: 1
   steps:
   - checker: {fileID: 1485739827}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 0
     timeLimit: 180
+    timer: 0
     description: "\uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8 \uD1B5\uACFC"
   - checker: {fileID: 536235984}
-    stepType: 4
-    requiredCount: 4
+    stepType: 0
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 1
     useTimeLimit: 1
     timeLimit: 180
+    timer: 0
     description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
       \uD1B5\uACFC"
   - checker: {fileID: 236449399}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.05
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 1
     timeLimit: 180
+    timer: 0
     description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
       \uD1B5\uACFC"
   currentStepIndex: 0
+  isInitialPhase: 1
+  track: {fileID: 1078492077}
+  nextPhaseManager: {fileID: 397195371}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 397195371}
   gameOverPanel: {fileID: 1776811850}
   gameOverDelay: 3
   timerText: {fileID: 2120996443}
@@ -12587,13 +12598,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  track: {fileID: 0}
-  isInitialPhase: 0
   steps: []
   currentStepIndex: 2
+  isInitialPhase: 0
+  track: {fileID: 0}
+  nextPhaseManager: {fileID: 1375784114}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 1375784114}
   gameOverPanel: {fileID: 1776811850}
   gameOverDelay: 3
   timerText: {fileID: 2120996443}
@@ -16719,13 +16730,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  track: {fileID: 0}
-  isInitialPhase: 0
   steps: []
   currentStepIndex: 3
+  isInitialPhase: 0
+  track: {fileID: 0}
+  nextPhaseManager: {fileID: 0}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 0}
   gameOverPanel: {fileID: 1776811850}
   gameOverDelay: 3
   timerText: {fileID: 2120996443}
@@ -17820,8 +17831,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 10
   requiredCount: 1
+  hpDecreasePerObject: 10
+  colorChangeCooldown: 3
   stepTypeForThisChecker: 0
   playerCount: 1
 --- !u!1001 &1509435910
