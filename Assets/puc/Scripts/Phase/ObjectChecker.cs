@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum ObjectMode
@@ -38,14 +39,16 @@ public class ObjectChecker : MonoBehaviour
         Color.cyan
     };
 
+    // Awake 수정: 비활성화된 자식까지 모두 포함해 자동 등록
     void Awake()
     {
-        // Inspector에 objects가 비어 있으면 자동 등록
         if (objects.Count == 0)
         {
-            foreach (Transform child in transform)
+            // 전체 자식(비활성 포함) 가져오기
+            var children = GetComponentsInChildren<Transform>(true);
+            foreach (var child in children)
             {
-                if (!child.gameObject.activeSelf) continue;
+                if (child == transform) continue; // 자기 자신은 생략
 
                 var info = new ObjectInfo { obj = child.gameObject };
                 switch (stepTypeForThisChecker)
@@ -75,6 +78,7 @@ public class ObjectChecker : MonoBehaviour
             o.destroyed = false;
             o.passedPlayers.Clear();
             o.passCounts.Clear();
+            o.obj.SetActive(false);
         }
     }
 
@@ -129,11 +133,10 @@ public class ObjectChecker : MonoBehaviour
         foreach (var o in objects)
             if (o.mode == ObjectMode.CountN)
             {
-                int validPlayer = 0;
+                int valid = 0;
                 foreach (var cnt in o.passCounts.Values)
-                    if (cnt >= n) validPlayer++;
-                if (validPlayer > 0)
-                    count++;
+                    if (cnt >= n) valid++;
+                if (valid > 0) count++;
             }
         return count >= requiredCount;
     }
@@ -152,7 +155,6 @@ public class ObjectChecker : MonoBehaviour
             case ObjectMode.PermanentDestroy:
                 if (!info.destroyed)
                 {
-                    Debug.Log($"{obj.name} will be deactivated (PermanentDestroy)");
                     info.destroyed = true;
                     obj.SetActive(false);
                     if (boss != null && hpDecreasePerObject > 0)
