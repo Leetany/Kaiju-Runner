@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -17,12 +17,9 @@ public class PhaseManager : MonoBehaviour
         [Range(0f, 1f)]
         public float hpPercent = 0.1f;
 
-        [HideInInspector]
-        public float totalHpDecrease;
-        [HideInInspector]
-        public float timer;
-        [HideInInspector]
-        public bool hpApplied;
+        [HideInInspector] public float totalHpDecrease = 0;
+        [HideInInspector] public float timer;
+        public bool hpApplied = false;
 
         public bool useTimeLimit = false;
         public float timeLimit = 30f;
@@ -31,7 +28,6 @@ public class PhaseManager : MonoBehaviour
         public string description;
     }
 
-    [Header("Step 설정")]
     public List<Step> steps;
     public int currentStepIndex = 0;
     public Boss boss;
@@ -51,22 +47,18 @@ public class PhaseManager : MonoBehaviour
     [Header("페이즈 정보 UI")]
     public TextMeshProUGUI phaseInfoText;
 
-    [Header("커스텀 페이즈 제목 (옵션)")]
-    public string overridePhaseTitle;
-
     private bool isGameOver = false;
 
     void Start()
     {
         float totalHp = boss != null ? boss.maxHp : 1000f;
 
-        // 모든 Step 초기화
         for (int i = 0; i < steps.Count; i++)
         {
             var step = steps[i];
             if (step.checker != null)
             {
-                // 트리거 오브젝트 비활성화
+                // STEP 초기화
                 step.checker.gameObject.SetActive(false);
                 foreach (Transform child in step.checker.transform)
                     child.gameObject.SetActive(false);
@@ -75,10 +67,12 @@ public class PhaseManager : MonoBehaviour
                 float stepTotalDamage = totalHp * step.hpPercent;
                 step.totalHpDecrease = stepTotalDamage;
 
-                // PermanentDestroy 모드일 때 개별 데미지 설정
-                if (step.stepType == StepType.PermanentDestroy && objectCount > 0)
-                    step.checker.hpDecreasePerObject = stepTotalDamage / objectCount;
+                Debug.Log($"[PhaseManager] Initialized Step {i + 1}: totalHpDecrease={stepTotalDamage}, objectCount={objectCount}, stepType={step.stepType}");
 
+                if (step.stepType == StepType.PermanentDestroy && objectCount > 0)
+                {
+                    step.checker.hpDecreasePerObject = stepTotalDamage / objectCount;
+                }
                 step.checker.boss = boss;
             }
 
@@ -94,12 +88,19 @@ public class PhaseManager : MonoBehaviour
     {
         if (isGameOver) return;
 
-        // 모든 Step 완료 시 다음 Phase로 전환
-        if (currentStepIndex >= steps.Count)
+        // 1) 모든 스텝 완료 시에도 UI를 갱신하도록 먼저 처리
+        if (steps.Count > 0 && currentStepIndex >= steps.Count)
         {
+            UpdateObjectProgressUI();
+            UpdatePhaseInfoUI();
+
+            // nextPhaseManager가 설정된 경우에만 전환하고 이 객체 비활성화
             if (nextPhaseManager != null)
+            {
                 nextPhaseManager.gameObject.SetActive(true);
-            gameObject.SetActive(false);
+                gameObject.SetActive(false);
+            }
+            // nextPhaseManager가 없으면 이 PhaseManager는 계속 활성 상태로 남아 UI를 표시
             return;
         }
 
@@ -112,12 +113,11 @@ public class PhaseManager : MonoBehaviour
             if (timerText != null)
             {
                 float t = Mathf.Max(0f, current.timer);
-                int minutes = (int)(t / 60f);
-                int seconds = (int)(t % 60f);
-                int milliseconds = (int)((t * 1000f) % 1000f);
+                int minutes = (int)(t / 60);
+                int seconds = (int)(t % 60);
+                int milliseconds = (int)((t * 1000) % 1000);
                 timerText.text = $"{minutes:00}:{seconds:00}:{milliseconds:000}";
             }
-
             if (current.timer <= 0f)
             {
                 TriggerGameOver();
@@ -129,11 +129,11 @@ public class PhaseManager : MonoBehaviour
             timerText.text = "<size=300%>∞</size>";
         }
 
-        // UI 갱신
+        // 진행도 및 페이즈 정보 UI 갱신
         UpdateObjectProgressUI();
         UpdatePhaseInfoUI();
 
-        // Step 완료 체크
+        // 완료 조건 체크
         bool stepComplete = false;
         switch (current.stepType)
         {
@@ -156,29 +156,22 @@ public class PhaseManager : MonoBehaviour
 
         if (stepComplete)
         {
-            // 한 번만 보스에 데미지 적용
+            // HP 차감은 한 번만
             if (!current.hpApplied)
             {
                 current.hpApplied = true;
-                if (current.stepType != StepType.PermanentDestroy)
+                if (boss == null) Debug.LogError("[DBG] boss NULL!");
+                else if (current.stepType == StepType.PermanentDestroy) Debug.Log("[DBG] 스킵: PermanentDestroy");
+                else if (current.totalHpDecrease <= 0) Debug.LogError($"[DBG] 잘못된 totalHpDecrease: {current.totalHpDecrease}");
+                else
                 {
-                    if (boss == null)
-                    {
-                        Debug.LogError("[PhaseManager] Boss 참조가 없습니다!");
-                    }
-                    else if (current.totalHpDecrease <= 0f)
-                    {
-                        Debug.LogError($"[PhaseManager] totalHpDecrease가 비정상값입니다: {current.totalHpDecrease}");
-                    }
-                    else
-                    {
-                        boss.TakeDamage(current.totalHpDecrease);
-                    }
+                    boss.TakeDamage(current.totalHpDecrease);
+                    Debug.Log($"[DBG] TookDamage: {current.totalHpDecrease}");
                 }
             }
 
-            // 다음 Step으로 이동
-            current.checker.gameObject.SetActive(false);
+            Debug.Log($"Step {currentStepIndex + 1} 완료!");
+            current.checker?.gameObject.SetActive(false);
             currentStepIndex++;
             ActivateCurrentStep();
         }
@@ -188,6 +181,8 @@ public class PhaseManager : MonoBehaviour
     {
         if (currentStepIndex < steps.Count)
         {
+            steps[currentStepIndex].hpApplied = false;
+
             var step = steps[currentStepIndex];
             if (step.checker != null)
             {
@@ -199,7 +194,6 @@ public class PhaseManager : MonoBehaviour
 
                 step.checker.playerCount = playerCount;
             }
-
             if (step.useTimeLimit)
                 step.timer = step.timeLimit;
         }
@@ -207,19 +201,19 @@ public class PhaseManager : MonoBehaviour
 
     void TriggerGameOver()
     {
+        Debug.Log("시간 초과로 게임 오버!");
         isGameOver = true;
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(true);
+        gameOverPanel?.SetActive(true);
         Time.timeScale = 0f;
         StartCoroutine(WaitAndQuitGame());
     }
 
     IEnumerator WaitAndQuitGame()
     {
-        float wait = 0f;
-        while (wait < gameOverDelay)
+        float timer = 0f;
+        while (timer < gameOverDelay)
         {
-            wait += Time.unscaledDeltaTime;
+            timer += Time.unscaledDeltaTime;
             yield return null;
         }
 #if UNITY_EDITOR
@@ -231,15 +225,13 @@ public class PhaseManager : MonoBehaviour
 
     void UpdateObjectProgressUI()
     {
-        if (objectProgressText == null || currentStepIndex >= steps.Count)
-            return;
+        if (objectProgressText == null || currentStepIndex >= steps.Count) return;
 
         var current = steps[currentStepIndex];
         if (current.checker == null) return;
 
         int total = current.checker.objects.Count;
         int completed = 0;
-
         foreach (var obj in current.checker.objects)
         {
             switch (obj.mode)
@@ -257,24 +249,16 @@ public class PhaseManager : MonoBehaviour
                     break;
             }
         }
-
         objectProgressText.text = $"{completed} / {total}";
     }
 
     void UpdatePhaseInfoUI()
     {
-        if (phaseInfoText == null)
-            return;
+        if (phaseInfoText == null) return;
 
-        var sb = new StringBuilder();
+        // 헤더: 현재 페이즈 표시
+        string text = $"<size=32><b>PHASE {currentStepIndex + 1}</b></size>\n\n";
 
-        // 커스텀 제목 사용 여부
-        string title = !string.IsNullOrWhiteSpace(overridePhaseTitle)
-            ? overridePhaseTitle
-            : $"PHASE {currentStepIndex + 1}";
-        sb.AppendLine($"<size=32><b>{title}</b></size>\n");
-
-        // Step 리스트
         for (int i = 0; i < steps.Count; i++)
         {
             string desc = steps[i].description;
@@ -283,18 +267,21 @@ public class PhaseManager : MonoBehaviour
 
             if (i < currentStepIndex)
             {
-                sb.AppendLine($"<size=22><color=grey><s>{i + 1}. {desc} - 완료됨</s></color></size>");
+                // 완료된 스텝: 회색 + 취소선
+                text += $"<size=22><color=grey><s>{i + 1}. {desc}</s> - 완료됨</color></size>\n";
             }
             else if (i == currentStepIndex)
             {
-                sb.AppendLine($"<size=22><color=yellow>{i + 1}. {desc} - 진행중</color></size>");
+                // 진행중인 스텝: 노란색
+                text += $"<size=22>{i + 1}. {desc}<color=yellow> - 진행중</color></size>\n";
             }
             else
             {
-                sb.AppendLine($"<size=22>{i + 1}. {desc} - 대기중</size>");
+                // 대기중인 스텝
+                text += $"<size=22>{i + 1}. {desc} - 대기중</size>\n";
             }
         }
 
-        phaseInfoText.text = sb.ToString();
+        phaseInfoText.text = text;
     }
 }

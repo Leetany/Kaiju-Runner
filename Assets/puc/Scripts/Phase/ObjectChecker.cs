@@ -28,27 +28,26 @@ public class ObjectChecker : MonoBehaviour
     [Header("자동 등록 시 사용할 StepType 지정")]
     public StepType stepTypeForThisChecker = StepType.PermanentDestroy;
 
-    public int playerCount = 4; // 전체 참가 인원 수를 받기 위해 외부에서 설정 필요
+    public int playerCount = 4; // PhaseManager에서 설정
 
     private Color[] stepColors = new Color[]
     {
         Color.red,
-        new Color(1f, 0.5f, 0f), // 주황
+        new Color(1f, 0.5f, 0f),
         Color.green,
         Color.cyan
     };
 
     void Awake()
     {
+        // Inspector에 objects가 비어 있으면 자동 등록
         if (objects.Count == 0)
         {
             foreach (Transform child in transform)
             {
                 if (!child.gameObject.activeSelf) continue;
 
-                ObjectInfo info = new ObjectInfo();
-                info.obj = child.gameObject;
-
+                var info = new ObjectInfo { obj = child.gameObject };
                 switch (stepTypeForThisChecker)
                 {
                     case StepType.PermanentDestroy:
@@ -64,7 +63,6 @@ public class ObjectChecker : MonoBehaviour
                         info.mode = ObjectMode.PermanentDestroy;
                         break;
                 }
-
                 objects.Add(info);
             }
         }
@@ -84,10 +82,7 @@ public class ObjectChecker : MonoBehaviour
     {
         if (objects.Count == 0) return false;
         foreach (var o in objects)
-        {
-            if (!o.destroyed)
-                return false;
-        }
+            if (!o.destroyed) return false;
         return true;
     }
 
@@ -98,68 +93,48 @@ public class ObjectChecker : MonoBehaviour
             Debug.LogWarning($"{name} has no objects assigned to check (IsAllPlayersOnce).");
             return false;
         }
-
         foreach (var o in objects)
-        {
-            if (o.mode == ObjectMode.CountOnce)
-            {
-                if (o.passedPlayers.Count < playerCount)
-                    return false;
-            }
-        }
+            if (o.mode == ObjectMode.CountOnce && o.passedPlayers.Count < playerCount)
+                return false;
         return true;
     }
 
     public bool IsAllPlayersN(int playerCount, int n)
     {
         if (objects.Count == 0) return false;
-
         foreach (var o in objects)
-        {
             if (o.mode == ObjectMode.CountN)
             {
-                if (o.passCounts.Count < playerCount)
-                    return false;
+                if (o.passCounts.Count < playerCount) return false;
                 foreach (var cnt in o.passCounts.Values)
-                {
                     if (cnt < n) return false;
-                }
             }
-        }
         return true;
     }
 
     public bool IsAnyPlayersOnce(int requiredCount)
     {
         if (objects.Count == 0) return false;
-
         int count = 0;
         foreach (var o in objects)
-        {
             if (o.mode == ObjectMode.CountOnce && o.passedPlayers.Count > 0)
                 count++;
-        }
         return count >= requiredCount;
     }
 
     public bool IsAnyPlayersN(int requiredCount, int n)
     {
         if (objects.Count == 0) return false;
-
         int count = 0;
         foreach (var o in objects)
-        {
             if (o.mode == ObjectMode.CountN)
             {
                 int validPlayer = 0;
                 foreach (var cnt in o.passCounts.Values)
-                {
                     if (cnt >= n) validPlayer++;
-                }
                 if (validPlayer > 0)
                     count++;
             }
-        }
         return count >= requiredCount;
     }
 
@@ -184,10 +159,15 @@ public class ObjectChecker : MonoBehaviour
                         boss.TakeDamage(hpDecreasePerObject);
                 }
                 break;
+
             case ObjectMode.CountOnce:
-                info.passedPlayers.Add(playerId);
-                ApplyProgressColor(info);
+                if (!info.passedPlayers.Contains(playerId))
+                {
+                    info.passedPlayers.Add(playerId);
+                    ApplyProgressColor(info);
+                }
                 break;
+
             case ObjectMode.CountN:
                 if (!info.passCounts.ContainsKey(playerId))
                     info.passCounts[playerId] = 0;
@@ -203,11 +183,8 @@ public class ObjectChecker : MonoBehaviour
         {
             int current = info.passedPlayers.Count;
             int total = Mathf.Max(1, playerCount);
-
-            float percent = current / (float)total;
-            int index = Mathf.FloorToInt(percent * stepColors.Length);
-            index = Mathf.Clamp(index, 0, stepColors.Length - 1);
-
+            float percent = (float)current / total;
+            int index = Mathf.Clamp(Mathf.FloorToInt(percent * stepColors.Length), 0, stepColors.Length - 1);
             renderer.material.color = stepColors[index];
         }
     }
