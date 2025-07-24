@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-//─────────────────────────────────────────────────────────────────
 public enum DebuffType
 {
     None,
@@ -18,11 +17,8 @@ public enum DebuffType
     UiGlitch
 }
 
-//─────────────────────────────────────────────────────────────────
-
 public enum BuffType { None, SpeedBoost, ExtraDamage }
 
-//─────────────────────────────────────────────────────────────────
 [RequireComponent(typeof(CharacterController))]
 public class LHK_PlayerController : MonoBehaviour
 {
@@ -38,15 +34,13 @@ public class LHK_PlayerController : MonoBehaviour
     [SerializeField] GameObject slowFX;
     [SerializeField] GameObject scrambleFX;
     [SerializeField] GameObject flipVertigoFX;
-    /*[SerializeField] GameObject positionSwapFX;*/
     [SerializeField] GameObject uiGlitchFX;
-    [SerializeField] GameObject tunnelVisionPrefab; // Canvas prefab with TunnelVisionEffect
+    [SerializeField] GameObject tunnelVisionPrefab;
 
     [Header("Track Interaction")]
     [SerializeField] LHK_TrackHealth track;
     [SerializeField] float distancePerHit = 5f;
 
-    // ───── Buff variables ─────
     float speedMultiplier = 1f;
     float speedBuffTimer = 0f;
     int trackDamageMultiplier = 1;
@@ -56,8 +50,8 @@ public class LHK_PlayerController : MonoBehaviour
     Vector3 velocity;
     Vector3 lastPos;
     float runDist;
-
     float baseSpeed;
+
     DebuffType curDebuff = DebuffType.None;
     Coroutine debuffCo;
     GameObject fxInstance;
@@ -66,9 +60,12 @@ public class LHK_PlayerController : MonoBehaviour
     Quaternion camOriginalRot;
     GameObject tunnelInstance;
 
+    Animator anim;
+
     void Awake()
     {
         cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>(); // <- Animator 컴포넌트 찾기
         baseSpeed = moveSpeed;
         cameraTf ??= Camera.main.transform;
         camOriginalRot = cameraTf.localRotation;
@@ -77,12 +74,11 @@ public class LHK_PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Buff 타이머
         if (speedBuffTimer > 0 && (speedBuffTimer -= Time.deltaTime) <= 0) speedMultiplier = 1f;
         if (damageBuffTimer > 0 && (damageBuffTimer -= Time.deltaTime) <= 0) trackDamageMultiplier = 1;
 
-
         if (curDebuff == DebuffType.Stun) return;
+
         Move();
         DealTrackDamage();
         ApplyGravity();
@@ -92,11 +88,25 @@ public class LHK_PlayerController : MonoBehaviour
     void Move()
     {
         bool grounded = cc.isGrounded;
-        if (grounded && velocity.y < 0) velocity.y = -2f;
+        if (grounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+            anim.SetBool("IsJumping", false); // 착지 시점
+        }
 
         float h = GetAxis("Horizontal");
         float v = GetAxis("Vertical");
         Vector3 input = new Vector3(h, 0, v);
+
+        // 애니메이터 속도 파라미터 적용
+        float inputSpeed = input.magnitude * moveSpeed * speedMultiplier;
+        anim.SetFloat("Speed", inputSpeed);
+
+        bool isRunningFast = Input.GetKey(KeyCode.LeftShift);
+
+        anim.SetBool("IsRunningFast", isRunningFast);
+
+        Vector3 moveDir = Vector3.zero;
 
         if (input.sqrMagnitude > 0.01f)
         {
@@ -105,11 +115,23 @@ public class LHK_PlayerController : MonoBehaviour
             Vector3 dir = (camF * input.z + camR * input.x).normalized;
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
-            cc.Move(dir * moveSpeed * speedMultiplier * Time.deltaTime);
+            moveDir = dir * moveSpeed * speedMultiplier;
         }
 
+        // 중력 적용
+        velocity.y += gravity * Time.deltaTime;
+
+        // ✔️ 여기서 최종 이동 벡터를 만들어서 Move
+        Vector3 finalMove = moveDir * Time.deltaTime;
+        finalMove.y = velocity.y * Time.deltaTime;
+        cc.Move(finalMove);
+
+
         if (grounded && Input.GetButtonDown("Jump"))
+        {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+            anim.SetBool("IsJumping", true); // 점프 시점
+        }
     }
 
     float GetAxis(string axis)
@@ -128,6 +150,7 @@ public class LHK_PlayerController : MonoBehaviour
         }
         return val;
     }
+
     KeyCode MapKey(KeyCode k) => scrambleMap != null && scrambleMap.ContainsKey(k) ? scrambleMap[k] : k;
     #endregion
 
@@ -140,10 +163,11 @@ public class LHK_PlayerController : MonoBehaviour
         if (runDist >= distancePerHit)
         {
             runDist = 0;
-            int dmg = trackDamageMultiplier;          // 1 또는 2
+            int dmg = trackDamageMultiplier;
             track.TakeDamage(dmg);
         }
     }
+
     void ApplyGravity()
     {
         velocity.y += gravity * Time.deltaTime;
@@ -154,7 +178,7 @@ public class LHK_PlayerController : MonoBehaviour
     #region Debuff System
     public void ApplyDebuff(DebuffType type, float duration)
     {
-        if (debuffCo != null && type != DebuffType.Flashbang) return; // 플래시/터널 등 일부만 중첩 허용
+        if (debuffCo != null && type != DebuffType.Flashbang) return;
         curDebuff = type;
         debuffCo = StartCoroutine(DebuffRoutine(type, duration));
     }
@@ -195,7 +219,6 @@ public class LHK_PlayerController : MonoBehaviour
             DebuffType.Stun => stunFX,
             DebuffType.ScrambleInput => scrambleFX,
             DebuffType.FlipVertigo => flipVertigoFX,
-            /*DebuffType.PositionSwap => positionSwapFX,*/
             DebuffType.UiGlitch => uiGlitchFX,
             _ => null
         };
