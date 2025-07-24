@@ -4503,7 +4503,7 @@ MonoBehaviour:
   objects: []
   boss: {fileID: 1224078530}
   hpDecreasePerObject: 10
-  requiredCount: 2
+  requiredCount: 4
   stepTypeForThisChecker: 4
   playerCount: 1
 --- !u!1 &541526306 stripped
@@ -9085,7 +9085,7 @@ MonoBehaviour:
     description: "\uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8 \uD1B5\uACFC"
   - checker: {fileID: 536235984}
     stepType: 4
-    requiredCount: 1
+    requiredCount: 4
     hpPercent: 0.1
     totalHpDecrease: 0
     timer: 0
