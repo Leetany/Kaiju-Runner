@@ -208,14 +208,14 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            // if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-            // {
-            //     //Don't multiply mouse input by Time.deltaTime;
-            //     float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            //if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            //{
+            //    //Don't multiply mouse input by Time.deltaTime;
+            //    float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-            //     _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-            //     _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-            // }
+            //    _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
+            //    _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+            //}
 
             // clamp our rotations so our values are limited 360 degrees
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
