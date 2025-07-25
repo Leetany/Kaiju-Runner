@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 namespace WriteAngle.Ping
@@ -37,6 +37,35 @@ namespace WriteAngle.Ping
         // OnEnable: Automatic registration is handled by PingUIManager during its Start phase.
         // 스크립트 실행 순서에 따른 문제를 피하기 위해서. 수동 조작이 가능 ActivatePing()을 통해서
         // OnEnable 후에 불러질 수 있음.
+
+        private PingMarkerUI matchedUI;
+
+        private void Start()
+        {
+            Invoke("GetData", 0.1f);
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.P))
+            {
+                matchedUI.StartCoroutine("DissolveAlpha");
+            }
+        }
+
+        private void GetData()
+        {
+            if (PingUIManager.Instance.activeMarkers.TryGetValue(this, out PingMarkerUI markerInstance))
+            {
+                // 있다면 matchedUI 데이터 저장 어캐함?
+                matchedUI = markerInstance;
+            }
+            else
+            {
+                // 없다면 오류 처리
+                Debug.LogError("매치 되는 게 없습니다.");
+            }
+        }
 
         private void OnEnable()
         {
