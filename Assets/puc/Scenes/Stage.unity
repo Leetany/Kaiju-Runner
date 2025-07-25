@@ -10059,6 +10059,7 @@ MonoBehaviour:
   boss: {fileID: 1601904484}
   isCutscene: 0
   playerId: 0
+  isGameOver: 0
 --- !u!4 &917131058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}

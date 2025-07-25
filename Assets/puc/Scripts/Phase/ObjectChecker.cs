@@ -55,13 +55,16 @@ public class ObjectChecker : MonoBehaviour
 
     // 색상 순서: 0=노랑,1=초록,2=파랑,3=핑크,4=빨강
     private Color[] stepColors = new Color[]
-{
-    Color.yellow,                   // 기본색
-    Color.green,
-    Color.cyan,
-    new Color(1f, 0.4f, 0.7f),     // 핑크
-    Color.red
-};
+    {
+        Color.yellow,                   // 기본색
+        Color.green,
+        Color.cyan,
+        new Color(1f, 0.4f, 0.7f),     // 핑크
+        Color.red
+    };
+
+    // ✅ 오브젝트 이름 → ObjectInfo 매핑용 Dictionary
+    private Dictionary<string, ObjectInfo> objectMap = new Dictionary<string, ObjectInfo>();
 
     void Awake()
     {
@@ -77,6 +80,14 @@ public class ObjectChecker : MonoBehaviour
                 objects.Add(info);
             }
         }
+
+        // ✅ Dictionary 초기화
+        objectMap.Clear();
+        foreach (var o in objects)
+        {
+            if (o.obj != null && !objectMap.ContainsKey(o.obj.name))
+                objectMap[o.obj.name] = o;
+        }
     }
 
     public void ResetProgress()
@@ -87,7 +98,7 @@ public class ObjectChecker : MonoBehaviour
             o.passedPlayers.Clear();
             o.passCounts.Clear();
             o.lastColorChangeTime = -Mathf.Infinity;
-            // 초기 색(알파=1) 복구
+
             if (o.obj.TryGetComponent<Renderer>(out var r))
             {
                 var c = r.material.color;
@@ -95,6 +106,7 @@ public class ObjectChecker : MonoBehaviour
                 r.material.color = c;
                 o.currentColor = c;
             }
+
             o.obj.SetActive(false);
         }
     }
@@ -109,13 +121,14 @@ public class ObjectChecker : MonoBehaviour
         foreach (var info in objects.Where(i => i.mode == ObjectMode.CountN))
             foreach (var kv in info.passCounts)
                 totals[kv.Key] = totals.GetValueOrDefault(kv.Key) + kv.Value;
+
         return totals.Count(kv => kv.Value >= reqPass) >= reqPlayers;
     }
 
     public void OnObjectTrigger(GameObject obj, int playerId)
     {
-        var info = objects.Find(x => x.obj == obj);
-        if (info == null) return;
+        // ✅ 이름 기반으로 Dictionary에서 검색
+        if (!objectMap.TryGetValue(obj.name, out var info)) return;
 
         switch (info.mode)
         {
@@ -127,7 +140,6 @@ public class ObjectChecker : MonoBehaviour
 
                 if (total < requiredCount)
                 {
-                    // 쿨다운 체크 후 색 변경 & 반투명 처리
                     if (Time.time - info.lastColorChangeTime >= colorChangeCooldown)
                     {
                         ApplyProgressColor(info);
@@ -137,7 +149,6 @@ public class ObjectChecker : MonoBehaviour
                 }
                 else if (!info.destroyed)
                 {
-                    // 요구 횟수 도달 시 파괴
                     info.destroyed = true;
                     obj.SetActive(false);
                     if (boss != null && hpDecreasePerObject > 0)
@@ -170,7 +181,7 @@ public class ObjectChecker : MonoBehaviour
             int idx = count % stepColors.Length;
 
             Color c = stepColors[idx];
-            c.a = 1f; // 항상 불투명
+            c.a = 1f;
             r.material.color = c;
             info.currentColor = c;
         }
@@ -180,15 +191,12 @@ public class ObjectChecker : MonoBehaviour
     {
         if (!info.obj.TryGetComponent<Renderer>(out var r)) yield break;
 
-        // 1) 반투명 처리
         var tcol = info.currentColor;
         tcol.a = transparencyAlpha;
         r.material.color = tcol;
 
-        // 2) 쿨다운 대기
         yield return new WaitForSeconds(duration);
 
-        // 3) 쿨다운 종료 후 원색(불투명) 복구
         r.material.color = info.currentColor;
     }
 }

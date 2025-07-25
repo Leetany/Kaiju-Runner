@@ -77,13 +77,11 @@ public class PhaseManager : MonoBehaviour
         {
             if (step.checker != null)
             {
-                // 초기 비활성화
-                step.checker.gameObject.SetActive(false);
+                SetObjectActive(step.checker.gameObject, false);
                 foreach (Transform child in step.checker.GetComponentsInChildren<Transform>(true))
                     if (child != step.checker.transform)
-                        child.gameObject.SetActive(false);
+                        SetObjectActive(child.gameObject, false);
 
-                // HP 차감량 설정
                 int cnt = step.checker.objects.Count;
                 step.totalHpDecrease = totalHp * step.hpPercent;
                 if (step.stepType == StepType.PermanentDestroy && cnt > 0)
@@ -118,7 +116,6 @@ public class PhaseManager : MonoBehaviour
 
         var cur = steps[currentStepIndex];
 
-        // 타이머
         if (cur.useTimeLimit)
         {
             cur.timer -= Time.deltaTime;
@@ -130,16 +127,7 @@ public class PhaseManager : MonoBehaviour
         UpdateObjectProgressUI();
         UpdatePhaseInfoUI();
 
-        bool complete = false;
-        switch (cur.stepType)
-        {
-            case StepType.PermanentDestroy:
-                complete = cur.checker.IsAllCleared(playerCount);
-                break;
-            case StepType.AnyN:
-                complete = cur.checker.IsAnyPlayersN(cur.requiredPlayers, cur.requiredPassCount);
-                break;
-        }
+        bool complete = EvaluateStepCompletion(cur);
 
         if (complete)
         {
@@ -149,7 +137,7 @@ public class PhaseManager : MonoBehaviour
                 if (cur.stepType == StepType.AnyN)
                     boss?.TakeDamage(cur.totalHpDecrease);
             }
-            cur.checker.gameObject.SetActive(false);
+            SetObjectActive(cur.checker.gameObject, false);
             currentStepIndex++;
             ActivateCurrentStep();
         }
@@ -157,7 +145,6 @@ public class PhaseManager : MonoBehaviour
 
     void ActivateCurrentStep()
     {
-        // 이전 AutoToggle 코루틴 정리
         if (autoToggleCoroutine != null)
         {
             StopCoroutine(autoToggleCoroutine);
@@ -171,15 +158,14 @@ public class PhaseManager : MonoBehaviour
         if (step.checker != null)
         {
             step.checker.ResetProgress();
-            step.checker.gameObject.SetActive(true);
+            SetObjectActive(step.checker.gameObject, true);
             foreach (Transform child in step.checker.GetComponentsInChildren<Transform>(true))
                 if (child != step.checker.transform)
-                    child.gameObject.SetActive(true);
+                    SetObjectActive(child.gameObject, true);
             step.checker.playerCount = playerCount;
         }
         if (step.useTimeLimit) step.timer = step.timeLimit;
 
-        // Auto Toggle: 사용 여부 체크 :contentReference[oaicite:2]{index=2}
         if (step.useAutoToggle && step.checker != null)
             autoToggleCoroutine = StartCoroutine(AutoToggleObjects(step));
     }
@@ -189,11 +175,9 @@ public class PhaseManager : MonoBehaviour
         var list = step.checker.objects;
         while (currentStepIndex < steps.Count && steps[currentStepIndex] == step)
         {
-            // 1) 정상 표시
             yield return new WaitForSeconds(
                 Mathf.Max(0f, step.showDuration - step.blinkDuration));
 
-            // 2) 깜빡임
             var blinkCoros = new List<Coroutine>();
             foreach (var info in list)
                 if (!info.destroyed)
@@ -203,37 +187,34 @@ public class PhaseManager : MonoBehaviour
                         )
                     );
             yield return new WaitForSeconds(step.blinkDuration);
-            // 깜빡임 후 반드시 보이도록
-            foreach (var info in list)
-                if (!info.destroyed && info.obj.TryGetComponent<Renderer>(out var r))
-                    r.enabled = true;
 
-            // 3) 숨김
             foreach (var info in list)
                 if (!info.destroyed)
-                    info.obj.SetActive(false);
+                    SetRendererEnabled(info.obj, true);
+
+            foreach (var info in list)
+                if (!info.destroyed)
+                    SetObjectActive(info.obj, false);
             yield return new WaitForSeconds(step.hideDuration);
 
-            // 4) 다시 표시
             foreach (var info in list)
                 if (!info.destroyed)
-                    info.obj.SetActive(true);
+                    SetObjectActive(info.obj, true);
         }
     }
 
     private IEnumerator BlinkObject(GameObject go, float duration, float interval)
     {
-        if (!go.TryGetComponent<Renderer>(out var r)) yield break;
         float elapsed = 0f;
         bool on = true;
         while (elapsed < duration)
         {
-            r.enabled = on;
+            SetRendererEnabled(go, on);
             on = !on;
             yield return new WaitForSeconds(interval);
             elapsed += interval;
         }
-        r.enabled = true;
+        SetRendererEnabled(go, true);
     }
 
     private void UpdateTimerUI(float t)
@@ -247,8 +228,14 @@ public class PhaseManager : MonoBehaviour
     private void TriggerGameOver()
     {
         isGameOver = true;
-        gameOverPanel?.SetActive(true);
-        Time.timeScale = 0f;
+        SetObjectActive(gameOverPanel, true);
+
+        // 플레이어 컨트롤 비활성화
+        var players = Object.FindObjectsByType<puc_PlayerController>(FindObjectsSortMode.None);
+        foreach (var player in players)
+            player.isGameOver = true;
+
+        // 더 이상 Time.timeScale = 0 사용하지 않음
         StartCoroutine(WaitAndQuitGame());
     }
 
@@ -301,5 +288,40 @@ public class PhaseManager : MonoBehaviour
                 txt += $"<size=22>{i + 1}. {d} - 대기중</size>\n";
         }
         phaseInfoText.text = txt;
+    }
+
+    private bool EvaluateStepCompletion(Step step)
+    {
+        if (step == null || step.checker == null)
+            return false;
+
+        switch (step.stepType)
+        {
+            case StepType.PermanentDestroy:
+                return step.checker.IsAllCleared(playerCount);
+            case StepType.AnyN:
+                return step.checker.IsAnyPlayersN(step.requiredPlayers, step.requiredPassCount);
+            default:
+                return false;
+        }
+    }
+
+    // 🔧 상태 변경 유틸
+    private void SetObjectActive(GameObject obj, bool isActive)
+    {
+        if (obj != null)
+            obj.SetActive(isActive);
+    }
+
+    private void SetRendererEnabled(GameObject obj, bool isEnabled)
+    {
+        if (obj != null && obj.TryGetComponent<Renderer>(out var r))
+            r.enabled = isEnabled;
+    }
+
+    private void SetObjectColor(GameObject obj, Color color)
+    {
+        if (obj != null && obj.TryGetComponent<Renderer>(out var r))
+            r.material.color = color;
     }
 }
