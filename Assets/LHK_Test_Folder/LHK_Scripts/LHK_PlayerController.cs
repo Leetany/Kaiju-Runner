@@ -65,7 +65,7 @@ public class LHK_PlayerController : MonoBehaviour
     void Awake()
     {
         cc = GetComponent<CharacterController>();
-        anim = GetComponentInChildren<Animator>(); // <- Animator 컴포넌트 찾기
+        anim = GetComponentInChildren<Animator>(); 
         baseSpeed = moveSpeed;
         cameraTf ??= Camera.main.transform;
         camOriginalRot = cameraTf.localRotation;
@@ -91,7 +91,7 @@ public class LHK_PlayerController : MonoBehaviour
         if (grounded && velocity.y < 0)
         {
             velocity.y = -2f;
-            anim.SetBool("IsJumping", false); // 착지 시점
+            anim.SetBool("IsJumping", false); 
         }
 
         float h = GetAxis("Horizontal");
@@ -121,7 +121,7 @@ public class LHK_PlayerController : MonoBehaviour
         // 중력 적용
         velocity.y += gravity * Time.deltaTime;
 
-        // ✔️ 여기서 최종 이동 벡터를 만들어서 Move
+        
         Vector3 finalMove = moveDir * Time.deltaTime;
         finalMove.y = velocity.y * Time.deltaTime;
         cc.Move(finalMove);
