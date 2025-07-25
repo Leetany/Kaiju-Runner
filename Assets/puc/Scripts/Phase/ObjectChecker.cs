@@ -53,15 +53,15 @@ public class ObjectChecker : MonoBehaviour
 
     [HideInInspector] public int playerCount = 4;
 
-    // 색상 순서: 0=노랑,1=파랑,2=초록,3=주황,4=빨강
+    // 색상 순서: 0=노랑,1=초록,2=파랑,3=핑크,4=빨강
     private Color[] stepColors = new Color[]
-    {
-        Color.yellow,
-        Color.blue,
-        Color.green,
-        new Color(1f,0.5f,0f),
-        Color.red
-    };
+{
+    Color.yellow,                   // 기본색
+    Color.green,
+    Color.cyan,
+    new Color(1f, 0.4f, 0.7f),     // 핑크
+    Color.red
+};
 
     void Awake()
     {
@@ -168,10 +168,11 @@ public class ObjectChecker : MonoBehaviour
         {
             int count = info.passCounts.Values.Sum();
             int idx = count % stepColors.Length;
-            var c = stepColors[idx];
-            c.a = 1f;                  // 컬러 변경 시 완전 불투명
+
+            Color c = stepColors[idx];
+            c.a = 1f; // 항상 불투명
             r.material.color = c;
-            info.currentColor = c;     // 원색 저장
+            info.currentColor = c;
         }
     }
 
