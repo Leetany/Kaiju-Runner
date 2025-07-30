@@ -51,6 +51,12 @@ public class ObjectChecker : MonoBehaviour
     [Header("자동 등록 시 StepType 지정")]
     public StepType stepTypeForThisChecker = StepType.PermanentDestroy;
 
+    [Header("효과음 설정")]
+    public AudioSource sfxSource;
+
+    [Tooltip("오브젝트 충돌 시 재생할 효과음")]
+    public AudioClip onTriggerSfx;
+
     [HideInInspector] public int playerCount = 4;
 
     // 색상 순서: 0=노랑,1=초록,2=파랑,3=핑크,4=빨강
@@ -127,6 +133,10 @@ public class ObjectChecker : MonoBehaviour
 
     public void OnObjectTrigger(GameObject obj, int playerId)
     {
+        // ✅ 효과음 재생
+        if (sfxSource != null && onTriggerSfx != null)
+            sfxSource.PlayOneShot(onTriggerSfx);
+
         // ✅ 이름 기반으로 Dictionary에서 검색
         if (!objectMap.TryGetValue(obj.name, out var info)) return;
 

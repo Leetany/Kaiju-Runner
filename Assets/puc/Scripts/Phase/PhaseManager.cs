@@ -60,6 +60,9 @@ public class PhaseManager : MonoBehaviour
     [Header("GameOver UI")]
     public GameObject gameOverPanel;
     public float gameOverDelay = 3f;
+    [Header("GameClear UI")]
+    public GameObject gameClearPanel;
+    public float gameClearDelay = 3f;
     [Header("UI")]
     public TextMeshProUGUI timerText, objectProgressText, phaseInfoText;
     [Header("페이즈 제목")]
@@ -111,6 +114,10 @@ public class PhaseManager : MonoBehaviour
                 nextPhaseManager.gameObject.SetActive(true);
                 gameObject.SetActive(false);
             }
+            else if (boss != null && boss.currentHp <= 0 && !isGameOver)
+            {
+                TriggerGameClear();
+            }
             return;
         }
 
@@ -120,7 +127,11 @@ public class PhaseManager : MonoBehaviour
         {
             cur.timer -= Time.deltaTime;
             UpdateTimerUI(cur.timer);
-            if (cur.timer <= 0f) { TriggerGameOver(); return; }
+            if (cur.timer <= 0f)
+            {
+                TriggerGameOver();
+                return;
+            }
         }
         else timerText?.SetText("<size=300%>∞</size>");
 
@@ -168,6 +179,29 @@ public class PhaseManager : MonoBehaviour
 
         if (step.useAutoToggle && step.checker != null)
             autoToggleCoroutine = StartCoroutine(AutoToggleObjects(step));
+    }
+
+    private void TriggerGameClear()
+    {
+        isGameOver = true;
+        SetObjectActive(gameClearPanel, true);
+
+        var players = Object.FindObjectsByType<puc_PlayerController>(FindObjectsSortMode.None);
+        foreach (var player in players)
+            player.isGameOver = true;
+
+        StartCoroutine(WaitAndQuitGameClear());
+    }
+
+    private IEnumerator WaitAndQuitGameClear()
+    {
+        float x = 0f;
+        while (x < gameClearDelay) { x += Time.unscaledDeltaTime; yield return null; }
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
     }
 
     private IEnumerator AutoToggleObjects(Step step)
