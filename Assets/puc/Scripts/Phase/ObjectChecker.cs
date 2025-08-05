@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum ObjectMode
 {
-    PermanentDestroy,
-    CountOnce,
-    CountN
+    PermanentDestroy,  // 지정 횟수만큼 통과하면 파괴
+    CountOnce,         // 한 번만 통과하면 색 변화(예비)
+    CountN             // 누적 통과 횟수만큼 색 변화
 }
 
-[System.Serializable]
+[Serializable]
 public class ObjectInfo
 {
     public GameObject obj;
@@ -16,57 +19,80 @@ public class ObjectInfo
     public bool destroyed = false;
     public HashSet<int> passedPlayers = new HashSet<int>();
     public Dictionary<int, int> passCounts = new Dictionary<int, int>();
+
+    [HideInInspector]
+    public float lastColorChangeTime = -Mathf.Infinity;
+
+    [HideInInspector]
+    public Color currentColor = Color.white;  // 현재(원)색 저장
 }
 
 public class ObjectChecker : MonoBehaviour
 {
+    [Header("검사할 오브젝트 목록")]
     public List<ObjectInfo> objects = new List<ObjectInfo>();
+
+    [Header("보스(HP 차감 대상)")]
     public Boss boss;
-    public float hpDecreasePerObject = 0;
+
+    [Header("PermanentDestroy: 몇 회 통과 시 파괴할지")]
     public int requiredCount = 1;
 
-    [Header("자동 등록 시 사용할 StepType 지정")]
+    [Header("PermanentDestroy: 파괴 시 보스에 줄 HP")]
+    public float hpDecreasePerObject = 0;
+
+    [Header("PermanentDestroy: 색상 변경 쿨다운(초)")]
+    public float colorChangeCooldown = 0.5f;
+
+    [Header("PermanentDestroy: 반투명 알파 (0~1)")]
+    [Range(0f, 1f)]
+    public float transparencyAlpha = 0.5f;
+
+    [Header("자동 등록 시 StepType 지정")]
     public StepType stepTypeForThisChecker = StepType.PermanentDestroy;
 
-    public int playerCount = 4; // 전체 참가 인원 수를 받기 위해 외부에서 설정 필요
+    [Header("효과음 설정")]
+    public AudioSource sfxSource;
 
+    [Tooltip("오브젝트 충돌 시 재생할 효과음")]
+    public AudioClip onTriggerSfx;
+
+    [HideInInspector] public int playerCount = 4;
+
+    // 색상 순서: 0=노랑,1=초록,2=파랑,3=핑크,4=빨강
     private Color[] stepColors = new Color[]
     {
-        Color.red,
-        new Color(1f, 0.5f, 0f), // 주황
+        Color.yellow,                   // 기본색
         Color.green,
-        Color.cyan
+        Color.cyan,
+        new Color(1f, 0.4f, 0.7f),     // 핑크
+        Color.red
     };
+
+    // ✅ 오브젝트 이름 → ObjectInfo 매핑용 Dictionary
+    private Dictionary<string, ObjectInfo> objectMap = new Dictionary<string, ObjectInfo>();
 
     void Awake()
     {
         if (objects.Count == 0)
         {
-            foreach (Transform child in transform)
+            foreach (Transform t in GetComponentsInChildren<Transform>(true))
             {
-                if (!child.gameObject.activeSelf) continue;
-
-                ObjectInfo info = new ObjectInfo();
-                info.obj = child.gameObject;
-
-                switch (stepTypeForThisChecker)
-                {
-                    case StepType.PermanentDestroy:
-                        info.mode = ObjectMode.PermanentDestroy;
-                        break;
-                    case StepType.AllOnce:
-                    case StepType.AllN:
-                    case StepType.AnyOnce:
-                    case StepType.AnyN:
-                        info.mode = ObjectMode.CountOnce;
-                        break;
-                    default:
-                        info.mode = ObjectMode.PermanentDestroy;
-                        break;
-                }
-
+                if (t == transform) continue;
+                var info = new ObjectInfo { obj = t.gameObject };
+                info.mode = (stepTypeForThisChecker == StepType.PermanentDestroy)
+                            ? ObjectMode.PermanentDestroy
+                            : ObjectMode.CountN;
                 objects.Add(info);
             }
+        }
+
+        // ✅ Dictionary 초기화
+        objectMap.Clear();
+        foreach (var o in objects)
+        {
+            if (o.obj != null && !objectMap.ContainsKey(o.obj.name))
+                objectMap[o.obj.name] = o;
         }
     }
 
@@ -77,138 +103,110 @@ public class ObjectChecker : MonoBehaviour
             o.destroyed = false;
             o.passedPlayers.Clear();
             o.passCounts.Clear();
-        }
-    }
+            o.lastColorChangeTime = -Mathf.Infinity;
 
-    public bool IsAllCleared(int playerCount)
-    {
-        if (objects.Count == 0) return false;
-        foreach (var o in objects)
-        {
-            if (!o.destroyed)
-                return false;
-        }
-        return true;
-    }
-
-    public bool IsAllPlayersOnce(int playerCount)
-    {
-        if (objects.Count == 0)
-        {
-            Debug.LogWarning($"{name} has no objects assigned to check (IsAllPlayersOnce).");
-            return false;
-        }
-
-        foreach (var o in objects)
-        {
-            if (o.mode == ObjectMode.CountOnce)
+            if (o.obj.TryGetComponent<Renderer>(out var r))
             {
-                if (o.passedPlayers.Count < playerCount)
-                    return false;
+                var c = r.material.color;
+                c.a = 1f;
+                r.material.color = c;
+                o.currentColor = c;
             }
+
+            o.obj.SetActive(false);
         }
-        return true;
     }
 
-    public bool IsAllPlayersN(int playerCount, int n)
+    public bool IsAllCleared(int pc)
+        => objects.Count > 0 && objects.All(o => o.destroyed);
+
+    public bool IsAnyPlayersN(int reqPlayers, int reqPass)
     {
         if (objects.Count == 0) return false;
+        var totals = new Dictionary<int, int>();
+        foreach (var info in objects.Where(i => i.mode == ObjectMode.CountN))
+            foreach (var kv in info.passCounts)
+                totals[kv.Key] = totals.GetValueOrDefault(kv.Key) + kv.Value;
 
-        foreach (var o in objects)
-        {
-            if (o.mode == ObjectMode.CountN)
-            {
-                if (o.passCounts.Count < playerCount)
-                    return false;
-                foreach (var cnt in o.passCounts.Values)
-                {
-                    if (cnt < n) return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public bool IsAnyPlayersOnce(int requiredCount)
-    {
-        if (objects.Count == 0) return false;
-
-        int count = 0;
-        foreach (var o in objects)
-        {
-            if (o.mode == ObjectMode.CountOnce && o.passedPlayers.Count > 0)
-                count++;
-        }
-        return count >= requiredCount;
-    }
-
-    public bool IsAnyPlayersN(int requiredCount, int n)
-    {
-        if (objects.Count == 0) return false;
-
-        int count = 0;
-        foreach (var o in objects)
-        {
-            if (o.mode == ObjectMode.CountN)
-            {
-                int validPlayer = 0;
-                foreach (var cnt in o.passCounts.Values)
-                {
-                    if (cnt >= n) validPlayer++;
-                }
-                if (validPlayer > 0)
-                    count++;
-            }
-        }
-        return count >= requiredCount;
+        return totals.Count(kv => kv.Value >= reqPass) >= reqPlayers;
     }
 
     public void OnObjectTrigger(GameObject obj, int playerId)
     {
-        var info = objects.Find(x => x.obj == obj);
-        if (info == null)
-        {
-            Debug.LogWarning($"{obj.name} is not registered in ObjectChecker!");
-            return;
-        }
+        // ✅ 효과음 재생
+        if (sfxSource != null && onTriggerSfx != null)
+            sfxSource.PlayOneShot(onTriggerSfx);
+
+        // ✅ 이름 기반으로 Dictionary에서 검색
+        if (!objectMap.TryGetValue(obj.name, out var info)) return;
 
         switch (info.mode)
         {
             case ObjectMode.PermanentDestroy:
-                if (!info.destroyed)
+                if (!info.passCounts.ContainsKey(playerId))
+                    info.passCounts[playerId] = 0;
+                info.passCounts[playerId]++;
+                int total = info.passCounts.Values.Sum();
+
+                if (total < requiredCount)
                 {
-                    Debug.Log($"{obj.name} will be deactivated (PermanentDestroy)");
+                    if (Time.time - info.lastColorChangeTime >= colorChangeCooldown)
+                    {
+                        ApplyProgressColor(info);
+                        info.lastColorChangeTime = Time.time;
+                        StartCoroutine(HideTemporarily(info, colorChangeCooldown));
+                    }
+                }
+                else if (!info.destroyed)
+                {
                     info.destroyed = true;
                     obj.SetActive(false);
                     if (boss != null && hpDecreasePerObject > 0)
                         boss.TakeDamage(hpDecreasePerObject);
                 }
                 break;
-            case ObjectMode.CountOnce:
-                info.passedPlayers.Add(playerId);
-                ApplyProgressColor(info);
-                break;
+
             case ObjectMode.CountN:
                 if (!info.passCounts.ContainsKey(playerId))
                     info.passCounts[playerId] = 0;
                 info.passCounts[playerId]++;
                 ApplyProgressColor(info);
                 break;
+
+            case ObjectMode.CountOnce:
+                if (!info.passedPlayers.Contains(playerId))
+                {
+                    info.passedPlayers.Add(playerId);
+                    ApplyProgressColor(info);
+                }
+                break;
         }
     }
 
     private void ApplyProgressColor(ObjectInfo info)
     {
-        if (info.obj.TryGetComponent<Renderer>(out var renderer))
+        if (info.obj.TryGetComponent<Renderer>(out var r))
         {
-            int current = info.passedPlayers.Count;
-            int total = Mathf.Max(1, playerCount);
+            int count = info.passCounts.Values.Sum();
+            int idx = count % stepColors.Length;
 
-            float percent = current / (float)total;
-            int index = Mathf.FloorToInt(percent * stepColors.Length);
-            index = Mathf.Clamp(index, 0, stepColors.Length - 1);
-
-            renderer.material.color = stepColors[index];
+            Color c = stepColors[idx];
+            c.a = 1f;
+            r.material.color = c;
+            info.currentColor = c;
         }
+    }
+
+    private IEnumerator HideTemporarily(ObjectInfo info, float duration)
+    {
+        if (!info.obj.TryGetComponent<Renderer>(out var r)) yield break;
+
+        var tcol = info.currentColor;
+        tcol.a = transparencyAlpha;
+        r.material.color = tcol;
+
+        yield return new WaitForSeconds(duration);
+
+        r.material.color = info.currentColor;
     }
 }
