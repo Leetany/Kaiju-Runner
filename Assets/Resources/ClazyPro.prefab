@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: -9090546658495301782}
   - component: {fileID: -8196879157582519789}
   - component: {fileID: -7714651252994373447}
+  - component: {fileID: 6402295061972082629}
   m_Layer: 2
   m_Name: ClazyPro
   m_TagString: Player
@@ -447,6 +448,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: -8196879157582519789}
   - {fileID: -7714651252994373447}
+  - {fileID: 6402295061972082629}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -501,6 +503,21 @@ MonoBehaviour:
   m_SynchronizeVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &6402295061972082629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177983869789361934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c7a5e4adbb3eba44af9521e2e913dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayName: 
+  ActivateOnStart: 0
+  PV: {fileID: -9090546658495301782}
 --- !u!1 &1580498295217066140
 GameObject:
   m_ObjectHideFlags: 0
@@ -2193,7 +2210,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4904344368696736512}
-  - component: {fileID: 7609636144243108078}
   m_Layer: 2
   m_Name: PingPos
   m_TagString: Untagged
@@ -2216,20 +2232,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 355610346986931369}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7609636144243108078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7761263089656700598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 786275cff06c6f34e901a8602b6cee3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DisplayName: 
-  ActivateOnStart: 0
 --- !u!1 &7806520019437599115
 GameObject:
   m_ObjectHideFlags: 0
