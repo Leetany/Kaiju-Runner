@@ -15,6 +15,18 @@ public class Boss : MonoBehaviour
         OnHpChanged?.Invoke(currentHp / maxHp);
     }
 
+    public void RequestCutscene(int index)
+    {
+        if (cutsceneLoader == null)
+        {
+            Debug.LogWarning("[Boss] 컷씬 로더가 할당되지 않았습니다.");
+            return;
+        }
+
+        cutsceneLoader.cutsceneIndex = index;
+        cutsceneLoader.PlayCutscene();
+    }
+
     public void TakeDamage(float amount)
     {
         currentHp -= amount;
@@ -30,20 +42,17 @@ public class Boss : MonoBehaviour
         if (!played75 && currentHp / maxHp <= 0.75f)
         {
             played75 = true;
-            cutsceneLoader.cutsceneIndex = 0; // Cutscene_75
-            cutsceneLoader.PlayCutscene();
+            RequestCutscene(0);
         }
         else if (!played50 && currentHp / maxHp <= 0.50f)
         {
             played50 = true;
-            cutsceneLoader.cutsceneIndex = 1; // Cutscene_50
-            cutsceneLoader.PlayCutscene();
+            RequestCutscene(1);
         }
         else if (!played25 && currentHp / maxHp <= 0.25f)
         {
             played25 = true;
-            cutsceneLoader.cutsceneIndex = 2; // Cutscene_25
-            cutsceneLoader.PlayCutscene();
+            RequestCutscene(2);
         }
     }
 }

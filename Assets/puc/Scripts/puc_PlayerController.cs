@@ -5,6 +5,7 @@ public class puc_PlayerController : MonoBehaviour
     public Boss boss;
     public bool isCutscene = false;
     public int playerId;
+    public bool isGameOver = false;
 
     void Start()
     {
@@ -13,6 +14,8 @@ public class puc_PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isGameOver) return;
+
         if (isCutscene)
             return;
 

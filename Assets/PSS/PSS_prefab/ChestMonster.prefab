@@ -824,6 +824,7 @@ GameObject:
   - component: {fileID: 1186585866926966175}
   - component: {fileID: 501699184072858793}
   - component: {fileID: 6832902499725634663}
+  - component: {fileID: 8549504904147144962}
   - component: {fileID: 4386543853945180165}
   m_Layer: 0
   m_Name: ChestMonster
@@ -892,6 +893,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.1, y: 2, z: 1}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &8549504904147144962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8055117069448978150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bcb3c64bdee12f46a95a7583227764a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
 --- !u!54 &4386543853945180165
 Rigidbody:
   m_ObjectHideFlags: 0
