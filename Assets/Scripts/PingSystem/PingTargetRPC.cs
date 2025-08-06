@@ -34,6 +34,8 @@ namespace WriteAngle.Ping
         /// <summary> 타겟이 꺼지면 매니저가 안 따라가게 해야 함 </summary>
         public static event Action<PingTargetRPC> OnRPCTargetDisabled;
 
+        public static event Action<PingTargetRPC> CreateChat;
+
         // --- Unity Lifecycle Callbacks ---
 
         // OnEnable: Automatic registration is handled by PingUIManager during its Start phase.
@@ -43,25 +45,41 @@ namespace WriteAngle.Ping
         private PingMarkerUI matchedUI;
         public PhotonView PV;
 
+        private float delayChat;
+        private float delayChatTime;
+
+        public string internalText;
+
         private void Start()
         {
+            internalText = gameObject.GetComponentInChildren<PlayerNameUpdator>().Label.text;
+
             Invoke("GetData", 0.1f);
+            delayChat = 0f;
+            delayChatTime = 5f;
         }
 
         private void Update()
         {
+            delayChat -= Time.deltaTime;
+
             if (PV.IsMine)
             {
-                if (Input.GetKeyDown(KeyCode.P))
+                if (Input.GetKeyDown(KeyCode.P) && delayChat < 0f)
                 {
                     PV.RPC("MarkerCallRPC", RpcTarget.AllBuffered);
+                    CreateChat?.Invoke(this);
                 }
             }
         }
 
         [PunRPC]
-        void MarkerCallRPC() => matchedUI.StartCoroutine("DissolveAlpha");
-
+        void MarkerCallRPC()
+        {
+            matchedUI.StartCoroutine("DissolveAlpha");
+            delayChat = delayChatTime;
+        }
+        
 
         private void GetData()
         {
@@ -79,11 +97,13 @@ namespace WriteAngle.Ping
 
         public override void OnEnable()
         {
+            base.OnEnable();
             ActivationPing();
         }
 
         public override void OnDisable()
         {
+            base.OnDisable();
             // 컴포넌트나 게임오브젝트가 꺼지면, 항상 타겟에서 등록 해제시켜야함.
             ProcessDeactivation();
         }

@@ -518,6 +518,7 @@ MonoBehaviour:
   DisplayName: 
   ActivateOnStart: 0
   PV: {fileID: -9090546658495301782}
+  internalText: 
 --- !u!1 &1580498295217066140
 GameObject:
   m_ObjectHideFlags: 0

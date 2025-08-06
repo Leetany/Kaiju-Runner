@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 3455371600144862064}
   - component: {fileID: 4688383794666638011}
   - component: {fileID: 8893177497021642077}
+  - component: {fileID: -4800699918206494063}
   m_Layer: 5
   m_Name: ChatEntry
   m_TagString: Untagged
@@ -226,3 +227,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f910c9142b88245a8b203934425f14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chatText: {fileID: 8280745130747848429}
+  PV: {fileID: -4800699918206494063}
+--- !u!114 &-4800699918206494063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9203219944197307061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

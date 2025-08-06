@@ -1,44 +1,64 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using WriteAngle.Ping;
+using TMPro;
+using ClayPro;
+using System.Collections.Generic;
+using System;
 
-public class ChatUIManager : MonoBehaviour, IPunObservable
+public class ChatUIManager : MonoBehaviourPunCallbacks
 {
     public static ChatUIManager Instance;
+
+    public static Action<ChatUIManager, PingTargetRPC> ChangeText;
 
     public GameObject chatPrefab;
     public GameObject Parent;
 
     public PhotonView PV;
 
+    public Dictionary<int, string> playerIndex = new Dictionary<int, string>();
+
 
     private void Awake()
     {
-        Instance = this;        
+        Instance = this;
+
+        PingTargetRPC.CreateChat += SendingMessage;
+        ClazyProController.RegisterIndex += AddIndex;
     }
 
-    // Update is called once per frame
-    void Update()
+    [PunRPC]
+    public void SendChat(int viewID)
     {
-        if(Input.GetKeyDown(KeyCode.O) && PV.IsMine)
+        PhotonView view = PhotonView.Find(viewID);
+        if (view != null)
         {
-            PV.RPC("SendChat", RpcTarget.AllBuffered);
-        }
-    }
-
-    public void SendChat()
-    {
-        Instantiate(chatPrefab, Parent.transform);
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-
+            view.transform.SetParent(Parent.transform);
         }
         else
         {
-
+            Debug.LogWarning("해당 ViewID를 가진 오브젝트를 찾을 수 없습니다: " + viewID);
         }
+    }
+
+    private void SendingMessage(PingTargetRPC targetRPC)
+    {
+        GameObject go = PhotonNetwork.Instantiate(chatPrefab.name, Parent.transform.position, Quaternion.identity);
+        int viewID = go.GetComponent<PhotonView>().ViewID;
+        PV.RPC("SendChat", RpcTarget.AllBuffered, viewID);
+        ChangeText?.Invoke(this, targetRPC);
+    }
+
+    private void AddIndex(ClazyProController controller)
+    {
+        playerIndex.Add(controller.PV.ViewID, controller.PV.Controller.NickName);
+    }
+
+
+    private void OnDestroy()
+    {
+        PingTargetRPC.CreateChat -= SendingMessage;
+        ClazyProController.RegisterIndex -= AddIndex;
     }
 }

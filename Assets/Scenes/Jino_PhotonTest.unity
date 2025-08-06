@@ -2859,6 +2859,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chatPrefab: {fileID: 9203219944197307061, guid: 00c2c23dd49f2b844a887de4cef84ceb, type: 3}
   Parent: {fileID: 54982995}
+  PV: {fileID: 1509964755}
 --- !u!114 &1509964755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2877,7 +2878,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1509964754}
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
