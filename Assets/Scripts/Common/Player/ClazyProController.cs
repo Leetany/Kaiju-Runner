@@ -3,7 +3,11 @@ using Photon.Pun;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM 
+using System;
+using System.Collections;
+
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -94,7 +98,9 @@ namespace ClayPro
 
         private CinemachineCamera _cinemachine;
         public PhotonView PV;
-        [SerializeField] PlayerNameUpdator PlayerNameUpdater;
+        public PlayerNameUpdator PlayerNameUpdater;
+
+        public static Action<ClazyProController> RegisterIndex;
 
 
         private void Start()
@@ -105,7 +111,9 @@ namespace ClayPro
             }
 
             PlayerNameUpdater.Label.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+            RegisterIndex?.Invoke(this);
         }
+
 
         private void Initializing()
         {
