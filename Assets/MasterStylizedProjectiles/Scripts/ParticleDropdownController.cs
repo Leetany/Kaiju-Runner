@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,8 +10,7 @@ namespace MasterStylizedProjectile
         public BulletShooter shooter;
         public Dropdown dropdown;
         public AudioClip changeClip;
-
-        AudioSource audio;
+        new AudioSource audio;
         private void Start()
         {
             dropdown = GetComponent<Dropdown>();
