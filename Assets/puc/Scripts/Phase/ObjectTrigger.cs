@@ -11,11 +11,11 @@ public class ObjectTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponent<puc_PlayerController>();
-        if (player != null && checker != null)
+        if (other.CompareTag("Player") && checker != null)
         {
-            Debug.Log($"{gameObject.name} 트리거 - playerId: {player.playerId}");
-            checker.OnObjectTrigger(gameObject, player.playerId);
+            var controller = other.GetComponent<puc_PlayerController>();
+            int playerId = controller != null ? controller.playerId : 0;  // 없으면 0
+            checker.OnObjectTrigger(gameObject, playerId);
         }
     }
 }

@@ -4,9 +4,6 @@ using UnityEngine;
 public enum StepType
 {
     PermanentDestroy,
-    AllOnce,
-    AllN,
-    AnyOnce,
     AnyN
 }
 
