@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+
 
 namespace WriteAngle.Ping
 {
@@ -111,6 +112,7 @@ namespace WriteAngle.Ping
             UnityEditor.Handles.Label(transform.position + Vector3.up * 0.7f, label);
 #endif
         }
+
     } // End Class
 } // End Namespace
 

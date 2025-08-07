@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI; // 이미지 컴포넌트 땜시 필요
-using TMPro; //TextMeshProUGUI땜시 필요
+using TMPro;
+using System.Collections; //TextMeshProUGUI땜시 필요
 
 namespace WriteAngle.Ping
 {
@@ -52,6 +53,11 @@ namespace WriteAngle.Ping
                 // 그럼에도 불구하고 특정한 디자인을 위해 프리팹의 초기값을 저장하는게 필요할 수 있습니다
                 // 가독성을 위해 Quaternion.identity를 강제하는 것은 바람직한 것입니다.
             }
+        }
+
+        private void Start()
+        {
+            AlphaZero();
         }
 
         /// <summary>
@@ -276,6 +282,36 @@ namespace WriteAngle.Ping
                 return new Vector2(Mathf.Clamp(targetPoint.x, bounds.xMin, bounds.xMax), Mathf.Clamp(targetPoint.y, bounds.yMin, bounds.yMax));
             }
             return center + direction * minT;
+        }
+
+        private void AlphaZero()
+        {
+            float i = 0f;
+            Color markerImage = markerIcon.color;
+            markerImage.a = i;
+            markerIcon.color = markerImage;
+        }
+
+        public IEnumerator DissolveAlpha()
+        {
+            float i = 1f;
+            float w = 0f;
+            Color markerImage = markerIcon.color;
+            markerImage.a = i;
+            markerIcon.color = markerImage;
+            yield return new WaitForSeconds(2f);
+            do
+            {
+                markerImage.a = i;
+                markerIcon.color = markerImage;
+                w += Time.deltaTime;
+                i -= Time.deltaTime + w;
+                yield return new WaitForSeconds(0.1f);
+            }
+            while (i > 0);
+
+            markerImage.a = i;
+            markerIcon.color = markerImage;
         }
 
     } // End Class

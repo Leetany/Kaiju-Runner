@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 
@@ -14,6 +14,8 @@ namespace WriteAngle.Ping
     [DisallowMultipleComponent] // Only one manager should exist per scene.
     public class PingUIManager : MonoBehaviour
     {
+        public static PingUIManager Instance;
+
         [Header("핵심 참조들")]
         [Tooltip("Ping settings의 스크립터블 오브젝트 에셋들을 여기서 꺼내 씀")]
         [SerializeField] private PingSettings settings;
@@ -30,7 +32,7 @@ namespace WriteAngle.Ping
                                                      // 대응되는 마커들을 효율적으로 관리하기 위해 collections 사용
         private List<PingTarget> activeTargetList = new List<PingTarget>();  // Used for efficient iteration.  효율적인 반복을 위해서
         private HashSet<PingTarget> activeTargetSet = new HashSet<PingTarget>(); // Used for fast checking of target existence.  타겟이 존재하는지 빠른 확인을 위해서
-        private Dictionary<PingTarget, PingMarkerUI> activeMarkers = new Dictionary<PingTarget, PingMarkerUI>(); // 활성화된 ui 마커와 매칭시켜주기 위해서
+        public Dictionary<PingTarget, PingMarkerUI> activeMarkers = new Dictionary<PingTarget, PingMarkerUI>(); // 활성화된 ui 마커와 매칭시켜주기 위해서
 
         private Camera _cachedPingCamera; // 효율적인 동작을 위해 카메라 캐슁
         private float lastUpdateTime = -1f; // UpdateFrequency를 바탕으로 한 throttling 업데이트를 위해 사용
@@ -57,6 +59,8 @@ namespace WriteAngle.Ping
             // 이벤트 구독 동적인 등록과 등록 해제를 위해
             PingTarget.OnTargetEnabled += HandleTargetEnabled;
             PingTarget.OnTargetDisabled += HandleTargetDisabled;
+
+            Instance = this;
 
             isInitialized = true; // 성공적인 초기화 표시
             Debug.Log($"<b>[{gameObject.name}] PingUIManager:</b> Initialized.", this);
