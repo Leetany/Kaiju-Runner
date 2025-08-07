@@ -104,15 +104,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 644ce44ecc480a442b708fc9f1b6fe66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  rotationSpeed: 5
-  jumpForce: 2
+  baseMoveSpeed: 6
+  jumpHeight: 2
   gravity: -9.81
-  cameraTf: {fileID: 0}
-  stunFX: {fileID: 5732568103209889489, guid: cc3e1ab646dc07d4ca9f86d73aa75138, type: 3}
-  slowFX: {fileID: 4550076289710732121, guid: a73108d561dbdf34ba462e73e97ed541, type: 3}
-  track: {fileID: 0}
-  distancePerHit: 5
+  cam: {fileID: 0}
+  animator: {fileID: 0}
+  buffDebuffManager: {fileID: 0}
 --- !u!114 &3349484609567455428
 MonoBehaviour:
   m_ObjectHideFlags: 0
