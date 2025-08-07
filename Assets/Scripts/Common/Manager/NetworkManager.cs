@@ -52,7 +52,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void ClickStart()
     {
-        PhotonNetwork.LoadLevel("Photon_Stage");
+        PhotonNetwork.LoadLevel("Stage");
     }
 
     public void BackToLobby()
