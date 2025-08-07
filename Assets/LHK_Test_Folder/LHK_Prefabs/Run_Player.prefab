@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7727946760798113166}
   - component: {fileID: 3349484609567455428}
   - component: {fileID: 6529761273005330721}
+  - component: {fileID: 2980188004186469581}
   m_Layer: 0
   m_Name: Run_Player
   m_TagString: Untagged
@@ -170,6 +171,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &2980188004186469581
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4397392030452307518}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8fea67054ba1e994d9f96d03d7a4f1f0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &4558583269224736519
 PrefabInstance:
   m_ObjectHideFlags: 0

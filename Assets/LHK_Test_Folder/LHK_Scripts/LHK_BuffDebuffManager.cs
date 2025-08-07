@@ -29,7 +29,8 @@ public class LHK_BuffDebuffManager : MonoBehaviour
 
     void Awake()
     {
-        baseSpeed = player.GetMoveSpeed();
+        
+        baseSpeed = player.walkSpeed;
         camOriginalRot = cameraTf.localRotation;
     }
 

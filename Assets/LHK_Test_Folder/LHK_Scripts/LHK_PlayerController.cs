@@ -33,7 +33,8 @@ public enum BuffType
 public class LHK_PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float baseMoveSpeed = 6f;
+    public float walkSpeed = 4f;
+    public float runSpeed = 8f;
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
 
@@ -44,7 +45,7 @@ public class LHK_PlayerController : MonoBehaviour
 
     private CharacterController controller;
     private Vector3 velocity;
-    private bool isJumping = false;
+    
 
     void Awake()
     {
@@ -69,6 +70,10 @@ public class LHK_PlayerController : MonoBehaviour
 
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+        Vector3 input = new Vector3(h, 0, v);
+
+        bool isMoving = input.magnitude > 0.1f;
+        animator.SetBool("isMoving", isMoving);
 
         if (buffDebuffManager.CurrentDebuff == DebuffType.ScrambleInput)
         {
@@ -76,25 +81,26 @@ public class LHK_PlayerController : MonoBehaviour
             v = GetScrambledAxis(KeyCode.S, KeyCode.W);
         }
 
-        Vector3 input = new Vector3(h, 0, v);
-        bool isMoving = input.magnitude > 0.1f;
-        animator.SetBool("isMoving", isMoving);
-
         if (isMoving)
         {
-            Vector3 camForward = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 camRight = cam.right;
-            Vector3 moveDir = camForward * v + camRight * h;
+            Vector3 camF = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 camR = cam.right;
+            Vector3 moveDir = camF * v + camR * h;
 
-            float moveSpeed = baseMoveSpeed * buffDebuffManager.SpeedMultiplier;
-            controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
+            float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+            animator.SetBool("isRunning", Input.GetKey(KeyCode.LeftShift));
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 10f * Time.deltaTime);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
         }
 
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            isJumping = true;
         }
     }
 
@@ -108,6 +114,8 @@ public class LHK_PlayerController : MonoBehaviour
         return value;
     }
 
+    
+    
     void ApplyGravity()
     {
         velocity.y += gravity * Time.deltaTime;
@@ -116,43 +124,20 @@ public class LHK_PlayerController : MonoBehaviour
 
     void Animate()
     {
-        if (controller.isGrounded)
-        {
-            animator.SetBool("isJumpingUp", false);
-            animator.SetBool("isJumpFloating", false);
-            animator.SetBool("isFallingDown", false);
-            isJumping = false;
-        }
-        else
-        {
-            if (velocity.y > 0.5f)
-            {
-                animator.SetBool("isJumpingUp", true);
-                animator.SetBool("isJumpFloating", false);
-                animator.SetBool("isFallingDown", false);
-            }
-            else if (velocity.y <= 0.5f && velocity.y >= -0.5f)
-            {
-                animator.SetBool("isJumpingUp", false);
-                animator.SetBool("isJumpFloating", true);
-                animator.SetBool("isFallingDown", false);
-            }
-            else
-            {
-                animator.SetBool("isJumpingUp", false);
-                animator.SetBool("isJumpFloating", false);
-                animator.SetBool("isFallingDown", true);
-            }
-        }
+        animator.SetFloat("velocityY", velocity.y);
+        animator.SetBool("isGrounded", controller.isGrounded);
     }
 
-    public float GetMoveSpeed() => baseMoveSpeed;
-    public void SetMoveSpeed(float value) => baseMoveSpeed = value;
 
     public void DealTrackDamage(LHK_TrackHealth trackHealth)
     {
         int baseDamage = 1;
         int damage = baseDamage * buffDebuffManager.TrackDamageMultiplier;
         trackHealth.TakeDamage(damage);
+    }
+    // LHK_PlayerController 클래스 내부에 아래 메서드를 추가하세요.
+    public void SetMoveSpeed(float speed)
+    {
+        walkSpeed = speed;
     }
 }
