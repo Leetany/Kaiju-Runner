@@ -22283,10 +22283,10 @@ PrefabInstance:
     - target: {fileID: 3553520001419665606, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: boss
       value: 
-      objectReference: {fileID: 1224078530}
+      objectReference: {fileID: 0}
     - target: {fileID: 3553520001419665606, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: isCutscene
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4141731550615747739, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: m_Camera
@@ -22342,7 +22342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: Gravity
-      value: -30
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: MoveSpeed

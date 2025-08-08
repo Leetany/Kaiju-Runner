@@ -125,9 +125,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5783241991720835976, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7080361405315215245}
-    - targetCorrespondingSourceObject: {fileID: 5783241991720835976, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3553520001419665606}
   m_SourcePrefab: {fileID: 100100000, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
 --- !u!4 &524409271619457313 stripped
 Transform:
@@ -274,19 +271,3 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
---- !u!114 &3553520001419665606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868284163432434587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ef9b85da38a27e45997d8bc8b70c6d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boss: {fileID: 0}
-  damagePerMeter: 1
-  isCutscene: 0
-  playerId: 0
