@@ -9,7 +9,10 @@ public class LHK_ItemPickup : MonoBehaviour
     {
         if (other.TryGetComponent(out LHK_PlayerController pc))
         {
-            pc.ApplyBuff(buffType, duration);
+            if (pc.buffDebuffManager != null)
+            {
+                pc.buffDebuffManager.ApplyBuff(buffType, duration);
+            }
             Destroy(gameObject); // 먹으면 사라짐
         }
     }
