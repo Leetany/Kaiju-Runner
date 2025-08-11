@@ -93,7 +93,7 @@ ModelImporter:
       takeName: mixamo.com
       internalID: -2061910772549006292
       firstFrame: 2
-      lastFrame: 22
+      lastFrame: 4
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -121,7 +121,7 @@ ModelImporter:
       name: JumpLand
       takeName: mixamo.com
       internalID: -6556537087697243763
-      firstFrame: 22
+      firstFrame: 4
       lastFrame: 27
       wrapMode: 0
       orientationOffsetY: 0
