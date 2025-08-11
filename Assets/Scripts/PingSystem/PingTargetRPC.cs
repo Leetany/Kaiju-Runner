@@ -12,7 +12,7 @@ namespace WriteAngle.Ping
     /// 또는 스크립트에 따라 조절 될수 있습니다.
     /// </summary>
     [AddComponentMenu("WriteAngle/Ping TargetRPC")]
-    public class PingTargetRPC : MonoBehaviourPunCallbacks, IPunObservable
+    public class PingTargetRPC : MonoBehaviourPunCallbacks
     {
         [Tooltip("Ping을 위한 추가적인 이름, 에디터나 스크립트에서 구분하기 위한 것")]
         public string DisplayName = "";
@@ -169,18 +169,6 @@ namespace WriteAngle.Ping
             if (!ActivateOnStart) label += " (Manual Activation)";
             UnityEditor.Handles.Label(transform.position + Vector3.up * 0.7f, label);
 #endif
-        }
-
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if(stream.IsWriting)
-            {
-
-            }
-            else
-            {
-
-            }
         }
     } // End Class
 } // End Namespace

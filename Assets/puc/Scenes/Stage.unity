@@ -338,6 +338,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 135
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (9)
@@ -595,6 +599,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 38
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (15)
@@ -783,6 +791,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 108
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (28)
@@ -903,6 +915,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 62
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (3)
@@ -991,6 +1007,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 44
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (1)
@@ -1258,6 +1278,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 51
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (13)
@@ -1580,6 +1604,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 106
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (24)
@@ -1978,6 +2006,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 96
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (11)
@@ -2221,6 +2253,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 72
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (34)
@@ -2309,6 +2345,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (4)
@@ -2508,6 +2548,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 76
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (33)
@@ -2628,6 +2672,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 107
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (29)
@@ -2721,6 +2769,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 793850233}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 129
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (13)
@@ -3012,6 +3064,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 97
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (22)
@@ -3132,6 +3188,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 54
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back
@@ -3224,6 +3284,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (10)
@@ -3481,6 +3545,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (8)
@@ -3601,6 +3669,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 116
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (15)
@@ -3689,6 +3761,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (19)
@@ -4081,6 +4157,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 793850233}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 89
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (14)
@@ -4260,6 +4340,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (3)
@@ -4380,6 +4464,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (16)
@@ -4567,11 +4655,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 460466092}
   m_CullTransparentMesh: 1
---- !u!1 &488863219 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8338988566280778634, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-  m_PrefabInstance: {fileID: 852751497}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &496334974
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4580,6 +4663,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (4)
@@ -4734,6 +4821,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (11)
@@ -4987,6 +5078,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 41
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (12)
@@ -5139,6 +5234,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 91
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (4)
@@ -5227,6 +5326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 74
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (2)
@@ -5347,6 +5450,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (3)
@@ -5535,6 +5642,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 42
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (8)
@@ -5623,6 +5734,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (19)
@@ -5703,6 +5818,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1819185122}
   m_SourcePrefab: {fileID: 100100000, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+--- !u!1 &637894739 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 868284163432434587, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+  m_PrefabInstance: {fileID: 1768058469}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &645156182 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 524409271619457313, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
@@ -5716,6 +5836,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (33)
@@ -5947,6 +6071,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (5)
@@ -6099,6 +6227,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 131
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (12)
@@ -6327,6 +6459,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 103
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (5)
@@ -6415,6 +6551,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (1)
@@ -6503,6 +6643,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 134
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (14)
@@ -6927,6 +7071,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 39
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (8)
@@ -7019,6 +7167,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 88
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (30)
@@ -7131,6 +7283,11 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 5701596716694377472, guid: 5b95901ea9b9ede4da89cf8cad216e46, type: 3}
+--- !u!4 &788295826 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+  m_PrefabInstance: {fileID: 951887389}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &791765396
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7139,6 +7296,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 136
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (1)
@@ -7521,6 +7682,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (5)
@@ -7613,6 +7778,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (20)
@@ -9489,6 +9658,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (27)
@@ -9793,6 +9966,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (23)
@@ -9913,6 +10090,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 114
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (1)
@@ -10251,6 +10432,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 27
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (11)
@@ -10371,6 +10556,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (9)
@@ -10463,6 +10652,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (13)
@@ -10853,6 +11046,7 @@ RectTransform:
   - {fileID: 2120996442}
   - {fileID: 852304497}
   - {fileID: 206139437}
+  - {fileID: 1014645600}
   m_Father: {fileID: 555070918}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10868,6 +11062,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 49
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (10)
@@ -10956,6 +11154,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 117
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (6)
@@ -11044,6 +11246,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 73
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (36)
@@ -11220,6 +11426,78 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 5701596716694377472, guid: 5b95901ea9b9ede4da89cf8cad216e46, type: 3}
+--- !u!1001 &951887389
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1373680286}
+    m_Modifications:
+    - target: {fileID: 158050, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_Name
+      value: JellyFishGirl
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -309.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1439.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 473718, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592895386654623375, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: boss
+      value: 
+      objectReference: {fileID: 1224078530}
+    - target: {fileID: 7825091658002035325, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: PV
+      value: 
+      objectReference: {fileID: 1768058470}
+    - target: {fileID: 7825091658002035325, guid: 479d26050afb50244823e542e662566f, type: 3}
+      propertyPath: CinemachineCameraTarget
+      value: 
+      objectReference: {fileID: 880016708}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 158050, guid: 479d26050afb50244823e542e662566f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1703345030}
+  m_SourcePrefab: {fileID: 100100000, guid: 479d26050afb50244823e542e662566f, type: 3}
 --- !u!1001 &953107557
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11228,6 +11506,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (14)
@@ -11348,6 +11630,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (6)
@@ -11468,6 +11754,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (31)
@@ -11588,6 +11878,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 61
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (9)
@@ -11755,6 +12049,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 118
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (2)
@@ -12012,6 +12310,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 46
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (22)
@@ -12100,6 +12402,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 63
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (17)
@@ -12257,6 +12563,112 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1088197497}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1014645599
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 935780918}
+    m_Modifications:
+    - target: {fileID: 1961713795449765070, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_Name
+      value: CreateButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213027850670945501, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: BigGo
+      value: 
+      objectReference: {fileID: 637894739}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 279.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 94.9695
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 718
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -375
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+--- !u!224 &1014645600 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7098307227874302299, guid: b19e6fc94e0c66446ade74914a47d82e, type: 3}
+  m_PrefabInstance: {fileID: 1014645599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1014755235
 GameObject:
   m_ObjectHideFlags: 0
@@ -12329,6 +12741,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 59
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (5)
@@ -12454,7 +12870,7 @@ GameObject:
   - component: {fileID: 1069281157}
   - component: {fileID: 1069281160}
   - component: {fileID: 1069281159}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DragonMesh_BakedMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12586,6 +13002,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 126
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (34)
@@ -12807,6 +13227,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 130
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (14)
@@ -12895,6 +13319,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 119
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (25)
@@ -13121,6 +13549,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 71
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (21)
@@ -13317,6 +13749,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 37
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (3)
@@ -13441,6 +13877,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (32)
@@ -13561,6 +14001,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 70
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (30)
@@ -13649,6 +14093,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 141
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (32)
@@ -14042,6 +14490,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 115
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (28)
@@ -14130,6 +14582,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 95
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (26)
@@ -14250,6 +14706,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 127
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (22)
@@ -14402,6 +14862,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 83
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (24)
@@ -14490,6 +14954,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 26
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (13)
@@ -14578,6 +15046,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 66
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (7)
@@ -14666,6 +15138,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 236449398}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 139
+      objectReference: {fileID: 0}
     - target: {fileID: 981234652646152270, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -14762,6 +15238,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 140
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (3)
@@ -14861,6 +15341,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 133
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (6)
@@ -15070,6 +15554,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 793850233}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 105
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (16)
@@ -15162,6 +15650,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 36
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (2)
@@ -15254,6 +15746,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 126707894}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 33
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (15)
@@ -15378,6 +15874,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (19)
@@ -15594,6 +16094,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 109
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (9)
@@ -15682,6 +16186,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 104
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (29)
@@ -15770,6 +16278,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 58
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (18)
@@ -15965,6 +16477,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 23
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (13)
@@ -16085,6 +16601,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (23)
@@ -16173,6 +16693,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 94
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (17)
@@ -16261,6 +16785,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 793850233}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 24
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (15)
@@ -16353,6 +16881,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 43
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (10)
@@ -17366,6 +17898,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 102
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (12)
@@ -17482,6 +18018,7 @@ Transform:
   - {fileID: 645156182}
   - {fileID: 172134920}
   - {fileID: 880016714}
+  - {fileID: 788295826}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1374659734
@@ -17492,6 +18029,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 22
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (20)
@@ -17687,6 +18228,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 132
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (7)
@@ -17911,6 +18456,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 86
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (21)
@@ -18167,6 +18716,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 113
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (11)
@@ -18255,6 +18808,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 445718114}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (14)
@@ -18379,6 +18936,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (11)
@@ -18499,6 +19060,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (2)
@@ -18619,6 +19184,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 82
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (6)
@@ -18739,6 +19308,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (10)
@@ -19004,6 +19577,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 101
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (7)
@@ -19342,6 +19919,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 122
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (4)
@@ -19465,6 +20046,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (4)
@@ -19585,6 +20170,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (9)
@@ -19737,6 +20326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 99
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (5)
@@ -19857,6 +20450,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 85
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (10)
@@ -20009,6 +20606,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (17)
@@ -20129,6 +20730,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 56
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (35)
@@ -20403,6 +21008,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 55
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (7)
@@ -20527,6 +21136,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 93
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (4)
@@ -20647,6 +21260,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 29
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (5)
@@ -20735,6 +21352,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 53
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (23)
@@ -20855,6 +21476,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (8)
@@ -20975,6 +21600,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 87
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (7)
@@ -21127,6 +21756,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 140107966}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 121
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (17)
@@ -21251,6 +21884,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 92
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (12)
@@ -21467,6 +22104,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (9)
@@ -21547,6 +22188,45 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1459439607}
   m_SourcePrefab: {fileID: 100100000, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+--- !u!1 &1703345029 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 158050, guid: 479d26050afb50244823e542e662566f, type: 3}
+  m_PrefabInstance: {fileID: 951887389}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1703345030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703345029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 2
+  SprintSpeed: 5.335
+  RotationSmoothTime: 0.12
+  SpeedChangeRate: 10
+  LandingAudioClip: {fileID: 0}
+  FootstepAudioClips: []
+  FootstepAudioVolume: 0.5
+  JumpHeight: 1.2
+  Gravity: -15
+  JumpTimeout: 0.5
+  FallTimeout: 0.15
+  Grounded: 1
+  GroundedOffset: -0.14
+  GroundedRadius: 0.28
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  CinemachineCameraTarget: {fileID: 880016708}
+  TopClamp: 70
+  BottomClamp: -30
+  CameraAngleOverride: 0
+  LockCameraPosition: 0
 --- !u!1001 &1722185769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21555,6 +22235,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 69
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (20)
@@ -22080,6 +22764,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 79
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (38)
@@ -22200,6 +22888,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1373680286}
     m_Modifications:
+    - target: {fileID: -1961899272730102238, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+      propertyPath: PV
+      value: 
+      objectReference: {fileID: 1768058470}
+    - target: {fileID: -1961899272730102238, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+      propertyPath: GroundLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: -1961899272730102238, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+      propertyPath: CinemachineCameraTarget
+      value: 
+      objectReference: {fileID: 880016708}
     - target: {fileID: 57889326774180427, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: m_Avatar
       value: 
@@ -22274,7 +22974,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 868284163432434587, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 868284163432434587, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
       propertyPath: m_TagString
@@ -22340,31 +23040,30 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
-      propertyPath: Gravity
-      value: -30
+    - target: {fileID: 4952689131150067397, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+      propertyPath: sceneViewId
+      value: 142
       objectReference: {fileID: 0}
-    - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
-      propertyPath: MoveSpeed
-      value: 10
+    - target: {fileID: 4952689131150067397, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+      propertyPath: ObservedComponents.Array.size
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
-      propertyPath: SprintSpeed
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
-      propertyPath: FootstepAudioVolume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7609199300089912249, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
-      propertyPath: CinemachineCameraTarget
-      value: 
-      objectReference: {fileID: 488863219}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+--- !u!114 &1768058470 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4952689131150067397, guid: 2e8c1b8f6bc62124486cf85f6faaa1bc, type: 3}
+  m_PrefabInstance: {fileID: 1768058469}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637894739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1776811850
 GameObject:
   m_ObjectHideFlags: 0
@@ -22449,6 +23148,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 52
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (37)
@@ -22601,6 +23304,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 125
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (14)
@@ -22721,6 +23428,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 98
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (12)
@@ -22841,6 +23552,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 57
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (6)
@@ -22993,6 +23708,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (18)
@@ -23113,6 +23832,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (18)
@@ -23233,6 +23956,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 78
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (3)
@@ -23385,6 +24112,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (1)
@@ -23477,6 +24208,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 67
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (16)
@@ -23597,6 +24332,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 124
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (7)
@@ -23854,6 +24593,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (8)
@@ -23942,6 +24685,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 112
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (21)
@@ -24062,6 +24809,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 138
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (2)
@@ -24254,6 +25005,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 536235983}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (6)
@@ -24346,6 +25101,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 321943878}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 47
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Back (16)
@@ -24566,6 +25325,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 123
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (31)
@@ -24686,6 +25449,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (8)
@@ -24774,6 +25541,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 84
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (26)
@@ -24862,6 +25633,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 68
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (15)
@@ -24982,6 +25757,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 111
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Right_Wing (16)
@@ -25166,6 +25945,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (15)
@@ -25254,6 +26037,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 77
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Neck (2)
@@ -25411,6 +26198,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 137
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Left_Wing (25)
@@ -25699,6 +26490,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 110
+      objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
       value: Tail (27)
@@ -26601,6 +27396,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1485739826}
     m_Modifications:
+    - target: {fileID: -2371782724697833479, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
+      propertyPath: sceneViewId
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 3061037065313971332, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Enabled
       value: 1
