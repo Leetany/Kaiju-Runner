@@ -2058,9 +2058,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 5
   requiredCount: 1
+  hpDecreasePerObject: 5
+  colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
+  sfxSource: {fileID: 0}
+  onTriggerSfx: {fileID: 0}
   playerCount: 1
 --- !u!1 &246124097 stripped
 GameObject:
@@ -3671,17 +3675,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
-  currentStepIndex: 0
+  track: {fileID: 0}
+  isInitialPhase: 0
+  nextPhaseManager: {fileID: 1118730477}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 1118730477}
   gameOverPanel: {fileID: 0}
   gameOverDelay: 3
+  gameClearPanel: {fileID: 0}
+  gameClearDelay: 3
   timerText: {fileID: 0}
   objectProgressText: {fileID: 0}
   phaseInfoText: {fileID: 0}
-  overridePhaseTitle: 
+  phaseTitle: PHASE 1
+  steps: []
+  currentStepIndex: 0
 --- !u!1 &447552077 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
@@ -4326,9 +4334,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 10
   requiredCount: 1
+  hpDecreasePerObject: 10
+  colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 1
+  sfxSource: {fileID: 0}
+  onTriggerSfx: {fileID: 0}
   playerCount: 1
 --- !u!1 &541526306 stripped
 GameObject:
@@ -7324,7 +7336,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -7548,49 +7561,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  track: {fileID: 0}
+  isInitialPhase: 0
+  nextPhaseManager: {fileID: 397195371}
+  boss: {fileID: 1224078530}
+  playerCount: 1
+  gameOverPanel: {fileID: 1776811850}
+  gameOverDelay: 3
+  gameClearPanel: {fileID: 0}
+  gameClearDelay: 3
+  timerText: {fileID: 2120996443}
+  objectProgressText: {fileID: 852304498}
+  phaseInfoText: {fileID: 1407516319}
+  phaseTitle: PHASE 1
   steps:
   - checker: {fileID: 1485739827}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.15
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 0
     timeLimit: 180
+    timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8 \uD1B5\uACFC"
   - checker: {fileID: 536235984}
     stepType: 1
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 1
     useTimeLimit: 1
     timeLimit: 180
+    timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
       \uD1B5\uACFC"
   - checker: {fileID: 236449399}
     stepType: 0
-    requiredCount: 1
+    requiredPlayers: 1
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
-    timer: 0
     hpApplied: 0
     useTimeLimit: 1
     timeLimit: 180
+    timer: 0
+    useAutoToggle: 0
+    showDuration: 5
+    hideDuration: 2
+    blinkDuration: 1
+    blinkInterval: 0.1
     description: "\uC804\uC6D0 \uC2DC\uAC04 \uB0B4 \uBAA8\uB4E0 \uC624\uBE0C\uC81D\uD2B8
       \uD1B5\uACFC"
   currentStepIndex: 0
-  boss: {fileID: 1224078530}
-  playerCount: 1
-  nextPhaseManager: {fileID: 397195371}
-  gameOverPanel: {fileID: 1776811850}
-  gameOverDelay: 3
-  timerText: {fileID: 2120996443}
-  objectProgressText: {fileID: 852304498}
-  phaseInfoText: {fileID: 1407516319}
-  overridePhaseTitle: "\uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
 --- !u!4 &869897757
 Transform:
   m_ObjectHideFlags: 0
@@ -11142,17 +11177,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
-  currentStepIndex: 0
+  track: {fileID: 0}
+  isInitialPhase: 0
+  nextPhaseManager: {fileID: 1375784114}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 1375784114}
   gameOverPanel: {fileID: 0}
   gameOverDelay: 3
+  gameClearPanel: {fileID: 0}
+  gameClearDelay: 3
   timerText: {fileID: 0}
   objectProgressText: {fileID: 0}
   phaseInfoText: {fileID: 0}
-  overridePhaseTitle: 
+  phaseTitle: PHASE 1
+  steps: []
+  currentStepIndex: 0
 --- !u!1001 &1123913948
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15208,17 +15247,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48932f759c796664d8bc24aaa569754c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steps: []
-  currentStepIndex: 0
+  track: {fileID: 0}
+  isInitialPhase: 0
+  nextPhaseManager: {fileID: 0}
   boss: {fileID: 1224078530}
   playerCount: 1
-  nextPhaseManager: {fileID: 0}
   gameOverPanel: {fileID: 0}
   gameOverDelay: 3
+  gameClearPanel: {fileID: 0}
+  gameClearDelay: 3
   timerText: {fileID: 0}
   objectProgressText: {fileID: 0}
   phaseInfoText: {fileID: 0}
-  overridePhaseTitle: 
+  phaseTitle: PHASE 1
+  steps: []
+  currentStepIndex: 0
 --- !u!1001 &1398979889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15368,7 +15411,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f53f32f2340a3d14cadb815259ab3ec8, type: 2}
   m_sharedMaterial: {fileID: -2174016730231503125, guid: f53f32f2340a3d14cadb815259ab3ec8, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: -2174016730231503125, guid: f53f32f2340a3d14cadb815259ab3ec8, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -16183,9 +16227,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objects: []
   boss: {fileID: 1224078530}
-  hpDecreasePerObject: 10
   requiredCount: 1
+  hpDecreasePerObject: 10
+  colorChangeCooldown: 0.5
+  transparencyAlpha: 0.5
   stepTypeForThisChecker: 0
+  sfxSource: {fileID: 0}
+  onTriggerSfx: {fileID: 0}
   playerCount: 4
 --- !u!1001 &1509435910
 PrefabInstance:
@@ -22428,7 +22476,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
