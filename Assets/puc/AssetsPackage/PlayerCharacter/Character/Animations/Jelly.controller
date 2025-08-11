@@ -14,29 +14,29 @@ BlendTree:
     m_Position: {x: 0, y: 0}
     m_TimeScale: 0.01
     m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
+    m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: -203655887218126122, guid: 242020a65df9e514fa924060acd67270, type: 3}
-    m_Threshold: 0.4
+    m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 0.4
     m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
+    m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: -203655887218126122, guid: e6b4e02da4f1c1e4eaeb82a08adfdc93, type: 3}
-    m_Threshold: 0.8
+    m_Threshold: 2
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 0.8
     m_CycleOffset: 0
-    m_DirectBlendParameter: Blend
+    m_DirectBlendParameter: Speed
     m_Mirror: 0
   m_BlendParameter: Blend
   m_BlendParameterY: Blend
   m_MinThreshold: 0
-  m_MaxThreshold: 0.8
-  m_UseAutomaticThresholds: 0
+  m_MaxThreshold: 2
+  m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
 --- !u!1101 &-4244902522617589228
@@ -266,7 +266,7 @@ AnimatorStateMachine:
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
-  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_EntryPosition: {x: 380, y: 30, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 7739383528523311788}
