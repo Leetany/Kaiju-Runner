@@ -298,7 +298,8 @@ GameObject:
   - component: {fileID: 5498956623604508862}
   - component: {fileID: 6875333529662056902}
   - component: {fileID: 5112817240747646921}
-  - component: {fileID: 260927740419195145}
+  - component: {fileID: 4059249188004796107}
+  - component: {fileID: 6582807720696717714}
   m_Layer: 0
   m_Name: Wolf
   m_TagString: Untagged
@@ -393,7 +394,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &260927740419195145
+--- !u!114 &4059249188004796107
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -402,7 +403,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2568625226383544759}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4e27ab6207152440b1a8c04b6784d28, type: 3}
+  m_Script: {fileID: 11500000, guid: 644ce44ecc480a442b708fc9f1b6fe66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 4
@@ -411,6 +412,22 @@ MonoBehaviour:
   gravity: -9.81
   cam: {fileID: 0}
   animator: {fileID: 5498956623604508862}
+  buffDebuffManager: {fileID: 0}
+--- !u!114 &6582807720696717714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568625226383544759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e188a1c391d7cd4583ae07a8df805fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windEffect: {fileID: 2110151823787527381, guid: 13c8a47ab3f9ee147a9e499d3a59ac88, type: 3}
+  targetTransform: {fileID: 5999545224551134557}
+  maxSpeed: 10
 --- !u!1 &2942468864527994817
 GameObject:
   m_ObjectHideFlags: 0
