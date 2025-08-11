@@ -981,20 +981,60 @@ PrefabInstance:
       objectReference: {fileID: 1622831543}
     - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1041270559}
+      objectReference: {fileID: 1622831543}
+    - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectChar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerSpawnManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Wolf
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611453376984605901, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1041270559}
+      objectReference: {fileID: 1622831543}
+    - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectChar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerSpawnManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Granny
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613660050293046870, guid: f2f950f9374bf4c48a09d25aa4b15153, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2878,8 +2918,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1509964754}
+  ObservedComponents: []
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -3154,7 +3193,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2070925443028286827}
   - component: {fileID: 6461955035584303623}
-  - component: {fileID: 6461955035584303624}
   - component: {fileID: 6461955035584303625}
   m_Layer: 0
   m_Name: PlayerFollowCamera
@@ -3378,25 +3416,6 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 2
---- !u!114 &6461955035584303624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2070925443028286612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TrackerSettings:
-    BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
-    AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
-    QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 0, z: -10}
 --- !u!114 &6461955035584303625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3406,14 +3425,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2070925443028286612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd08475b23aa548b7b9d28397d430b32, type: 3}
+  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 7
-  height: 3
-  centerOffset: {x: 0, y: 0, z: 0}
-  followOnStart: 0
-  smoothSpeed: 0.125
+  Damping: {x: 0, y: 0.5, z: 0}
+  ShoulderOffset: {x: 0, y: 0, z: 0}
+  VerticalArmLength: 0.4
+  CameraSide: 1
+  CameraDistance: 0
+  AvoidObstacles:
+    Enabled: 0
+    CollisionFilter:
+      serializedVersion: 2
+      m_Bits: 1
+    IgnoreTag: 
+    CameraRadius: 0.2
+    DampingIntoCollision: 0
+    DampingFromCollision: 0.5
 --- !u!1001 &7277646638814902745
 PrefabInstance:
   m_ObjectHideFlags: 0
