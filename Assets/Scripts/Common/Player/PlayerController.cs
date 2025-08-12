@@ -2,7 +2,9 @@
 using UnityEngine;
 using Photon.Pun;
 using Unity.Cinemachine;
-#if ENABLE_INPUT_SYSTEM 
+using System;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -125,6 +127,8 @@ namespace StarterAssets
         public PhotonView PV;
         [SerializeField] PlayerNameUpdator PlayerNameUpdater;
 
+        public static Action<PlayerController> RegisterIndex;
+
 
         private void Start()
         {
@@ -161,6 +165,7 @@ namespace StarterAssets
             }
 
             PlayerNameUpdater.Label.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+            RegisterIndex?.Invoke(this);
         }
 
         private void Update()
@@ -175,11 +180,6 @@ namespace StarterAssets
             }
         }
 
-        private void LateUpdate()
-        {
-            if (PV.IsMine)
-                CameraRotation();
-        }
 
         private void AssignAnimationIDs()
         {
@@ -205,26 +205,6 @@ namespace StarterAssets
             }
         }
 
-        private void CameraRotation()
-        {
-            // if there is an input and camera position is not fixed
-            //if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-            //{
-            //    //Don't multiply mouse input by Time.deltaTime;
-            //    float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-            //    _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-            //    _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-            //}
-
-            // clamp our rotations so our values are limited 360 degrees
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-
-            // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
-        }
 
         private void Move()
         {
@@ -361,13 +341,6 @@ namespace StarterAssets
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
-        }
-
-        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-        {
-            if (lfAngle < -360f) lfAngle += 360f;
-            if (lfAngle > 360f) lfAngle -= 360f;
-            return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
 
         private void OnDrawGizmosSelected()

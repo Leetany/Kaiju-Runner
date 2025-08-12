@@ -18,6 +18,11 @@ public class WindEffectController : MonoBehaviour
 
     void Update()
     {
+        if(windEffect == null)
+        {
+            return;
+        }
+
         Vector3 currentPosition = targetTransform.position;
         float speed = (currentPosition - lastPosition).magnitude / Time.deltaTime;
 

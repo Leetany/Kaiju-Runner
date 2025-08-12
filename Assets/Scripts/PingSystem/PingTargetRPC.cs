@@ -54,7 +54,7 @@ namespace WriteAngle.Ping
         {
             internalText = gameObject.GetComponentInChildren<PlayerNameUpdator>().Label.text;
 
-            Invoke("GetData", 0.1f);
+            Invoke("GetData", 0.5f);
             delayChat = 0f;
             delayChatTime = 5f;
         }
