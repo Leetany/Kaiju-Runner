@@ -5,6 +5,8 @@ using TMPro;
 using ClayPro;
 using System.Collections.Generic;
 using System;
+using PlayerScript;
+using StarterAssets;
 
 public class ChatUIManager : MonoBehaviourPunCallbacks
 {
@@ -26,6 +28,9 @@ public class ChatUIManager : MonoBehaviourPunCallbacks
 
         PingTargetRPC.CreateChat += SendingMessage;
         ClazyProController.RegisterIndex += AddIndex;
+        LHK_PlayerControl.RegisterIndex += AddIndex1;
+        PlayerController.RegisterIndex += AddIndex2;
+        BigGo_PlayerController.RegisterIndex += AddIndex3;
     }
 
     [PunRPC]
@@ -55,10 +60,28 @@ public class ChatUIManager : MonoBehaviourPunCallbacks
         playerIndex.Add(controller.PV.ViewID, controller.PV.Controller.NickName);
     }
 
+    private void AddIndex1(LHK_PlayerControl controller)
+    {
+        playerIndex.Add(controller.PV.ViewID, controller.PV.Controller.NickName);
+    }
+
+    private void AddIndex2(PlayerController controller)
+    {
+        playerIndex.Add(controller.PV.ViewID, controller.PV.Controller.NickName);
+    }
+
+    private void AddIndex3(BigGo_PlayerController controller)
+    {
+        playerIndex.Add(controller.PV.ViewID, controller.PV.Controller.NickName);
+    }
+
 
     private void OnDestroy()
     {
         PingTargetRPC.CreateChat -= SendingMessage;
         ClazyProController.RegisterIndex -= AddIndex;
+        LHK_PlayerControl.RegisterIndex -= AddIndex1;
+        PlayerController.RegisterIndex -= AddIndex2;
+        BigGo_PlayerController.RegisterIndex -= AddIndex3;
     }
 }
