@@ -76,7 +76,7 @@ namespace WriteAngle.Ping
             FindAndRegisterInitialTargets();
 
             // Cache valide references.
-            _cachedPingCamera = Camera.main;
+            _cachedPingCamera = PingCamera;
         }
 
         private void OnDestroy()

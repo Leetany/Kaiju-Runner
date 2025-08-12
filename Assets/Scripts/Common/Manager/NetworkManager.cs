@@ -10,6 +10,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TMP_InputField NickNameInput;
     public GameObject DisconnectPanel;
     public GameObject RespawnPanel;
+    public GameObject Go_Button;
+    public GameObject ChatBox;
 
 
     void Awake()
@@ -33,6 +35,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         DisconnectPanel.SetActive(false);
+        Go_Button.SetActive(true);
+        ChatBox.SetActive(true);
         PlayerSpawnManager.Instance.SpawnAtEachScenePoint();
     }
 
