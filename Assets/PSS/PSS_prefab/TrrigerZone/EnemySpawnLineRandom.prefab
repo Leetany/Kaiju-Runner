@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 7300639290923855328, guid: 924b3b0be5d0b8549a1d9d64400f7bb1, type: 3}
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 141433446842962274, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
   enemyCount: 9
   groupSize: 3
   spacing: 1.5
@@ -76,3 +76,17 @@ MonoBehaviour:
   spawnDirection: {x: 0, y: 0, z: 1}
   spawnRotationDirection: {x: -1, y: 0, z: 0}
   lookAtDirection: 1
+  spawnEffectPrefab: {fileID: 141433446842962269, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
+  effectLifetime: 2
+  attachEffectToEnemy: 0
+  effectOffset: {x: 0, y: 0, z: 0}
+  matchEffectRotationToEnemy: 1
+  effectScale: 1
+  blockWhileSpawning: 0
+  preventOverlap: 1
+  useCooldown: 1
+  cooldownSeconds: 0.3
+  cooldownScope: 0
+  refreshCooldownOnReenter: 0
+  showSpawnGizmos: 1
+  showCooldownGizmo: 1

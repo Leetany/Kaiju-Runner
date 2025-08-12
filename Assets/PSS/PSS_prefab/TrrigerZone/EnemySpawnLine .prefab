@@ -73,3 +73,13 @@ MonoBehaviour:
   spacing: 2
   groupInterval: 2
   spawnDirection: {x: 1, y: 0, z: 0}
+  spawnRotationDirection: {x: 0, y: 0, z: 1}
+  lookAtDirection: 1
+  spawnEffectPrefab: {fileID: 141433446842962269, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
+  effectLifetime: 2
+  attachEffectToEnemy: 0
+  effectOffset: {x: 0, y: 0, z: 0}
+  matchEffectRotationToEnemy: 1
+  effectScale: 1
+  retriggerCooldown: 0.15
+  preventOverlap: 1

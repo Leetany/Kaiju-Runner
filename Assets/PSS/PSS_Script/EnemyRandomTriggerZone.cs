@@ -18,55 +18,78 @@ public class EnemyRandomTriggerZone : MonoBehaviour
     public Vector3 spawnRotationDirection = Vector3.forward; // ✨ 적이 바라볼 방향
 
     [Header("Spawn Effect")]
-    [Tooltip("적 스폰 시 재생할 이펙트 프리팹 (ParticleSystem 등)")]
     public GameObject spawnEffectPrefab;
-    [Tooltip("이펙트가 자동 파괴될 시간(초). 0 이하면 파괴 안함")]
     public float effectLifetime = 2.0f;
-    [Tooltip("이펙트를 적에 붙일지 여부 (적과 함께 이동)")]
     public bool attachEffectToEnemy = false;
-    [Tooltip("스폰 위치에서의 이펙트 오프셋 (월드 기준)")]
     public Vector3 effectOffset = Vector3.zero;
-    [Tooltip("이펙트 회전을 적의 회전과 동일하게 맞출지 여부")]
     public bool matchEffectRotationToEnemy = true;
-    [Tooltip("이펙트 크기 조절 (1 = 원본 크기)")]
     public float effectScale = 1.0f;
 
-    private bool hasSpawned = false;
-    private readonly List<GameObject> spawnedEnemies = new List<GameObject>(); // ✅ 추적용
+    [Header("Trigger Behavior")]
+    public bool spawnOnEveryEnter = true;
+    public float retriggerCooldown = 0.15f;
+    public bool preventOverlap = true;
+
+    [Header("Enemy Scale")]
+    [Tooltip("모든 적에게 곱해줄 기본 스케일 (1 = 원본)")]
+    public float scale = 1.0f;
+    [Tooltip("체크 시 적마다 랜덤 스케일 적용 (scaleMin ~ scaleMax)")]
+    public bool randomizeScale = false;
+    [Tooltip("랜덤 스케일 최소값")]
+    public float scaleMin = 0.9f;
+    [Tooltip("랜덤 스케일 최대값")]
+    public float scaleMax = 1.1f;
+
+    private readonly List<GameObject> spawnedEnemies = new List<GameObject>();
+    private float _lastTriggerTime = -999f;
+    private Coroutine _running;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!hasSpawned && other.CompareTag("Player"))
+        if (!other.CompareTag("Player")) return;
+        if (!spawnOnEveryEnter) return;
+
+        if (Time.time - _lastTriggerTime < retriggerCooldown) return;
+        _lastTriggerTime = Time.time;
+
+        if (preventOverlap && _running != null)
         {
-            hasSpawned = true;
-            StartCoroutine(SpawnEnemiesRandomly());
+            StopCoroutine(_running);
+            _running = null;
         }
+
+        _running = StartCoroutine(SpawnEnemiesRandomly());
     }
 
     private IEnumerator SpawnEnemiesRandomly()
     {
         for (int i = 0; i < enemyCount; i++)
         {
-            // 위치 계산
             Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
             Vector3 randomOffset = new Vector3(randomCircle.x, 0f, randomCircle.y);
-            Vector3 spawnPos = spawnPoint.position + randomOffset;
+            Vector3 spawnPos = (spawnPoint ? spawnPoint.position : transform.position) + randomOffset;
 
-            // 회전 계산
             Quaternion rotation = lookAtDirection
                 ? Quaternion.LookRotation(spawnRotationDirection.normalized)
                 : Quaternion.identity;
 
-            // 적 생성
             GameObject enemy = Instantiate(enemyPrefab, spawnPos, rotation);
+
+            // ▶ 크기 적용
+            float chosenScale = randomizeScale ? Random.Range(scaleMin, scaleMax) : Mathf.Max(0f, scale);
+            enemy.transform.localScale *= chosenScale;
+
             spawnedEnemies.Add(enemy);
 
-            // 스폰 이펙트
             TryPlaySpawnEffect(enemy, spawnPos, rotation);
 
-            // 간격 대기
-            yield return new WaitForSeconds(spawnInterval);
+            if (spawnInterval > 0f)
+                yield return new WaitForSeconds(spawnInterval);
+            else
+                yield return null;
         }
+
+        _running = null;
     }
 
     private void TryPlaySpawnEffect(GameObject enemy, Vector3 spawnPos, Quaternion enemyRot)
@@ -77,33 +100,21 @@ public class EnemyRandomTriggerZone : MonoBehaviour
         Quaternion fxRot = matchEffectRotationToEnemy ? enemyRot : Quaternion.identity;
 
         GameObject fx = Instantiate(spawnEffectPrefab, fxPos, fxRot);
-
-        // 크기 적용
         fx.transform.localScale *= Mathf.Max(0f, effectScale);
 
-        // 부착 옵션
         if (attachEffectToEnemy && enemy != null)
-        {
             fx.transform.SetParent(enemy.transform, worldPositionStays: true);
-        }
 
-        // 수명 처리
         if (effectLifetime > 0f)
-        {
             Destroy(fx, effectLifetime);
-        }
-        // ParticleSystem이 있다면 프리팹 쪽에서 StopAction=Destroy 권장
     }
 
     private void OnDrawGizmos()
     {
-        if (spawnPoint == null) return;
-
-        // 스폰 반경 표시
+        Transform sp = spawnPoint ? spawnPoint : transform;
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(spawnPoint.position, spawnRadius);
+        Gizmos.DrawWireSphere(sp.position, spawnRadius);
 
-        // 예상 생성 방향/이펙트 위치 프리뷰
         if (lookAtDirection)
         {
             Vector3 forward = spawnRotationDirection.normalized;
@@ -113,30 +124,26 @@ public class EnemyRandomTriggerZone : MonoBehaviour
             {
                 Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
                 Vector3 randomOffset = new Vector3(randomCircle.x, 0f, randomCircle.y);
-                Vector3 previewPos = spawnPoint.position + randomOffset;
+                Vector3 previewPos = sp.position + randomOffset;
 
-                // 적이 바라보는 방향 프리뷰
                 Gizmos.DrawLine(previewPos, previewPos + forward * 1.5f);
                 Gizmos.DrawSphere(previewPos + forward * 1.5f, 0.08f);
 
-                // 이펙트 예상 위치(노랑)
                 if (spawnEffectPrefab != null)
                 {
                     Gizmos.color = Color.yellow;
                     Gizmos.DrawWireSphere(previewPos + effectOffset, 0.25f);
-                    Gizmos.color = Color.cyan; // 다음 루프 위해 복구
+                    Gizmos.color = Color.cyan;
                 }
             }
         }
 
-        // 실제 생성된 적 방향 시각화
         if (Application.isPlaying && spawnedEnemies != null)
         {
             Gizmos.color = Color.yellow;
             foreach (var enemy in spawnedEnemies)
             {
                 if (enemy == null) continue;
-
                 Vector3 from = enemy.transform.position;
                 Vector3 to = from + enemy.transform.forward * 2f;
                 Gizmos.DrawLine(from, to);
@@ -153,6 +160,11 @@ public class EnemyRandomTriggerZone : MonoBehaviour
         if (spawnRotationDirection == Vector3.zero) spawnRotationDirection = Vector3.forward;
         effectLifetime = Mathf.Max(0f, effectLifetime);
         effectScale = Mathf.Max(0f, effectScale);
+        retriggerCooldown = Mathf.Max(0f, retriggerCooldown);
+
+        scale = Mathf.Max(0f, scale);
+        scaleMin = Mathf.Max(0f, scaleMin);
+        scaleMax = Mathf.Max(scaleMin, scaleMax);
     }
 #endif
 }

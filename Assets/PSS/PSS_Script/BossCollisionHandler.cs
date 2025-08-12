@@ -17,6 +17,8 @@ public class BossCollisionHandler : MonoBehaviour
     public Vector3 effectOffset = Vector3.zero;
     public bool effectMatchBossRotation = false;
     public float effectLifetime = 3.0f;
+    [Tooltip("이펙트 크기 배수 (1 = 원본 크기)")]
+    public float effectScale = 1.0f; // ✅ 크기 조절
 
     public Behaviour[] disableOnDeath;
     public Collider[] disableColliders;
@@ -50,7 +52,7 @@ public class BossCollisionHandler : MonoBehaviour
         // 움직임/충돌 정지
         if (disableMovementOnDeath)
         {
-            var agent = GetComponent<NavMeshAgent>();
+            var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
             if (agent) { agent.isStopped = true; agent.ResetPath(); }
             var rb = GetComponent<Rigidbody>();
             if (rb) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; rb.isKinematic = true; }
@@ -75,6 +77,10 @@ public class BossCollisionHandler : MonoBehaviour
             var pos = transform.position + effectOffset;
             var rot = effectMatchBossRotation ? transform.rotation : Quaternion.identity;
             var vfx = Instantiate(deathEffectPrefab, pos, rot);
+
+            // ✅ 크기 적용
+            vfx.transform.localScale *= Mathf.Max(0f, effectScale);
+
             if (effectLifetime > 0f) Destroy(vfx, effectLifetime);
         }
 
@@ -90,6 +96,10 @@ public class BossCollisionHandler : MonoBehaviour
             var pos = transform.position + effectOffset;
             var rot = effectMatchBossRotation ? transform.rotation : Quaternion.identity;
             var vfx = Instantiate(deathEffectPrefab, pos, rot);
+
+            // ✅ 크기 적용
+            vfx.transform.localScale *= Mathf.Max(0f, effectScale);
+
             if (effectLifetime > 0f) Destroy(vfx, effectLifetime);
         }
         Destroy(gameObject);

@@ -66,9 +66,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 954ef140c7bfacd43920c591478f1ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 7868441819796269418, guid: 5fb807483e416cc438ee83ad98a79459, type: 3}
   spawnPoint: {fileID: 8442377040077177179, guid: 2751b07aed0dbff48a6dfdcaddc65470, type: 3}
-  enemyCount: 3
-  spawnInterval: 2
+  enemyPrefab: {fileID: 0}
+  count: 3
   spacing: 2
-  direction: 0
+  spawnInterval: 0.2
+  groupInterval: 0
+  rotationDirection: {x: 0, y: 0, z: 1}
+  useLookRotation: 1
+  spawnEffectPrefab: {fileID: 141433446842962269, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
+  effectLifetime: 2
+  attachEffectToEnemy: 0
+  effectOffset: {x: 0, y: 0, z: 0}
+  matchEffectRotationToEnemy: 1
+  effectScale: 1
+  retriggerCooldown: 5
+  preventOverlap: 1
+  groups: []

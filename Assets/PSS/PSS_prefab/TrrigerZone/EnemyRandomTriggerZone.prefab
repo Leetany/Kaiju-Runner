@@ -50,6 +50,17 @@ MonoBehaviour:
   enemyCount: 9
   spawnInterval: 1
   spawnRadius: 3
+  lookAtDirection: 1
+  spawnRotationDirection: {x: 0, y: 0, z: 1}
+  spawnEffectPrefab: {fileID: 141433446842962269, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
+  effectLifetime: 2
+  attachEffectToEnemy: 0
+  effectOffset: {x: 0, y: 0, z: 0}
+  matchEffectRotationToEnemy: 1
+  effectScale: 1
+  spawnOnEveryEnter: 1
+  retriggerCooldown: 0.15
+  preventOverlap: 1
 --- !u!65 &6858782555115746820
 BoxCollider:
   m_ObjectHideFlags: 0
