@@ -330,6 +330,18 @@ MonoBehaviour:
   chaseRange: 15
   stopDistance: 1
   attackInterval: 1
+  walkBool: isWalk
+  attackTrigger: isAttacking
+  hitTrigger: Hit
+  dieTrigger: Die
+  destroyDelay: 1.5
+  disableOnDeath: []
+  disableColliders: []
+  makeRigidbodyKinematicOnDeath: 1
+  deathEffectPrefab: {fileID: 141433446842962269, guid: 3faa12bff3be66241a75ea36c35de515, type: 3}
+  effectOffset: {x: 0, y: 0, z: 0}
+  effectMatchEnemyRotation: 0
+  effectLifetime: 3
 --- !u!54 &1453960403884975890
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -372,7 +384,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

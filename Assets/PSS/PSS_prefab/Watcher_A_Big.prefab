@@ -84,6 +84,9 @@ PrefabInstance:
       addedObject: {fileID: 1488852459239548651}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
       insertIndex: -1
+      addedObject: {fileID: -615363512799016065}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2265420753255896010}
   m_SourcePrefab: {fileID: 100100000, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
 --- !u!1 &3855620473825818197 stripped
@@ -100,7 +103,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3855620473825818197}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
   m_Controller: {fileID: 9100000, guid: 8d97b0c2149f8b64eb6dfc2cd5090b16, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -128,12 +131,34 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.5, y: 1, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 1.8, z: 0}
+--- !u!114 &-615363512799016065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855620473825818197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5607eea546e27f5478236845c2913da9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4587033366337115694}
+  dieTriggerName: die
+  destroyDelay: 2
+  disableMovementOnDeath: 1
+  deathEffectPrefab: {fileID: 0}
+  effectOffset: {x: 0, y: 0, z: 0}
+  effectMatchBossRotation: 0
+  effectLifetime: 3
+  disableOnDeath: []
+  disableColliders: []
 --- !u!54 &2265420753255896010
 Rigidbody:
   m_ObjectHideFlags: 0
