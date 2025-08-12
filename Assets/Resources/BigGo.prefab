@@ -43,6 +43,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigGo
       objectReference: {fileID: 0}
+    - target: {fileID: 5783241991720835976, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6560024332827148594, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
