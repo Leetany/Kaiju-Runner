@@ -12,7 +12,6 @@ public class PlayerSpawnManager : MonoBehaviour
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
     [SerializeField] private GameObject[] spawnPoint;
-    private GameObject[] playerLastPoint;
 
     private int gamePlayerNum = 4;
 
@@ -36,7 +35,6 @@ public class PlayerSpawnManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnLoaded;
         previewCharacter = null;
         spawnPoint[0] = GameObject.FindWithTag("SpawnPoint");
     }
@@ -111,29 +109,13 @@ public class PlayerSpawnManager : MonoBehaviour
         //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
         //SpawnAtEachScenePoint();
 
-        
 
-        if(GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
+        if (GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
         {
             return;
         }
 
-        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint"); 
-
-        if (playerLastPoint != null)
-        {
-            for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
-            {
-                spawnPoint[i] = playerLastPoint[i];
-            }
-
-            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
-            {
-                SpawnAtMyPoint();
-            }
-
-            return;
-        }
+        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
         for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
         {
@@ -147,22 +129,9 @@ public class PlayerSpawnManager : MonoBehaviour
         }
     }
 
-    void OnSceneUnLoaded(Scene arg0)
-    {
-        playerLastPoint = new GameObject[gamePlayerNum];
-
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < spawnPoint.Length && i < players.Length; i++)
-        {
-            playerLastPoint[i] = players[i];
-        }
-    }
-
-
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneUnloaded -= OnSceneUnLoaded;
     }
 }
 

@@ -6648,6 +6648,7 @@ GameObject:
   - component: {fileID: 638433477}
   - component: {fileID: 638433476}
   - component: {fileID: 638433475}
+  - component: {fileID: 638433478}
   m_Layer: 0
   m_Name: Tail
   m_TagString: SpawnPoint
@@ -6687,7 +6688,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -6746,6 +6747,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 638433473}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &638433478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638433473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec9eabe8b3f5b04b94fd2017c8dded2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &663032749
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9010,6 +9023,7 @@ GameObject:
   - component: {fileID: 846955959}
   - component: {fileID: 846955958}
   - component: {fileID: 846955957}
+  - component: {fileID: 846955960}
   m_Layer: 0
   m_Name: Left
   m_TagString: SpawnPoint
@@ -9049,7 +9063,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -9108,6 +9122,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846955955}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &846955960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846955955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec9eabe8b3f5b04b94fd2017c8dded2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &852304496
 GameObject:
   m_ObjectHideFlags: 0
@@ -14301,6 +14327,7 @@ GameObject:
   - component: {fileID: 1082313361}
   - component: {fileID: 1082313360}
   - component: {fileID: 1082313359}
+  - component: {fileID: 1082313362}
   m_Layer: 0
   m_Name: Right
   m_TagString: SpawnPoint
@@ -14340,7 +14367,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -14399,6 +14426,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082313357}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1082313362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082313357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec9eabe8b3f5b04b94fd2017c8dded2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1082730667 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
@@ -18288,6 +18327,7 @@ GameObject:
   - component: {fileID: 1330946132}
   - component: {fileID: 1330946131}
   - component: {fileID: 1330946130}
+  - component: {fileID: 1330946133}
   m_Layer: 0
   m_Name: Head
   m_TagString: SpawnPoint
@@ -18327,7 +18367,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -18386,6 +18426,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1330946128}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1330946133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330946128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec9eabe8b3f5b04b94fd2017c8dded2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1337316996
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21408,10 +21460,6 @@ MonoBehaviour:
   cutscenesSceneName: Cutscenes
   cutsceneIndex: 0
   usePhotonWhenConnected: 1
-  manualAnchors: []
-  useTagDiscovery: 1
-  anchorTag: CutsceneAnchor
-  includeInactiveTaggedObjects: 1
   syncSnapshotViaRoomProperty: 1
 --- !u!4 &1520879287
 Transform:
@@ -24269,10 +24317,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4470217909248964617, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
 --- !u!1 &1757775291
 GameObject:
