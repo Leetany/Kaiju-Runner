@@ -67,7 +67,7 @@ namespace WriteAngle.Ping
             Debug.Log($"<b>[{gameObject.name}] PingUIManager:</b> Initialized.", this);
         }
 
-        private void OnEnabled()
+        private void OnEnable()
         {
             // Start runs after all Awakes, ensuring targets can be found reliably.
             if (!isInitialized) return;
@@ -78,7 +78,7 @@ namespace WriteAngle.Ping
             _cachedPingCamera = PingCamera;
         }
 
-        private void OnDisabled()
+        private void OnDisable()
         {
             // --- Cleanup ---
             // 이벤트들 구독 취소 메모리 해제
