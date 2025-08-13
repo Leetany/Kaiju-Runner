@@ -1,4 +1,5 @@
-using System;
+ï»¿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -7,65 +8,84 @@ using UnityEngine.SceneManagement;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // â† í¬í†¤ Hashtable ë³„ì¹­
 #endif
 
 /// <summary>
-/// Stage ¡æ ÄÆ¾À ¾ÀÀ¸·Î ´ÜÀÏ ÀüÈ¯ÇÏ±â Á÷Àü, ¾Æ·¡ »óÅÂ¸¦ JSONÀ¸·Î ½º³À¼¦:
-/// 1) ¾ŞÄ¿ ´ë»ó(¼öµ¿/ÅÂ±×)ÀÇ Transform/Active
-/// 2) ¸ğµç PhaseManagerÀÇ ÁøÇà »óÅÂ(ÇöÀç ½ºÅÜ, Å¸ÀÌ¸Ó, hpApplied, ObjectChecker ÁøÇà)
-/// 3) Boss »óÅÂ(currentHp, maxHp(¿É¼Ç), ³»ºÎ ÄÆ¾À Æ®¸®°Å ÇÃ·¡±×µé(played75/50/25 µî))
-/// 4) Phase Ä¿½ºÅÒ ÇÃ·¡±×(customFlags: Dictionary<string,bool>/HashSet<string> µî - ÀÖÀ¸¸é ÀÚµ¿ Ã³¸®)
-/// º¹±Í ½Ã CutsceneSceneManager°¡ ÀÌ JSONÀ» »ç¿ëÇØ º¹¿øÇÑ´Ù.
+/// Stage â†’ ì»·ì”¬ ì”¬ìœ¼ë¡œ ë‹¨ì¼ ì „í™˜í•˜ê¸° ì§ì „, ì•„ë˜ ìƒíƒœë¥¼ JSONìœ¼ë¡œ ìŠ¤ëƒ…ìƒ·:
+/// 1) ì•µì»¤ ëŒ€ìƒ(ìˆ˜ë™/íƒœê·¸)ì˜ Transform/Active
+/// 2) ëª¨ë“  PhaseManagerì˜ ì§„í–‰ ìƒíƒœ(í˜„ì¬ ìŠ¤í…, íƒ€ì´ë¨¸, hpApplied, ObjectChecker ì§„í–‰)
+/// 3) Boss ìƒíƒœ(currentHp, maxHp(ì˜µì…˜), ë‚´ë¶€ ì»·ì”¬ íŠ¸ë¦¬ê±° í”Œë˜ê·¸ë“¤(played75/50/25 ë“±))
+/// 4) Phase ì»¤ìŠ¤í…€ í”Œë˜ê·¸(customFlags: Dictionary<string,bool>/HashSet<string> ë“± - ìˆìœ¼ë©´ ìë™ ì²˜ë¦¬)
+/// ë³µê·€ ì‹œ CutsceneSceneManagerê°€ ì´ JSONì„ ì‚¬ìš©í•´ ë³µì›í•œë‹¤.
+///
+/// âœ¨ ì¤‘ìš”: PlayCutscene í˜¸ì¶œ ì‹œ 'ë‹¤ìŒ í”„ë ˆì„'ìœ¼ë¡œ ì „í™˜ì„ ë¯¸ë£¸ â†’
+/// PhaseManager.Update()ê°€ Step ì¦ê°€/ë‹¤ìŒ Phase í™œì„±í™”ë¥¼ ëë‚¸ ë’¤ ìƒíƒœë¥¼ ìº¡ì²˜.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
-    [Header("ÄÆ¾ÀµéÀÌ µé¾îÀÖ´Â Àü¿ë Scene ÀÌ¸§")]
+    [Header("ì»·ì”¬ë“¤ì´ ë“¤ì–´ìˆëŠ” ì „ìš© Scene ì´ë¦„")]
     public string cutscenesSceneName = "Cutscenes";
 
-    [Header("Àç»ıÇÒ ÄÆ¾À ÀÎµ¦½º (0ºÎÅÍ)")]
+    [Header("ì¬ìƒí•  ì»·ì”¬ ì¸ë±ìŠ¤ (0ë¶€í„°)")]
     public int cutsceneIndex = 0;
 
-    [Header("Æ÷Åæ Á¢¼Ó ÁßÀÌ¸é PhotonNetwork.LoadLevel »ç¿ë")]
+    [Header("í¬í†¤ ì ‘ì† ì¤‘ì´ë©´ PhotonNetwork.LoadLevel ì‚¬ìš©")]
     public bool usePhotonWhenConnected = true;
 
-    [Header("º¸Á¸ ´ë»ó(¼öµ¿ ÁöÁ¤)")]
+    [Header("ë³´ì¡´ ëŒ€ìƒ(ìˆ˜ë™ ì§€ì •)")]
     public List<Transform> manualAnchors = new List<Transform>();
 
-    [Header("º¸Á¸ ´ë»ó(ÅÂ±× ÀÚµ¿ ¼öÁı)")]
+    [Header("ë³´ì¡´ ëŒ€ìƒ(íƒœê·¸ ìë™ ìˆ˜ì§‘)")]
     public bool useTagDiscovery = true;
     public string anchorTag = "CutsceneAnchor";
     public bool includeInactiveTaggedObjects = true;
 
 #if PHOTON_UNITY_NETWORKING
-    [Header("¸ÖÆ¼ÇÃ·¹ÀÌ: ½º³À¼¦À» ·ë Ä¿½ºÅÒ ¼Ó¼ºÀ¸·Î °øÀ¯")]
+    [Header("ë©€í‹°í”Œë ˆì´: ìŠ¤ëƒ…ìƒ·ì„ ë£¸ ì»¤ìŠ¤í…€ ì†ì„±ìœ¼ë¡œ ê³µìœ ")]
     public bool syncSnapshotViaRoomProperty = true;
     private const string ROOM_KEY_SNAPSHOT = "CUTSCENE_STAGE_SNAPSHOT";
 #endif
+
+    // ì¤‘ë³µ í˜¸ì¶œ ë°©ì§€
+    private bool _cutsceneLoading = false;
 
     // ====== PUBLIC API ======
     public void PlayCutscene() => PlayCutscene(cutsceneIndex);
 
     public void PlayCutscene(int index)
     {
-        // µÇµ¹¾Æ¿Ã ¾À/ÄÆ¾À ÀÎµ¦½º ±â·Ï
+        if (_cutsceneLoading) return;
+        _cutsceneLoading = true;
+
+        // ë˜ëŒì•„ì˜¬ ì”¬/ì»·ì”¬ ì¸ë±ìŠ¤ ê¸°ë¡
         string active = SceneManager.GetActiveScene().name;
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "MainScene" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // ½º³À¼¦(JSON) »ı¼º
+        // ë‹¤ìŒ í”„ë ˆì„ì— ìŠ¤ëƒ…ìƒ·/ì „í™˜
+        StartCoroutine(DeferredCutsceneLoad());
+    }
+
+    private IEnumerator DeferredCutsceneLoad()
+    {
+        // í•„ìš” ì‹œ í•œ í”„ë ˆì„ ë” ëŒ€ê¸°í•´ë„ ë¨ (yield return null; ì¶”ê°€)
+        yield return null;
+
+        // ìŠ¤ëƒ…ìƒ·(JSON) ìƒì„±
         string snapshotJson = BuildSnapshotJson();
         CutsceneTransit.StateJson = snapshotJson;
 
 #if PHOTON_UNITY_NETWORKING
         if (usePhotonWhenConnected && PhotonNetwork.IsConnected && PhotonNetwork.InRoom && syncSnapshotViaRoomProperty)
         {
-            var props = new Hashtable();
+            var props = new PhotonHashtable(); // â† í¬í†¤ Hashtable ì‚¬ìš©
             props[ROOM_KEY_SNAPSHOT] = snapshotJson;
             PhotonNetwork.CurrentRoom.SetCustomProperties(props);
         }
 #endif
 
-        // ÄÆ¾À ¾ÀÀ¸·Î ´ÜÀÏ ÀüÈ¯
+        // ì»·ì”¬ ì”¬ìœ¼ë¡œ ë‹¨ì¼ ì „í™˜
         if (ShouldUsePhotonLoad())
         {
 #if PHOTON_UNITY_NETWORKING
@@ -78,6 +98,8 @@ public class CutsceneLoader : MonoBehaviour
         {
             SceneManager.LoadScene(cutscenesSceneName, LoadSceneMode.Single);
         }
+
+        _cutsceneLoading = false;
     }
 
     private bool ShouldUsePhotonLoad()
@@ -89,7 +111,7 @@ public class CutsceneLoader : MonoBehaviour
 #endif
     }
 
-    // ====== ½º³À¼¦ Á÷·ÄÈ­ ¸ğµ¨ ======
+    // ====== ìŠ¤ëƒ…ìƒ· ì§ë ¬í™” ëª¨ë¸ ======
     [Serializable] private class AnchorSnapshot { public string path; public Vector3 position; public Quaternion rotation; public Vector3 localScale; public bool active; }
 
     [Serializable] private class PhaseStepItemSnapshot { public string objectPath; public bool destroyed; public List<KV> passCounts; }
@@ -102,18 +124,18 @@ public class CutsceneLoader : MonoBehaviour
         public bool phaseActiveSelf;
         public List<PhaseStepSnapshot> steps;
 
-        // Ä¿½ºÅÒ ÇÃ·¡±×(ÀÖÀ¸¸é ÀúÀå)
-        public List<string> customFlagKeys;      // HashSetÀÌ¸é Å°¸¸
-        public List<KVBool> customFlagDict;      // Dictionary<string,bool>ÀÌ¸é key/bool
+        // ì»¤ìŠ¤í…€ í”Œë˜ê·¸(ìˆìœ¼ë©´ ì €ì¥)
+        public List<string> customFlagKeys;      // HashSetì´ë©´ í‚¤ë§Œ
+        public List<KVBool> customFlagDict;      // Dictionary<string,bool>ì´ë©´ key/bool
     }
 
     [Serializable]
     private class BossSnapshot
     {
-        public string path;            // BossÀÇ °èÃş °æ·Î
+        public string path;            // Bossì˜ ê³„ì¸µ ê²½ë¡œ
         public float currentHp;
-        public float maxHp;            // ÀÖÀ¸¸é ÀúÀå
-        public Dictionary<string, bool> boolFlags; // played75/50/25 °°Àº ³»ºÎ ÇÃ·¡±×(¸®ÇÃ·º¼Ç ¼öÁı)
+        public float maxHp;            // ìˆìœ¼ë©´ ì €ì¥
+        public Dictionary<string, bool> boolFlags; // played75/50/25 ê°™ì€ ë‚´ë¶€ í”Œë˜ê·¸(ë¦¬í”Œë ‰ì…˜ ìˆ˜ì§‘)
     }
 
     [Serializable] private class KV { public int key; public int val; public KV(int k, int v) { key = k; val = v; } }
@@ -127,7 +149,7 @@ public class CutsceneLoader : MonoBehaviour
         public List<BossSnapshot> bosses = new();
     }
 
-    // ====== ½º³À¼¦ »ı¼º ======
+    // ====== ìŠ¤ëƒ…ìƒ· ìƒì„± ======
     private string BuildSnapshotJson()
     {
         var full = new FullSnapshot
@@ -198,7 +220,7 @@ public class CutsceneLoader : MonoBehaviour
                 steps = new List<PhaseStepSnapshot>()
             };
 
-            // Step »óÅÂµé
+            // Step ìƒíƒœë“¤
             for (int i = 0; i < pm.steps.Count; i++)
             {
                 var s = pm.steps[i];
@@ -231,7 +253,7 @@ public class CutsceneLoader : MonoBehaviour
                 pmSnap.steps.Add(sSnap);
             }
 
-            // (¿É¼Ç) Ä¿½ºÅÒ ÇÃ·¡±× ¼öÁı
+            // (ì˜µì…˜) ì»¤ìŠ¤í…€ í”Œë˜ê·¸ ìˆ˜ì§‘
             CapturePhaseCustomFlags(pm, pmSnap);
 
             list.Add(pmSnap);
@@ -241,7 +263,7 @@ public class CutsceneLoader : MonoBehaviour
 
     private void CapturePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot pmSnap)
     {
-        // Dictionary<string,bool> customFlags Áö¿ø
+        // Dictionary<string,bool> ë˜ëŠ” HashSet<string> ì§€ì›
         var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictField != null)
         {
@@ -259,7 +281,7 @@ public class CutsceneLoader : MonoBehaviour
             return;
         }
 
-        // Property·Î ³ëÃâµÈ °æ¿ìµµ ½Ãµµ
+        // Propertyë¡œ ë…¸ì¶œëœ ê²½ìš°ë„ ì‹œë„
         var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictProp != null)
         {
@@ -294,13 +316,12 @@ public class CutsceneLoader : MonoBehaviour
                 boolFlags = new Dictionary<string, bool>()
             };
 
-            // ³»ºÎ ÇÃ·¡±×(played75/50/25 µî) ¸®ÇÃ·º¼ÇÀ¸·Î ¼öÁı
+            // ë‚´ë¶€ í”Œë˜ê·¸(played75/50/25 ë“±) ë¦¬í”Œë ‰ì…˜ìœ¼ë¡œ ìˆ˜ì§‘
             var flags = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach (var f in flags)
             {
                 if (f.FieldType == typeof(bool))
                 {
-                    // °ü·ÊÀûÀ¸·Î "played" Á¢µÎ»ç/ÄÆ¾À °ü·Ã ÀÌ¸§À» ¿ì¼±, ¾Æ´Ï¸é ¸ğµç boolµµ Çã¿ë
                     bool value = (bool)f.GetValue(boss);
                     snap.boolFlags[f.Name] = value;
                 }
@@ -325,7 +346,7 @@ public class CutsceneLoader : MonoBehaviour
     }
 }
 
-/// <summary>ÄÆ¾À ÀüÈ¯ ÆÄ¶ó¹ÌÅÍ(Á¤Àû)</summary>
+/// <summary>ì»·ì”¬ ì „í™˜ íŒŒë¼ë¯¸í„°(ì •ì )</summary>
 public static class CutsceneTransit
 {
     public static string ReturnScene = "MainScene";
@@ -334,6 +355,6 @@ public static class CutsceneTransit
 
     public static void Reset()
     {
-        // ÇÊ¿ä ½Ã ÃÊ±âÈ­
+        // í•„ìš” ì‹œ ì´ˆê¸°í™”
     }
 }

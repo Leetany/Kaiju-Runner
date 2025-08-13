@@ -21175,6 +21175,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cutscenesSceneName: Cutscenes
   cutsceneIndex: 0
+  usePhotonWhenConnected: 1
+  manualAnchors: []
+  useTagDiscovery: 1
+  anchorTag: CutsceneAnchor
+  includeInactiveTaggedObjects: 1
+  syncSnapshotViaRoomProperty: 1
 --- !u!4 &1520879287
 Transform:
   m_ObjectHideFlags: 0

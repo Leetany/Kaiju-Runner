@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // 사용 여부와 무관하지만 통일
 #endif
 
 /// <summary>
@@ -157,15 +158,8 @@ public class CutsceneSceneManager : MonoBehaviour
         }
     }
 
-    private int SafeGetCutsceneIndex()
-    {
-        return Mathf.Max(0, CutsceneTransit.CutsceneIndex);
-    }
-
-    private string SafeGetReturnScene()
-    {
-        return string.IsNullOrEmpty(CutsceneTransit.ReturnScene) ? fallbackReturnSceneName : CutsceneTransit.ReturnScene;
-    }
+    private int SafeGetCutsceneIndex() => Mathf.Max(0, CutsceneTransit.CutsceneIndex);
+    private string SafeGetReturnScene() => string.IsNullOrEmpty(CutsceneTransit.ReturnScene) ? fallbackReturnSceneName : CutsceneTransit.ReturnScene;
 
     private bool ShouldUsePhotonLoad()
     {
@@ -337,11 +331,10 @@ public class CutsceneSceneManager : MonoBehaviour
                 if (!boss) continue;
 
                 // HP 복원
-                // maxHp는 프로젝트 정책에 따라 덮어쓸지 선택 — 여기선 스냅샷에 값이 있으면 맞춰둔다.
-                if (b.maxHp > 0f) boss.maxHp = b.maxHp;
+                if (b.maxHp > 0f) boss.maxHp = b.maxHp; // 스냅샷에 값이 있으면 맞춰둠
                 boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
 
-                // 내부 bool 플래그(played75/50/25 등) 복원 (리플렉션)
+                // 내부 bool 플래그(played75/50/25 등) 복원
                 if (b.boolFlags != null)
                 {
                     var fields = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
