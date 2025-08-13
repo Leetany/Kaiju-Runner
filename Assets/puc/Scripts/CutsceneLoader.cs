@@ -8,19 +8,16 @@ using UnityEngine.SceneManagement;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
-using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // ← 포톤 Hashtable 별칭
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // 포톤 Hashtable 별칭
 #endif
 
 /// <summary>
-/// Stage → 컷씬 씬으로 단일 전환하기 직전, 아래 상태를 JSON으로 스냅샷:
-/// 1) 앵커 대상(수동/태그)의 Transform/Active
-/// 2) 모든 PhaseManager의 진행 상태(현재 스텝, 타이머, hpApplied, ObjectChecker 진행)
-/// 3) Boss 상태(currentHp, maxHp(옵션), 내부 컷씬 트리거 플래그들(played75/50/25 등))
-/// 4) Phase 커스텀 플래그(customFlags: Dictionary<string,bool>/HashSet<string> 등 - 있으면 자동 처리)
-/// 복귀 시 CutsceneSceneManager가 이 JSON을 사용해 복원한다.
-///
-/// ✨ 중요: PlayCutscene 호출 시 '다음 프레임'으로 전환을 미룸 →
-/// PhaseManager.Update()가 Step 증가/다음 Phase 활성화를 끝낸 뒤 상태를 캡처.
+/// Stage → 컷씬 씬으로 전환하기 직전, Stage의 런타임 상태를 JSON 스냅샷으로 저장.
+/// - Anchors(Transform/Active)
+/// - 모든 PhaseManager 진행상태(현재 스텝, 타이머, hpApplied, 오브젝트 진행)
+/// - Boss HP/max 및 내부 bool 플래그(컷씬 트리거 등)
+/// - (있으면) Phase 커스텀 플래그(Dictionary<string,bool> | HashSet<string>)
+/// 복귀 시 CutsceneSceneManager가 이 JSON으로 복원.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
@@ -47,10 +44,9 @@ public class CutsceneLoader : MonoBehaviour
     private const string ROOM_KEY_SNAPSHOT = "CUTSCENE_STAGE_SNAPSHOT";
 #endif
 
-    // 중복 호출 방지
     private bool _cutsceneLoading = false;
 
-    // ====== PUBLIC API ======
+    // === Public API ===
     public void PlayCutscene() => PlayCutscene(cutsceneIndex);
 
     public void PlayCutscene(int index)
@@ -58,28 +54,28 @@ public class CutsceneLoader : MonoBehaviour
         if (_cutsceneLoading) return;
         _cutsceneLoading = true;
 
-        // 되돌아올 씬/컷씬 인덱스 기록
+        // 복귀할 씬/컷씬 인덱스 기록
         string active = SceneManager.GetActiveScene().name;
-        CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "MainScene" : active;
+        CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "Stage" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // 다음 프레임에 스냅샷/전환
+        // ⚠️ 중요: 전환을 2프레임 미뤄서 PhaseManager가 페이즈 넘어가는 것까지 반영
         StartCoroutine(DeferredCutsceneLoad());
     }
 
     private IEnumerator DeferredCutsceneLoad()
     {
-        // 필요 시 한 프레임 더 대기해도 됨 (yield return null; 추가)
-        yield return null;
+        yield return null; // 1프레임 대기
+        yield return null; // 2프레임 대기 (다음 페이즈 활성화까지 안전하게)
 
-        // 스냅샷(JSON) 생성
+        // 스냅샷 생성
         string snapshotJson = BuildSnapshotJson();
         CutsceneTransit.StateJson = snapshotJson;
 
 #if PHOTON_UNITY_NETWORKING
         if (usePhotonWhenConnected && PhotonNetwork.IsConnected && PhotonNetwork.InRoom && syncSnapshotViaRoomProperty)
         {
-            var props = new PhotonHashtable(); // ← 포톤 Hashtable 사용
+            var props = new PhotonHashtable();
             props[ROOM_KEY_SNAPSHOT] = snapshotJson;
             PhotonNetwork.CurrentRoom.SetCustomProperties(props);
         }
@@ -124,18 +120,18 @@ public class CutsceneLoader : MonoBehaviour
         public bool phaseActiveSelf;
         public List<PhaseStepSnapshot> steps;
 
-        // 커스텀 플래그(있으면 저장)
-        public List<string> customFlagKeys;      // HashSet이면 키만
-        public List<KVBool> customFlagDict;      // Dictionary<string,bool>이면 key/bool
+        // 커스텀 플래그
+        public List<string> customFlagKeys;      // HashSet<string>
+        public List<KVBool> customFlagDict;      // Dictionary<string,bool>
     }
 
     [Serializable]
     private class BossSnapshot
     {
-        public string path;            // Boss의 계층 경로
+        public string path;
         public float currentHp;
-        public float maxHp;            // 있으면 저장
-        public Dictionary<string, bool> boolFlags; // played75/50/25 같은 내부 플래그(리플렉션 수집)
+        public float maxHp;
+        public Dictionary<string, bool> boolFlags;
     }
 
     [Serializable] private class KV { public int key; public int val; public KV(int k, int v) { key = k; val = v; } }
@@ -220,7 +216,6 @@ public class CutsceneLoader : MonoBehaviour
                 steps = new List<PhaseStepSnapshot>()
             };
 
-            // Step 상태들
             for (int i = 0; i < pm.steps.Count; i++)
             {
                 var s = pm.steps[i];
@@ -253,7 +248,7 @@ public class CutsceneLoader : MonoBehaviour
                 pmSnap.steps.Add(sSnap);
             }
 
-            // (옵션) 커스텀 플래그 수집
+            // 커스텀 플래그 수집
             CapturePhaseCustomFlags(pm, pmSnap);
 
             list.Add(pmSnap);
@@ -263,7 +258,6 @@ public class CutsceneLoader : MonoBehaviour
 
     private void CapturePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot pmSnap)
     {
-        // Dictionary<string,bool> 또는 HashSet<string> 지원
         var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictField != null)
         {
@@ -271,8 +265,7 @@ public class CutsceneLoader : MonoBehaviour
             if (val is Dictionary<string, bool> dict)
             {
                 pmSnap.customFlagDict = new List<KVBool>(dict.Count);
-                foreach (var kv in dict)
-                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+                foreach (var kv in dict) pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
             }
             else if (val is HashSet<string> set)
             {
@@ -281,7 +274,6 @@ public class CutsceneLoader : MonoBehaviour
             return;
         }
 
-        // Property로 노출된 경우도 시도
         var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictProp != null)
         {
@@ -289,8 +281,7 @@ public class CutsceneLoader : MonoBehaviour
             if (val is Dictionary<string, bool> dict2)
             {
                 pmSnap.customFlagDict = new List<KVBool>(dict2.Count);
-                foreach (var kv in dict2)
-                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+                foreach (var kv in dict2) pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
             }
             else if (val is HashSet<string> set2)
             {
@@ -316,16 +307,11 @@ public class CutsceneLoader : MonoBehaviour
                 boolFlags = new Dictionary<string, bool>()
             };
 
-            // 내부 플래그(played75/50/25 등) 리플렉션으로 수집
+            // 내부 bool 플래그(played75/50/25 등) 리플렉션 수집
             var flags = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach (var f in flags)
-            {
                 if (f.FieldType == typeof(bool))
-                {
-                    bool value = (bool)f.GetValue(boss);
-                    snap.boolFlags[f.Name] = value;
-                }
-            }
+                    snap.boolFlags[f.Name] = (bool)f.GetValue(boss);
 
             list.Add(snap);
         }
@@ -346,15 +332,9 @@ public class CutsceneLoader : MonoBehaviour
     }
 }
 
-/// <summary>컷씬 전환 파라미터(정적)</summary>
 public static class CutsceneTransit
 {
-    public static string ReturnScene = "MainScene";
+    public static string ReturnScene = "Stage";
     public static int CutsceneIndex = 0;
     public static string StateJson = null;
-
-    public static void Reset()
-    {
-        // 필요 시 초기화
-    }
 }
