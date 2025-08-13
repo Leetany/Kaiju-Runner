@@ -5982,7 +5982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (4)
+      value: Neck (19)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -7433,7 +7433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (5)
+      value: Neck (20)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -8270,7 +8270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (1)
+      value: Neck (16)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -16247,7 +16247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (7)
+      value: Neck (22)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -16439,7 +16439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (3)
+      value: Neck (18)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -16542,7 +16542,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (6)
+      value: Neck (21)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -21659,7 +21659,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (9)
+      value: Neck (24)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -23983,10 +23983,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4470217909248964617, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
 --- !u!1 &1757775291
 GameObject:
@@ -26163,7 +26160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (2)
+      value: Neck (17)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
@@ -26803,7 +26800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3565162665388559697, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_Name
-      value: Neck (8)
+      value: Neck (23)
       objectReference: {fileID: 0}
     - target: {fileID: 4193361574758979563, guid: 8f13dba59a27adb44a99c0b251aa4dfd, type: 3}
       propertyPath: m_LocalScale.x
