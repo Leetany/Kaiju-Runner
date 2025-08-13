@@ -714,6 +714,7 @@ MonoBehaviour:
   windEffect: {fileID: 0}
   targetTransform: {fileID: 8152477357214643222}
   maxSpeed: 10
+  PV: {fileID: 5486802710577199908}
 --- !u!114 &235446116241252508
 MonoBehaviour:
   m_ObjectHideFlags: 0
