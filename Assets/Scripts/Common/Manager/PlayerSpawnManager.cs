@@ -34,6 +34,7 @@ public class PlayerSpawnManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
         previewCharacter = null;
         spawnPoint[0] = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
     }
@@ -125,6 +126,22 @@ public class PlayerSpawnManager : MonoBehaviour
         {
             SpawnAtMyPoint();
         }
+    }
+
+    private void OnSceneUnloaded(Scene scene)
+    {
+        // 예시: 모든 플레이어의 위치를 SpawnPoint로 저장
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < spawnPoint.Length && i < players.Length; i++)
+        {
+            spawnPoint[i] = players[i].transform.position;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
 }
 
