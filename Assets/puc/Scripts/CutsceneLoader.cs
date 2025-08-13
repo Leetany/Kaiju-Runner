@@ -12,7 +12,7 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // 포톤 Hashtable �
 
 /// <summary>
 /// 컷씬 진입 직전에 "보스 HP"만 JSON으로 스냅샷.
-/// 복귀 후 CutsceneSceneManager가 HP를 복원하고, 다음 페이즈의 Step 1로 강제 이동한다.
+/// 복귀 후 CutsceneSceneManager가 HP를 복원하고, 정확히 "다음 페이즈의 Step 1"로 강제 이동.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
@@ -46,16 +46,16 @@ public class CutsceneLoader : MonoBehaviour
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "Stage" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // 복귀 후 어디로 갈지(다음 페이즈의 경로) 미리 계산
-        CutsceneTransit.TargetNextPhasePath = ComputeNextPhasePath();
+        // 복귀 후 강제 진입할 "다음 페이즈" 경로를 미리 계산(견고한 기준으로)
+        CutsceneTransit.TargetNextPhasePath = ComputeNextPhasePathRobust();
 
-        // (HP만 스냅샷) 즉시 캡처 후 전환
+        // (HP만 스냅샷) 전환
         StartCoroutine(DeferredCutsceneLoad());
     }
 
     private IEnumerator DeferredCutsceneLoad()
     {
-        // 필요시 한 프레임 대기해도 되지만, HP만 저장하므로 즉시 진행
+        // HP만 저장하므로 1프레임 대기만
         yield return null;
 
         // 보스 HP 스냅샷
@@ -119,26 +119,29 @@ public class CutsceneLoader : MonoBehaviour
         return JsonUtility.ToJson(bundle);
     }
 
-    // ====== 다음 페이즈 경로 계산 ======
-    private string ComputeNextPhasePath()
+    // ====== 다음 페이즈 경로 계산(견고판) ======
+    private string ComputeNextPhasePathRobust()
     {
+        // 1) "현재" 판단: (a) pm.track가 활성, 또는 (b) pm.gameObject가 활성
         var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-        PhaseManager activePm = null;
+        PhaseManager current = null;
 
         foreach (var pm in pms)
         {
             if (!pm) continue;
-            if (pm.gameObject.activeInHierarchy)
+            bool trackActive = pm.track != null && pm.track.activeInHierarchy;
+            bool rootActive = pm.gameObject.activeInHierarchy;
+            if (trackActive || rootActive)
             {
-                activePm = pm;
+                current = pm;
                 break;
             }
         }
 
-        if (activePm != null && activePm.nextPhaseManager != null)
-            return GetHierarchyPath(activePm.nextPhaseManager.transform);
+        if (current != null && current.nextPhaseManager != null)
+            return GetHierarchyPath(current.nextPhaseManager.transform);
 
-        return null; // 복귀 후 런타임에서 다시 탐색하게 됨
+        return null; // 복귀 시 재탐색 fallback
     }
 
     // ====== 경로 유틸 ======
@@ -164,6 +167,6 @@ public static class CutsceneTransit
     /// <summary>보스 HP 스냅샷(JSON)</summary>
     public static string StateJson = null;
 
-    /// <summary>컷씬 복귀 후 강제 진입할 "다음 페이즈"의 Transform 경로(없으면 런타임 탐색)</summary>
+    /// <summary>컷씬 복귀 후 강제 진입할 "다음 페이즈"의 Transform 경로</summary>
     public static string TargetNextPhasePath = null;
 }
