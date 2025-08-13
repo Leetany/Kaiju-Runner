@@ -37,7 +37,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         DisconnectPanel.SetActive(false);
         Go_Button.SetActive(true);
         ChatBox.SetActive(true);
-        PlayerSpawnManager.Instance.SpawnAtEachScenePoint();
+        PlayerSpawnManager.Instance.SpawnLobbyPoint();
     }
 
     // public void Spawn()

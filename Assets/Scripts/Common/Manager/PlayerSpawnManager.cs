@@ -11,7 +11,9 @@ public class PlayerSpawnManager : MonoBehaviour
     [SerializeField] private string selectCharacter;
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
-    [SerializeField] private Vector3 spawnPoint;
+    [SerializeField] private Vector3[] spawnPoint;
+
+    private int gamePlayerNum = 4;
 
 
     private void Awake()
@@ -25,13 +27,15 @@ public class PlayerSpawnManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        spawnPoint = new Vector3[gamePlayerNum];
     }
 
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         previewCharacter = null;
-        spawnPoint = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
+        spawnPoint[0] = GameObject.FindWithTag("SpawnPoint").GetComponent<Transform>().position;
     }
 
     public void ShowSelectUI()
@@ -70,11 +74,11 @@ public class PlayerSpawnManager : MonoBehaviour
             Destroy(previewCharacter);
             yield return new WaitForSeconds(0.1f);
         }
-        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint, Quaternion.Euler(0, 180, 0));
+        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint[0], Quaternion.Euler(0, 180, 0));
         yield return null;
     }
 
-    public void SpawnAtEachScenePoint()
+    public void SpawnLobbyPoint()
     {
         if (previewCharacter != null)
         {
@@ -86,13 +90,26 @@ public class PlayerSpawnManager : MonoBehaviour
             SelectCharUI.SetActive(false);
         }
 
-        PhotonNetwork.Instantiate(selectCharacter, spawnPoint, Quaternion.identity);
+        PhotonNetwork.Instantiate(selectCharacter, spawnPoint[0], Quaternion.identity);
+    }
+
+    private void SpawnAtEachScenePoint()
+    {
+        if (previewCharacter != null)
+        {
+            Destroy(previewCharacter);
+        }
+
+        if (SelectCharUI != null)
+        {
+            SelectCharUI.SetActive(false);
+        }
     }
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
-        SpawnAtEachScenePoint();
+        //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
+        //SpawnAtEachScenePoint();
     }
 }
 
