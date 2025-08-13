@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: b91187a9debded54988c89438ac8b3f6
+AssetOrigin:
+  serializedVersion: 1
+  productId: 190627
+  packageName: 'Monster: Watcher'
+  packageVersion: 1.0
+  assetPath: Assets/Hatogame_new/Watcher/Mesh/Watcher_skin.FBX
+  uploadId: 626874
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -99,7 +104,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
@@ -107,10 +112,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 190627
-  packageName: 'Monster: Watcher'
-  packageVersion: 1.0
-  assetPath: Assets/Hatogame_new/Watcher/Mesh/Watcher_skin.FBX
-  uploadId: 626874
