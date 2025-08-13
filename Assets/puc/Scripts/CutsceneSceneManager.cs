@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
@@ -13,10 +12,9 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 #endif
 
 /// <summary>
-/// 컷씬 씬:
-/// - 대상 컷씬 재생 → 종료 시 ReturnScene으로 단일 전환
-/// - 복귀 씬 로드 직후 스냅샷을 적용해 Stage를 복원
-///   (Anchors / Phase 진행상태 / Boss HP / 커스텀 플래그)
+/// 컷씬 재생 → 종료 후 Stage로 복귀:
+/// 1) 보스 HP만 복원
+/// 2) 다음 페이즈의 Step 1로 강제 이동(가능하면 CutsceneTransit.TargetNextPhasePath 사용)
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
@@ -126,7 +124,7 @@ public class CutsceneSceneManager : MonoBehaviour
             if (scene.name != targetScene) return;
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            // 스냅샷 소스 선택
+            // 스냅샷 소스 선택 (보스 HP만 포함)
             string json = CutsceneTransit.StateJson;
 
 #if PHOTON_UNITY_NETWORKING
@@ -139,7 +137,8 @@ public class CutsceneSceneManager : MonoBehaviour
 #endif
             try
             {
-                ApplySnapshot(json);
+                RestoreBossHp(json);
+                ForceMoveToNextPhaseStep1();
             }
             catch (Exception ex)
             {
@@ -160,239 +159,107 @@ public class CutsceneSceneManager : MonoBehaviour
 #endif
     }
 
-    // ====== 역직렬화 모델 ======
-    [Serializable] private class AnchorSnapshot { public string path; public Vector3 position; public Quaternion rotation; public Vector3 localScale; public bool active; }
-    [Serializable] private class PhaseStepItemSnapshot { public string objectPath; public bool destroyed; public List<KV> passCounts; }
-    [Serializable] private class PhaseStepSnapshot { public float timer; public bool hpApplied; public List<PhaseStepItemSnapshot> items; }
-    [Serializable]
-    private class PhaseManagerSnapshot
-    {
-        public string phasePath;
-        public int currentStepIndex;       // 완료 시 steps.Count 로 넘어옴
-        public bool phaseActiveSelf;
-        public List<PhaseStepSnapshot> steps;
+    // ====== 보스 HP 스냅샷 역직렬화 ======
+    [Serializable] private class BossSnapshot { public string path; public float currentHp; public float maxHp; }
+    [Serializable] private class BossSnapshotBundle { public List<BossSnapshot> bosses; }
 
-        public List<string> customFlagKeys;
-        public List<KVBool> customFlagDict;
-    }
-    [Serializable]
-    private class BossSnapshot
-    {
-        public string path;
-        public float currentHp;
-        public float maxHp;
-        public Dictionary<string, bool> boolFlags;
-    }
-    [Serializable] private class KV { public int key; public int val; }
-    [Serializable] private class KVBool { public string key; public bool val; }
-    [Serializable] private class FullSnapshot { public List<AnchorSnapshot> anchors; public List<PhaseManagerSnapshot> phases; public List<BossSnapshot> bosses; }
-
-    // ====== 스냅샷 적용 ======
-    private void ApplySnapshot(string json)
+    private void RestoreBossHp(string json)
     {
         if (string.IsNullOrEmpty(json)) return;
-        var full = JsonUtility.FromJson<FullSnapshot>(json);
-        if (full == null) return;
+        var bundle = JsonUtility.FromJson<BossSnapshotBundle>(json);
+        if (bundle == null || bundle.bosses == null) return;
 
-        // 1) 앵커 복원
-        if (full.anchors != null)
+        foreach (var b in bundle.bosses)
         {
-            foreach (var a in full.anchors)
-            {
-                var tr = FindByHierarchyPath(a.path);
-                if (!tr) continue;
-                if (tr.gameObject.activeSelf != a.active) tr.gameObject.SetActive(a.active);
-                tr.position = a.position;
-                tr.rotation = a.rotation;
-                tr.localScale = a.localScale;
-            }
-        }
+            var tr = FindByHierarchyPath(b.path);
+            if (!tr) continue;
 
-        // 2) PhaseManager 복원
-        if (full.phases != null)
-        {
-            foreach (var p in full.phases)
-            {
-                var pmTr = FindByHierarchyPath(p.phasePath);
-                if (!pmTr) continue;
-                var pm = pmTr.GetComponent<PhaseManager>();
-                if (!pm) continue;
+            var boss = tr.GetComponent<Boss>();
+            if (!boss) continue;
 
-                // 우선 활성/비활성 상태를 반영
-                if (pm.gameObject.activeSelf != p.phaseActiveSelf)
-                    pm.gameObject.SetActive(p.phaseActiveSelf);
+            if (b.maxHp > 0f) boss.maxHp = b.maxHp; // 정책에 따라 유지
+            boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
 
-                // ★ 클램프 제거: 완료 상태(=steps.Count)면 페이즈 전환 처리
-                if (p.currentStepIndex >= pm.steps.Count)
-                {
-                    // 페이즈 완료 처리: 다음 페이즈 활성화
-                    if (pm.nextPhaseManager != null)
-                    {
-                        pm.track?.SetActive(false);
-                        pm.nextPhaseManager.track?.SetActive(true);
-                        pm.nextPhaseManager.gameObject.SetActive(true);
-                        pm.gameObject.SetActive(false);
-                    }
-                    // step 단위 복원은 건너뜀
-                    continue;
-                }
-
-                // 진행 중인 스텝 복원
-                pm.currentStepIndex = Mathf.Max(0, p.currentStepIndex);
-
-                if (!p.phaseActiveSelf)
-                {
-                    // 비활성 페이즈는 스텝 오브젝트를 만지지 않음(엉뚱하게 켜지는 것 방지)
-                    continue;
-                }
-
-                if (p.steps != null)
-                {
-                    for (int si = 0; si < p.steps.Count && si < pm.steps.Count; si++)
-                    {
-                        var src = p.steps[si];
-                        var dst = pm.steps[si];
-
-                        if (dst.useTimeLimit) dst.timer = Mathf.Max(0f, src.timer);
-                        dst.hpApplied = src.hpApplied;
-
-                        if (dst.checker != null && dst.checker.objects != null && src.items != null)
-                        {
-                            foreach (var item in src.items)
-                            {
-                                if (item == null || string.IsNullOrEmpty(item.objectPath)) continue;
-                                var objTr = FindByHierarchyPath(item.objectPath);
-                                if (!objTr) continue;
-
-                                var found = dst.checker.objects.Find(x => x != null && x.obj != null && x.obj.transform == objTr);
-                                if (found != null)
-                                {
-                                    found.destroyed = item.destroyed;
-
-                                    if (item.passCounts != null)
-                                    {
-                                        if (found.passCounts == null) found.passCounts = new Dictionary<int, int>();
-                                        else found.passCounts.Clear();
-                                        foreach (var kv in item.passCounts) found.passCounts[kv.key] = kv.val;
-                                    }
-
-                                    if (found.obj != null)
-                                    {
-                                        if (found.destroyed)
-                                        {
-                                            var go = found.obj;
-                                            if (go.TryGetComponent<Renderer>(out var r)) r.enabled = false;
-                                            go.SetActive(false);
-                                        }
-                                        else
-                                        {
-                                            found.obj.SetActive(true);
-                                            if (found.obj.TryGetComponent<Renderer>(out var r2)) r2.enabled = true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            // 현재 진행 스텝만 활성
-                            for (int j = 0; j < pm.steps.Count; j++)
-                            {
-                                var s = pm.steps[j];
-                                if (s?.checker == null) continue;
-
-                                bool shouldActive = (j == pm.currentStepIndex);
-                                if (s.checker.gameObject.activeSelf != shouldActive)
-                                    s.checker.gameObject.SetActive(shouldActive);
-
-                                foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
-                                {
-                                    if (!child || child == s.checker.transform) continue;
-                                    if (child.gameObject.activeSelf != shouldActive)
-                                        child.gameObject.SetActive(shouldActive);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // 커스텀 플래그 복원
-                RestorePhaseCustomFlags(pm, p);
-
-                // UI 갱신
-                var updateMethod = pm.GetType().GetMethod("UpdatePhaseInfoUI", BindingFlags.NonPublic | BindingFlags.Instance);
-                updateMethod?.Invoke(pm, null);
-                var progMethod = pm.GetType().GetMethod("UpdateObjectProgressUI", BindingFlags.NonPublic | BindingFlags.Instance);
-                progMethod?.Invoke(pm, null);
-            }
-        }
-
-        // 3) Boss 복원 (HP/플래그)
-        if (full.bosses != null)
-        {
-            foreach (var b in full.bosses)
-            {
-                var tr = FindByHierarchyPath(b.path);
-                if (!tr) continue;
-                var boss = tr.GetComponent<Boss>();
-                if (!boss) continue;
-
-                if (b.maxHp > 0f) boss.maxHp = b.maxHp;
-                boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
-
-                if (b.boolFlags != null)
-                {
-                    var fields = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                    foreach (var f in fields)
-                        if (f.FieldType == typeof(bool) && b.boolFlags.TryGetValue(f.Name, out var val))
-                            try { f.SetValue(boss, val); } catch { }
-                }
-
-                // UI 갱신
-                try { boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp)); } catch { }
-            }
+            // HP UI 즉시 갱신(있으면)
+            try { boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp)); } catch { }
         }
     }
 
-    private void RestorePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot p)
+    // ====== 다음 페이즈 Step 1로 강제 이동 ======
+    private void ForceMoveToNextPhaseStep1()
     {
-        var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // 우선 Transit에 저장된 경로가 있으면 그것을 사용
+        PhaseManager target = null;
 
-        object target = null;
-        Type targetType = null;
-        bool isDict = false, isSet = false;
-
-        if (dictField != null) { target = dictField.GetValue(pm); targetType = dictField.FieldType; }
-        else if (dictProp != null) { target = dictProp.GetValue(pm); targetType = dictProp.PropertyType; }
-
-        if (targetType != null)
+        if (!string.IsNullOrEmpty(CutsceneTransit.TargetNextPhasePath))
         {
-            if (targetType == typeof(Dictionary<string, bool>)) isDict = true;
-            if (targetType == typeof(HashSet<string>)) isSet = true;
+            var tr = FindByHierarchyPath(CutsceneTransit.TargetNextPhasePath);
+            if (tr) target = tr.GetComponent<PhaseManager>();
+        }
+
+        // 경로가 없거나 찾지 못하면, 현재 활성 페이즈의 nextPhaseManager를 사용
+        if (target == null)
+        {
+            var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+            PhaseManager current = null;
+            foreach (var pm in pms)
+            {
+                if (pm != null && pm.gameObject.activeInHierarchy) { current = pm; break; }
+            }
+            if (current != null && current.nextPhaseManager != null)
+                target = current.nextPhaseManager;
         }
 
         if (target == null)
         {
-            if (isDict) target = new Dictionary<string, bool>();
-            else if (isSet) target = new HashSet<string>();
-            if (dictField != null) dictField.SetValue(pm, target);
-            else if (dictProp != null && dictProp.CanWrite) dictProp.SetValue(pm, target);
+            Debug.LogWarning("[CutsceneSceneManager] 다음 페이즈를 찾지 못했습니다.");
+            return;
         }
 
-        if (isDict && p.customFlagDict != null)
+        // 현재 활성 페이즈 비활성 → 타겟 페이즈 활성
+        PhaseManager prev = null;
+        var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+        foreach (var pm in all)
         {
-            var d = (Dictionary<string, bool>)target;
-            d.Clear();
-            foreach (var kv in p.customFlagDict) d[kv.key] = kv.val;
+            if (pm != null && pm.gameObject.activeInHierarchy) { prev = pm; break; }
         }
-        else if (isSet && p.customFlagKeys != null)
+
+        if (prev != null && prev != target)
         {
-            var s = (HashSet<string>)target;
-            s.Clear();
-            foreach (var k in p.customFlagKeys) s.Add(k);
+            prev.track?.SetActive(false);
+            prev.gameObject.SetActive(false);
         }
+
+        target.track?.SetActive(true);
+        target.gameObject.SetActive(true);
+
+        // Step 1(=index 0)으로 설정하고, 해당 스텝만 활성화
+        target.currentStepIndex = 0;
+        for (int i = 0; i < target.steps.Count; i++)
+        {
+            var s = target.steps[i];
+            if (s?.checker == null) continue;
+
+            bool shouldActive = (i == 0);
+            if (s.checker.gameObject.activeSelf != shouldActive)
+                s.checker.gameObject.SetActive(shouldActive);
+
+            foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+            {
+                if (!child || child == s.checker.transform) continue;
+                if (child.gameObject.activeSelf != shouldActive)
+                    child.gameObject.SetActive(shouldActive);
+            }
+        }
+
+        // UI 갱신(비공개 메서드일 수 있어 리플렉션)
+        var updateMethod = target.GetType().GetMethod("UpdatePhaseInfoUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        updateMethod?.Invoke(target, null);
+        var progMethod = target.GetType().GetMethod("UpdateObjectProgressUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        progMethod?.Invoke(target, null);
     }
 
-    // ====== 계층 경로 유틸 ======
+    // ====== 경로 유틸 ======
     private static Transform FindByHierarchyPath(string path)
     {
         if (string.IsNullOrEmpty(path)) return null;
