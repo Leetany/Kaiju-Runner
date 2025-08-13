@@ -12,6 +12,7 @@ public class PlayerSpawnManager : MonoBehaviour
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
     [SerializeField] private GameObject[] spawnPoint;
+    private GameObject[] playerLastPoint;
 
     private int gamePlayerNum = 4;
 
@@ -29,12 +30,13 @@ public class PlayerSpawnManager : MonoBehaviour
         }
 
         spawnPoint = new GameObject[gamePlayerNum];
+        
     }
 
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
+        SceneManager.sceneUnloaded += OnSceneUnLoaded;
         previewCharacter = null;
         spawnPoint[0] = GameObject.FindWithTag("SpawnPoint");
     }
@@ -109,13 +111,30 @@ public class PlayerSpawnManager : MonoBehaviour
         //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
         //SpawnAtEachScenePoint();
 
+        
+
         if(GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
         {
             return;
         }
 
-        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint"); ;
-        
+        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint"); 
+
+        if (playerLastPoint != null)
+        {
+            for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
+            {
+                spawnPoint[i] = playerLastPoint[i];
+            }
+
+            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+            {
+                SpawnAtMyPoint();
+            }
+
+            return;
+        }
+
         for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
         {
             spawnPoint[i] = points[i];
@@ -128,20 +147,22 @@ public class PlayerSpawnManager : MonoBehaviour
         }
     }
 
-    private void OnSceneUnloaded(Scene scene)
+    void OnSceneUnLoaded(Scene arg0)
     {
-        // 예시: 모든 플레이어의 위치를 SpawnPoint로 저장
+        playerLastPoint = new GameObject[gamePlayerNum];
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         for (int i = 0; i < spawnPoint.Length && i < players.Length; i++)
         {
-            spawnPoint[i].transform.position = players[i].transform.position;
+            playerLastPoint[i] = players[i];
         }
     }
+
 
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        SceneManager.sceneUnloaded -= OnSceneUnLoaded;
     }
 }
 
