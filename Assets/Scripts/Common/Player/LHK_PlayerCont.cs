@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using Unity.Cinemachine;
+using ClayPro;
+using System;
 
 
 namespace PlayerScript
 {
-    public class LHK_PlayerCont : MonoBehaviour
+    public class LHK_PlayerControl : MonoBehaviour
     {
         [Header("Movement")]
         public float walkSpeed = 4f;
@@ -29,6 +31,9 @@ namespace PlayerScript
         private float _cinemachineTargetPitch;
 
         public PhotonView PV;
+        public PlayerNameUpdator PlayerNameUpdater;
+
+        public static Action<LHK_PlayerControl> RegisterIndex;
 
         private void Start()
         {
@@ -43,6 +48,9 @@ namespace PlayerScript
 
                 _cinemachineTargetYaw = cam.transform.rotation.eulerAngles.y;
             }
+
+            PlayerNameUpdater.Label.text = PV.IsMine ? PhotonNetwork.NickName : PV.Owner.NickName;
+            RegisterIndex?.Invoke(this);
         }
 
         void Update()

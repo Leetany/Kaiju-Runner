@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 namespace WriteAngle.Ping
 {
@@ -42,6 +43,9 @@ namespace WriteAngle.Ping
 
         private void Awake()
         {
+            Instance = this;
+
+
             // 필요한 참조와 셋업을 함
             bool setupError = ValidateSetup();
             if (setupError)
@@ -51,8 +55,7 @@ namespace WriteAngle.Ping
                 return;
             }
 
-            // Cache valide references.
-            _cachedPingCamera = PingCamera;
+            
             // Set up the object pool for marker ui elements.
             InitializePool();
 
@@ -60,7 +63,6 @@ namespace WriteAngle.Ping
             PingTargetRPC.OnRPCTargetEnabled += HandleTargetEnabled;
             PingTargetRPC.OnRPCTargetDisabled += HandleTargetDisabled;
 
-            Instance = this;
 
             isInitialized = true; // 성공적인 초기화 표시
             Debug.Log($"<b>[{gameObject.name}] PingUIManager:</b> Initialized.", this);
@@ -72,6 +74,9 @@ namespace WriteAngle.Ping
             if (!isInitialized) return;
             // Find and register any targets in the scene configured to activate automatically.
             FindAndRegisterInitialTargets();
+
+            // Cache valide references.
+            _cachedPingCamera = PingCamera;
         }
 
         private void OnDestroy()

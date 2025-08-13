@@ -70,7 +70,7 @@ public class PlayerSpawnManager : MonoBehaviour
             Destroy(previewCharacter);
             yield return new WaitForSeconds(0.1f);
         }
-        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint, Quaternion.identity);
+        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint, Quaternion.Euler(0, 180, 0));
         yield return null;
     }
 

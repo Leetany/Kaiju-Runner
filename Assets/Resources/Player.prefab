@@ -1739,6 +1739,7 @@ GameObject:
   - component: {fileID: 6711068312987023297}
   - component: {fileID: 1124170500648743039}
   - component: {fileID: 161207913851744141}
+  - component: {fileID: -7557440814784234704}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -1837,7 +1838,7 @@ MonoBehaviour:
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
   CinemachineCameraTarget: {fileID: 4102905811178168825}
   TopClamp: 70
   BottomClamp: -30
@@ -2034,6 +2035,22 @@ MonoBehaviour:
   m_SynchronizeVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &-7557440814784234704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6695642597914576295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c7a5e4adbb3eba44af9521e2e913dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayName: 
+  ActivateOnStart: 0
+  PV: {fileID: 6711068312987023297}
+  internalText: 
 --- !u!1 &6852266338087926896
 GameObject:
   m_ObjectHideFlags: 0
