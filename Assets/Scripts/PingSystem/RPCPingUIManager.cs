@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 namespace WriteAngle.Ping
 {

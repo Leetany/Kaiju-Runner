@@ -93,23 +93,32 @@ public class PlayerSpawnManager : MonoBehaviour
         PhotonNetwork.Instantiate(selectCharacter, spawnPoint[0], Quaternion.identity);
     }
 
-    private void SpawnAtEachScenePoint()
+    public void SpawnAtMyPoint()
     {
-        if (previewCharacter != null)
-        {
-            Destroy(previewCharacter);
-        }
+        int index = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        // 혹시 인덱스가 범위를 벗어나면 0으로 fallback
+        if (index < 0 || index >= spawnPoint.Length)
+            index = 0;
 
-        if (SelectCharUI != null)
-        {
-            SelectCharUI.SetActive(false);
-        }
+        PhotonNetwork.Instantiate(selectCharacter, spawnPoint[index], Quaternion.identity);
     }
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
         //SpawnAtEachScenePoint();
+
+        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
+        {
+            spawnPoint[i] = points[i].transform.position;
+        }
+
+        // 본인만 스폰
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+            SpawnAtMyPoint();
+        }
     }
 }
 
