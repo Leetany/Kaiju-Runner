@@ -61,15 +61,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6560024332827148594, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6560024332827148594, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 435.4
+      value: -309.4
       objectReference: {fileID: 0}
     - target: {fileID: 6560024332827148594, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1677.41
+      value: -1439.9
       objectReference: {fileID: 0}
     - target: {fileID: 6560024332827148594, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_LocalRotation.w
@@ -106,6 +106,10 @@ PrefabInstance:
     - target: {fileID: 6666270978826373720, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
       propertyPath: m_Avatar
       value: 
+      objectReference: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
+    - target: {fileID: 6666270978826373720, guid: 3a855f8e9a4b44840b8b116d95bdfd89, type: 3}
+      propertyPath: m_CullingMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
