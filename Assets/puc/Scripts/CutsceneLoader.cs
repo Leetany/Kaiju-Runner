@@ -1,67 +1,91 @@
-using System;
+ï»¿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // â† í¬í†¤ Hashtable ë³„ì¹­
 #endif
 
 /// <summary>
-/// Stage ¾À ¡æ ÄÆ¾À Àü¿ë ¾ÀÀ¸·Î "´ÜÀÏ ÀüÈ¯" (Additive ¹Ì»ç¿ë)
-/// ÀüÈ¯ Á÷Àü, º¸Á¸ ´ë»ó ¿ÀºêÁ§Æ®µéÀÇ Transform/Active »óÅÂ¸¦ Ä¸Ã³ÇÏ¿© JSONÀ¸·Î ÀúÀå.
-/// º¹±Í ½Ã CutsceneSceneManager°¡ ÀÌ JSONÀ» ÀÌ¿ëÇØ »óÅÂ¸¦ º¹¿ø.
+/// Stage â†’ ì»·ì”¬ ì”¬ìœ¼ë¡œ ë‹¨ì¼ ì „í™˜í•˜ê¸° ì§ì „, ì•„ë˜ ìƒíƒœë¥¼ JSONìœ¼ë¡œ ìŠ¤ëƒ…ìƒ·:
+/// 1) ì•µì»¤ ëŒ€ìƒ(ìˆ˜ë™/íƒœê·¸)ì˜ Transform/Active
+/// 2) ëª¨ë“  PhaseManagerì˜ ì§„í–‰ ìƒíƒœ(í˜„ì¬ ìŠ¤í…, íƒ€ì´ë¨¸, hpApplied, ObjectChecker ì§„í–‰)
+/// 3) Boss ìƒíƒœ(currentHp, maxHp(ì˜µì…˜), ë‚´ë¶€ ì»·ì”¬ íŠ¸ë¦¬ê±° í”Œë˜ê·¸ë“¤(played75/50/25 ë“±))
+/// 4) Phase ì»¤ìŠ¤í…€ í”Œë˜ê·¸(customFlags: Dictionary<string,bool>/HashSet<string> ë“± - ìˆìœ¼ë©´ ìë™ ì²˜ë¦¬)
+/// ë³µê·€ ì‹œ CutsceneSceneManagerê°€ ì´ JSONì„ ì‚¬ìš©í•´ ë³µì›í•œë‹¤.
+///
+/// âœ¨ ì¤‘ìš”: PlayCutscene í˜¸ì¶œ ì‹œ 'ë‹¤ìŒ í”„ë ˆì„'ìœ¼ë¡œ ì „í™˜ì„ ë¯¸ë£¸ â†’
+/// PhaseManager.Update()ê°€ Step ì¦ê°€/ë‹¤ìŒ Phase í™œì„±í™”ë¥¼ ëë‚¸ ë’¤ ìƒíƒœë¥¼ ìº¡ì²˜.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
-    [Header("ÄÆ¾ÀµéÀÌ µé¾îÀÖ´Â Àü¿ë Scene ÀÌ¸§")]
+    [Header("ì»·ì”¬ë“¤ì´ ë“¤ì–´ìˆëŠ” ì „ìš© Scene ì´ë¦„")]
     public string cutscenesSceneName = "Cutscenes";
 
-    [Header("Àç»ıÇÒ ÄÆ¾À ÀÎµ¦½º (0ºÎÅÍ)")]
+    [Header("ì¬ìƒí•  ì»·ì”¬ ì¸ë±ìŠ¤ (0ë¶€í„°)")]
     public int cutsceneIndex = 0;
 
-    [Header("Æ÷Åæ Á¢¼Ó ÁßÀÌ¸é PhotonNetwork.LoadLevel »ç¿ë")]
+    [Header("í¬í†¤ ì ‘ì† ì¤‘ì´ë©´ PhotonNetwork.LoadLevel ì‚¬ìš©")]
     public bool usePhotonWhenConnected = true;
 
-    [Header("º¸Á¸ ´ë»ó(¼öµ¿ ÁöÁ¤)")]
+    [Header("ë³´ì¡´ ëŒ€ìƒ(ìˆ˜ë™ ì§€ì •)")]
     public List<Transform> manualAnchors = new List<Transform>();
 
-    [Header("º¸Á¸ ´ë»ó(ÅÂ±× ÀÚµ¿ ¼öÁı »ç¿ë)")]
+    [Header("ë³´ì¡´ ëŒ€ìƒ(íƒœê·¸ ìë™ ìˆ˜ì§‘)")]
     public bool useTagDiscovery = true;
     public string anchorTag = "CutsceneAnchor";
     public bool includeInactiveTaggedObjects = true;
 
 #if PHOTON_UNITY_NETWORKING
-    [Header("¸ÖÆ¼ÇÃ·¹ÀÌ: ½º³À¼¦À» ·ë Ä¿½ºÅÒ ¼Ó¼ºÀ¸·Î °øÀ¯")]
+    [Header("ë©€í‹°í”Œë ˆì´: ìŠ¤ëƒ…ìƒ·ì„ ë£¸ ì»¤ìŠ¤í…€ ì†ì„±ìœ¼ë¡œ ê³µìœ ")]
     public bool syncSnapshotViaRoomProperty = true;
     private const string ROOM_KEY_SNAPSHOT = "CUTSCENE_STAGE_SNAPSHOT";
 #endif
 
-    // ---- API ----
+    // ì¤‘ë³µ í˜¸ì¶œ ë°©ì§€
+    private bool _cutsceneLoading = false;
+
+    // ====== PUBLIC API ======
     public void PlayCutscene() => PlayCutscene(cutsceneIndex);
 
     public void PlayCutscene(int index)
     {
-        // µÇµ¹¾Æ¿Ã ¾À/ÄÆ¾À ÀÎµ¦½º ±â·Ï
+        if (_cutsceneLoading) return;
+        _cutsceneLoading = true;
+
+        // ë˜ëŒì•„ì˜¬ ì”¬/ì»·ì”¬ ì¸ë±ìŠ¤ ê¸°ë¡
         string active = SceneManager.GetActiveScene().name;
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "MainScene" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // Stage »óÅÂ Ä¸Ã³(JSON)
-        string snapshotJson = SnapshotCapture();
+        // ë‹¤ìŒ í”„ë ˆì„ì— ìŠ¤ëƒ…ìƒ·/ì „í™˜
+        StartCoroutine(DeferredCutsceneLoad());
+    }
+
+    private IEnumerator DeferredCutsceneLoad()
+    {
+        // í•„ìš” ì‹œ í•œ í”„ë ˆì„ ë” ëŒ€ê¸°í•´ë„ ë¨ (yield return null; ì¶”ê°€)
+        yield return null;
+
+        // ìŠ¤ëƒ…ìƒ·(JSON) ìƒì„±
+        string snapshotJson = BuildSnapshotJson();
         CutsceneTransit.StateJson = snapshotJson;
 
 #if PHOTON_UNITY_NETWORKING
         if (usePhotonWhenConnected && PhotonNetwork.IsConnected && PhotonNetwork.InRoom && syncSnapshotViaRoomProperty)
         {
-            var props = new Hashtable();
+            var props = new PhotonHashtable(); // â† í¬í†¤ Hashtable ì‚¬ìš©
             props[ROOM_KEY_SNAPSHOT] = snapshotJson;
             PhotonNetwork.CurrentRoom.SetCustomProperties(props);
         }
 #endif
 
-        // ÄÆ¾À ¾ÀÀ¸·Î ´ÜÀÏ ÀüÈ¯
+        // ì»·ì”¬ ì”¬ìœ¼ë¡œ ë‹¨ì¼ ì „í™˜
         if (ShouldUsePhotonLoad())
         {
 #if PHOTON_UNITY_NETWORKING
@@ -74,6 +98,8 @@ public class CutsceneLoader : MonoBehaviour
         {
             SceneManager.LoadScene(cutscenesSceneName, LoadSceneMode.Single);
         }
+
+        _cutsceneLoading = false;
     }
 
     private bool ShouldUsePhotonLoad()
@@ -85,35 +111,65 @@ public class CutsceneLoader : MonoBehaviour
 #endif
     }
 
-    // ========= ½º³À¼¦: Ä¸Ã³ À¯Æ¿ =========
+    // ====== ìŠ¤ëƒ…ìƒ· ì§ë ¬í™” ëª¨ë¸ ======
+    [Serializable] private class AnchorSnapshot { public string path; public Vector3 position; public Quaternion rotation; public Vector3 localScale; public bool active; }
 
+    [Serializable] private class PhaseStepItemSnapshot { public string objectPath; public bool destroyed; public List<KV> passCounts; }
+    [Serializable] private class PhaseStepSnapshot { public float timer; public bool hpApplied; public List<PhaseStepItemSnapshot> items; }
     [Serializable]
-    private class AnchorSnapshot
+    private class PhaseManagerSnapshot
     {
-        public string path;         // °èÃş °æ·Î(·çÆ®~ÇØ´ç Transform)
-        public Vector3 position;    // world
-        public Quaternion rotation; // world
-        public Vector3 localScale;  // local
-        public bool active;         // activeSelf
+        public string phasePath;
+        public int currentStepIndex;
+        public bool phaseActiveSelf;
+        public List<PhaseStepSnapshot> steps;
+
+        // ì»¤ìŠ¤í…€ í”Œë˜ê·¸(ìˆìœ¼ë©´ ì €ì¥)
+        public List<string> customFlagKeys;      // HashSetì´ë©´ í‚¤ë§Œ
+        public List<KVBool> customFlagDict;      // Dictionary<string,bool>ì´ë©´ key/bool
     }
 
     [Serializable]
-    private class AnchorSnapshotBundle
+    private class BossSnapshot
     {
-        public List<AnchorSnapshot> entries = new List<AnchorSnapshot>();
+        public string path;            // Bossì˜ ê³„ì¸µ ê²½ë¡œ
+        public float currentHp;
+        public float maxHp;            // ìˆìœ¼ë©´ ì €ì¥
+        public Dictionary<string, bool> boolFlags; // played75/50/25 ê°™ì€ ë‚´ë¶€ í”Œë˜ê·¸(ë¦¬í”Œë ‰ì…˜ ìˆ˜ì§‘)
     }
 
-    private string SnapshotCapture()
-    {
-        var targets = CollectTargets();
-        var bundle = new AnchorSnapshotBundle();
+    [Serializable] private class KV { public int key; public int val; public KV(int k, int v) { key = k; val = v; } }
+    [Serializable] private class KVBool { public string key; public bool val; public KVBool(string k, bool v) { key = k; val = v; } }
 
+    [Serializable]
+    private class FullSnapshot
+    {
+        public List<AnchorSnapshot> anchors = new();
+        public List<PhaseManagerSnapshot> phases = new();
+        public List<BossSnapshot> bosses = new();
+    }
+
+    // ====== ìŠ¤ëƒ…ìƒ· ìƒì„± ======
+    private string BuildSnapshotJson()
+    {
+        var full = new FullSnapshot
+        {
+            anchors = CaptureAnchors(),
+            phases = CapturePhaseManagers(),
+            bosses = CaptureBosses()
+        };
+        return JsonUtility.ToJson(full);
+    }
+
+    private List<AnchorSnapshot> CaptureAnchors()
+    {
+        var targets = CollectAnchorTargets();
+        var list = new List<AnchorSnapshot>(targets.Count);
         foreach (var tr in targets)
         {
-            if (tr == null) continue;
+            if (!tr) continue;
             var go = tr.gameObject;
-
-            bundle.entries.Add(new AnchorSnapshot
+            list.Add(new AnchorSnapshot
             {
                 path = GetHierarchyPath(tr),
                 position = tr.position,
@@ -122,51 +178,166 @@ public class CutsceneLoader : MonoBehaviour
                 active = go.activeSelf
             });
         }
-
-        return JsonUtility.ToJson(bundle);
+        return list;
     }
 
-    private List<Transform> CollectTargets()
+    private List<Transform> CollectAnchorTargets()
     {
         var set = new HashSet<Transform>();
+        foreach (var tr in manualAnchors) if (tr) set.Add(tr);
 
-        // 1) ¼öµ¿ ÁöÁ¤
-        foreach (var tr in manualAnchors)
-            if (tr != null) set.Add(tr);
-
-        // 2) ÅÂ±× ÀÚµ¿ ¼öÁı(¿É¼Ç)
         if (useTagDiscovery && !string.IsNullOrEmpty(anchorTag))
         {
-            // ºñÈ°¼ºµµ Æ÷ÇÔÇØ Ã£À» ¼ö ÀÖµµ·Ï ¸ğµç ¿ÀºêÁ§Æ® ¼øÈ¸
             var all = Resources.FindObjectsOfTypeAll<Transform>();
             foreach (var tr in all)
             {
-                if (tr == null || tr.gameObject == null) continue;
-
-                // SceneObjects¸¸ (Prefab ÀÚ»ê Á¦¿Ü)
-                if (!tr.gameObject.scene.IsValid()) continue;
-
+                if (!tr || !tr.gameObject.scene.IsValid()) continue;
                 if (includeInactiveTaggedObjects)
                 {
                     if (tr.CompareTag(anchorTag)) set.Add(tr);
                 }
                 else
                 {
-                    if (tr.gameObject.activeInHierarchy && tr.CompareTag(anchorTag))
-                        set.Add(tr);
+                    if (tr.gameObject.activeInHierarchy && tr.CompareTag(anchorTag)) set.Add(tr);
                 }
             }
         }
-
         return new List<Transform>(set);
+    }
+
+    private List<PhaseManagerSnapshot> CapturePhaseManagers()
+    {
+        var phases = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+        var list = new List<PhaseManagerSnapshot>(phases.Length);
+        foreach (var pm in phases)
+        {
+            if (!pm) continue;
+            var pmSnap = new PhaseManagerSnapshot
+            {
+                phasePath = GetHierarchyPath(pm.transform),
+                currentStepIndex = pm.currentStepIndex,
+                phaseActiveSelf = pm.gameObject.activeSelf,
+                steps = new List<PhaseStepSnapshot>()
+            };
+
+            // Step ìƒíƒœë“¤
+            for (int i = 0; i < pm.steps.Count; i++)
+            {
+                var s = pm.steps[i];
+                var sSnap = new PhaseStepSnapshot
+                {
+                    timer = s.useTimeLimit ? Mathf.Max(0f, s.timer) : 0f,
+                    hpApplied = s.hpApplied,
+                    items = new List<PhaseStepItemSnapshot>()
+                };
+
+                if (s.checker != null && s.checker.objects != null)
+                {
+                    foreach (var info in s.checker.objects)
+                    {
+                        if (info == null || info.obj == null) continue;
+                        var item = new PhaseStepItemSnapshot
+                        {
+                            objectPath = GetHierarchyPath(info.obj.transform),
+                            destroyed = info.destroyed,
+                            passCounts = new List<KV>()
+                        };
+                        if (info.passCounts != null)
+                        {
+                            foreach (var kv in info.passCounts)
+                                item.passCounts.Add(new KV(kv.Key, kv.Value));
+                        }
+                        sSnap.items.Add(item);
+                    }
+                }
+                pmSnap.steps.Add(sSnap);
+            }
+
+            // (ì˜µì…˜) ì»¤ìŠ¤í…€ í”Œë˜ê·¸ ìˆ˜ì§‘
+            CapturePhaseCustomFlags(pm, pmSnap);
+
+            list.Add(pmSnap);
+        }
+        return list;
+    }
+
+    private void CapturePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot pmSnap)
+    {
+        // Dictionary<string,bool> ë˜ëŠ” HashSet<string> ì§€ì›
+        var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField != null)
+        {
+            var val = dictField.GetValue(pm);
+            if (val is Dictionary<string, bool> dict)
+            {
+                pmSnap.customFlagDict = new List<KVBool>(dict.Count);
+                foreach (var kv in dict)
+                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+            }
+            else if (val is HashSet<string> set)
+            {
+                pmSnap.customFlagKeys = new List<string>(set);
+            }
+            return;
+        }
+
+        // Propertyë¡œ ë…¸ì¶œëœ ê²½ìš°ë„ ì‹œë„
+        var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictProp != null)
+        {
+            var val = dictProp.GetValue(pm);
+            if (val is Dictionary<string, bool> dict2)
+            {
+                pmSnap.customFlagDict = new List<KVBool>(dict2.Count);
+                foreach (var kv in dict2)
+                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+            }
+            else if (val is HashSet<string> set2)
+            {
+                pmSnap.customFlagKeys = new List<string>(set2);
+            }
+        }
+    }
+
+    private List<BossSnapshot> CaptureBosses()
+    {
+        var bosses = UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+        var list = new List<BossSnapshot>(bosses.Length);
+
+        foreach (var boss in bosses)
+        {
+            if (!boss) continue;
+
+            var snap = new BossSnapshot
+            {
+                path = GetHierarchyPath(boss.transform),
+                currentHp = boss.currentHp,
+                maxHp = boss.maxHp,
+                boolFlags = new Dictionary<string, bool>()
+            };
+
+            // ë‚´ë¶€ í”Œë˜ê·¸(played75/50/25 ë“±) ë¦¬í”Œë ‰ì…˜ìœ¼ë¡œ ìˆ˜ì§‘
+            var flags = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            foreach (var f in flags)
+            {
+                if (f.FieldType == typeof(bool))
+                {
+                    bool value = (bool)f.GetValue(boss);
+                    snap.boolFlags[f.Name] = value;
+                }
+            }
+
+            list.Add(snap);
+        }
+
+        return list;
     }
 
     private static string GetHierarchyPath(Transform t)
     {
-        // ·çÆ®ºÎÅÍ "Root/Child/SubChild" ÇüÅÂ·Î °æ·Î¸¦ ¸¸µç´Ù.
         var stack = new Stack<string>();
         var cur = t;
-        while (cur != null)
+        while (cur)
         {
             stack.Push(cur.name);
             cur = cur.parent;
@@ -175,9 +346,7 @@ public class CutsceneLoader : MonoBehaviour
     }
 }
 
-/// <summary>
-/// ÄÆ¾À ÀüÈ¯ ÆÄ¶ó¹ÌÅÍ ÄÁÅ×ÀÌ³Ê(Á¤Àû)
-/// </summary>
+/// <summary>ì»·ì”¬ ì „í™˜ íŒŒë¼ë¯¸í„°(ì •ì )</summary>
 public static class CutsceneTransit
 {
     public static string ReturnScene = "MainScene";
@@ -186,7 +355,6 @@ public static class CutsceneTransit
 
     public static void Reset()
     {
-        // ÇÊ¿ä ½Ã ÃÊ±âÈ­
-        // ReturnScene = "MainScene"; CutsceneIndex = 0; StateJson = null;
+        // í•„ìš” ì‹œ ì´ˆê¸°í™”
     }
 }

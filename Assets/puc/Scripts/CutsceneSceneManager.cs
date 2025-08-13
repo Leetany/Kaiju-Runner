@@ -1,6 +1,7 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
@@ -8,27 +9,32 @@ using UnityEngine.SceneManagement;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // ì‚¬ìš© ì—¬ë¶€ì™€ ë¬´ê´€í•˜ì§€ë§Œ í†µì¼
 #endif
 
 /// <summary>
-/// ÄÆ¾À ¾À:
-/// - ´ë»ó ÄÆ¾À ¿ÀºêÁ§Æ® È°¼ºÈ­ ÈÄ Å¸ÀÓ¶óÀÎ Àç»ı
-/// - Á¾·á ½Ã ReturnSceneÀ¸·Î "´ÜÀÏ ÀüÈ¯"
-/// - º¹±Í ¾À ·Îµå ¿Ï·á ¼ø°£, JSON ½º³À¼¦À¸·Î Stage »óÅÂ º¹¿ø
+/// ì»·ì”¬ ì”¬:
+/// - ëŒ€ìƒ ì»·ì”¬ ì¬ìƒ â†’ ì¢…ë£Œ ì‹œ ReturnSceneìœ¼ë¡œ ë‹¨ì¼ ì „í™˜
+/// - ë³µê·€ ì”¬ ë¡œë“œ ì§í›„: 
+///   (1) ì•µì»¤ Transform/Active 
+///   (2) PhaseManager ì§„í–‰ ìƒíƒœ(íƒ€ì´ë¨¸/hpApplied/ObjectChecker ë“±) 
+///   (3) Boss HP ë° ë‚´ë¶€ í”Œë˜ê·¸(played75/50/25 ë“±)
+///   (4) Phase ì»¤ìŠ¤í…€ í”Œë˜ê·¸(customFlags) 
+///   ë¥¼ JSONìœ¼ë¡œ ë³µì›
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
-    [Header("ÄÆ¾À ·çÆ® ¿ÀºêÁ§Æ®µé (°¢ ·çÆ®¿¡ PlayableDirector ±ÇÀå)")]
+    [Header("ì»·ì”¬ ë£¨íŠ¸ ì˜¤ë¸Œì íŠ¸ë“¤ (ê° ë£¨íŠ¸ì— PlayableDirector ê¶Œì¥)")]
     public GameObject[] cutsceneObjects;
 
-    [Header("Transit Á¤º¸ ´©¶ô ½Ã ±âº» º¹±Í ¾À ÀÌ¸§")]
+    [Header("Transit ì •ë³´ ëˆ„ë½ ì‹œ ê¸°ë³¸ ë³µê·€ ì”¬ ì´ë¦„")]
     public string fallbackReturnSceneName = "MainScene";
 
-    [Header("Transit Á¤º¸ ´©¶ô ½Ã ±âº» ÄÆ¾À ÀÎµ¦½º")]
+    [Header("Transit ì •ë³´ ëˆ„ë½ ì‹œ ê¸°ë³¸ ì»·ì”¬ ì¸ë±ìŠ¤")]
     public int fallbackCutsceneIndex = 0;
 
 #if PHOTON_UNITY_NETWORKING
-    [Header("Æ÷Åæ ·ë Ä¿½ºÅÒ ¼Ó¼º ½º³À¼¦ ¿ì¼± »ç¿ë")]
+    [Header("í¬í†¤ ë£¸ ì»¤ìŠ¤í…€ ì†ì„± ìŠ¤ëƒ…ìƒ· ìš°ì„  ì‚¬ìš©")]
     public bool preferRoomSnapshot = true;
     private const string ROOM_KEY_SNAPSHOT = "CUTSCENE_STAGE_SNAPSHOT";
 #endif
@@ -36,14 +42,14 @@ public class CutsceneSceneManager : MonoBehaviour
     private PlayableDirector currentDirector;
     private bool restoreHookRegistered = false;
 
+    // ====== Unity ======
     private void Start()
     {
-        // ´ë»ó ÄÆ¾À ¼±ÅÃ/Àç»ı
         int index = SafeGetCutsceneIndex();
 
         if (cutsceneObjects == null || cutsceneObjects.Length == 0)
         {
-            Debug.LogWarning("[CutsceneSceneManager] ÄÆ¾À ¿ÀºêÁ§Æ®°¡ ºñ¾ú½À´Ï´Ù ¡æ Áï½Ã º¹±Í");
+            Debug.LogWarning("[CutsceneSceneManager] ì»·ì”¬ ì˜¤ë¸Œì íŠ¸ê°€ ë¹„ì—ˆìŠµë‹ˆë‹¤ â†’ ì¦‰ì‹œ ë³µê·€");
             LoadBack(SafeGetReturnScene());
             return;
         }
@@ -52,31 +58,42 @@ public class CutsceneSceneManager : MonoBehaviour
         foreach (var go in cutsceneObjects) if (go) go.SetActive(false);
 
         var target = cutsceneObjects[index];
-        if (target == null)
+        if (!target)
         {
-            Debug.LogWarning($"[CutsceneSceneManager] index {index} ´ë»ó ¾øÀ½ ¡æ º¹±Í");
+            Debug.LogWarning($"[CutsceneSceneManager] index {index} ëŒ€ìƒ ì—†ìŒ â†’ ë³µê·€");
             LoadBack(SafeGetReturnScene());
             return;
         }
 
         target.SetActive(true);
         currentDirector = target.GetComponent<PlayableDirector>();
-        if (currentDirector != null)
+        if (currentDirector)
         {
             currentDirector.stopped += OnCutsceneEnd;
             currentDirector.Play();
         }
         else
         {
-            Debug.LogWarning("[CutsceneSceneManager] PlayableDirector ¾øÀ½ ¡æ ´ÙÀ½ ÇÁ·¹ÀÓ º¹±Í");
+            Debug.LogWarning("[CutsceneSceneManager] PlayableDirector ì—†ìŒ â†’ ë‹¤ìŒ í”„ë ˆì„ ë³µê·€");
             StartCoroutine(LoadBackNextFrame(SafeGetReturnScene()));
         }
     }
 
-    private void OnCutsceneEnd(PlayableDirector director)
+    private void OnDestroy()
+    {
+        if (currentDirector != null)
+            currentDirector.stopped -= OnCutsceneEnd;
+
+        if (restoreHookRegistered)
+            SceneManager.sceneLoaded -= OnSceneLoadedDummy;
+    }
+    private void OnSceneLoadedDummy(Scene s, LoadSceneMode m) { }
+
+    // ====== Cutscene Flow ======
+    private void OnCutsceneEnd(PlayableDirector d)
     {
         if (this == null) return;
-        director.stopped -= OnCutsceneEnd;
+        d.stopped -= OnCutsceneEnd;
         LoadBack(SafeGetReturnScene());
     }
 
@@ -90,11 +107,8 @@ public class CutsceneSceneManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(sceneName)) sceneName = fallbackReturnSceneName;
 
-        // º¹¿ø ÈÅ µî·Ï: º¹±Í ¾À ·Îµù ¿Ï·á ½Ã ½º³À¼¦ Àû¿ë
+        // ë³µì› í›… ë“±ë¡ (ì”¬ ë¡œë“œ ì™„ë£Œ ì‹œ ìŠ¤ëƒ…ìƒ· ì ìš©)
         RegisterRestoreHook(sceneName);
-
-        // ÇÊ¿ä½Ã Transit ÃÊ±âÈ­´Â º¹¿ø ÈÄ¿¡ ÇØµµ µÊ
-        // CutsceneTransit.Reset();
 
         if (ShouldUsePhotonLoad())
         {
@@ -120,25 +134,22 @@ public class CutsceneSceneManager : MonoBehaviour
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (scene.name != targetScene) return;
-
-            // 1È¸¼º
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            // --- ½º³À¼¦ ¼Ò½º ¼±ÅÃ ---
-            string snapshotJson = CutsceneTransit.StateJson;
+            // ìŠ¤ëƒ…ìƒ· ì†ŒìŠ¤ ì„ íƒ
+            string json = CutsceneTransit.StateJson;
 
 #if PHOTON_UNITY_NETWORKING
             if (preferRoomSnapshot && PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
             {
-                var roomProps = PhotonNetwork.CurrentRoom?.CustomProperties;
-                if (roomProps != null && roomProps.TryGetValue(ROOM_KEY_SNAPSHOT, out var v) && v is string s && !string.IsNullOrEmpty(s))
-                    snapshotJson = s;
+                var props = PhotonNetwork.CurrentRoom?.CustomProperties;
+                if (props != null && props.TryGetValue(ROOM_KEY_SNAPSHOT, out var v) && v is string s && !string.IsNullOrEmpty(s))
+                    json = s;
             }
 #endif
-            // --- º¹¿ø ---
             try
             {
-                SnapshotRestore(snapshotJson);
+                ApplySnapshot(json);
             }
             catch (Exception ex)
             {
@@ -147,15 +158,8 @@ public class CutsceneSceneManager : MonoBehaviour
         }
     }
 
-    private int SafeGetCutsceneIndex()
-    {
-        return Mathf.Max(0, CutsceneTransit.CutsceneIndex);
-    }
-
-    private string SafeGetReturnScene()
-    {
-        return string.IsNullOrEmpty(CutsceneTransit.ReturnScene) ? fallbackReturnSceneName : CutsceneTransit.ReturnScene;
-    }
+    private int SafeGetCutsceneIndex() => Mathf.Max(0, CutsceneTransit.CutsceneIndex);
+    private string SafeGetReturnScene() => string.IsNullOrEmpty(CutsceneTransit.ReturnScene) ? fallbackReturnSceneName : CutsceneTransit.ReturnScene;
 
     private bool ShouldUsePhotonLoad()
     {
@@ -166,88 +170,268 @@ public class CutsceneSceneManager : MonoBehaviour
 #endif
     }
 
-    private void OnDestroy()
+    // ====== ìŠ¤ëƒ…ìƒ· ì—­ì§ë ¬í™” ëª¨ë¸ ======
+    [Serializable] private class AnchorSnapshot { public string path; public Vector3 position; public Quaternion rotation; public Vector3 localScale; public bool active; }
+
+    [Serializable] private class PhaseStepItemSnapshot { public string objectPath; public bool destroyed; public List<KV> passCounts; }
+    [Serializable] private class PhaseStepSnapshot { public float timer; public bool hpApplied; public List<PhaseStepItemSnapshot> items; }
+    [Serializable]
+    private class PhaseManagerSnapshot
     {
-        if (currentDirector != null)
-            currentDirector.stopped -= OnCutsceneEnd;
+        public string phasePath;
+        public int currentStepIndex;
+        public bool phaseActiveSelf;
+        public List<PhaseStepSnapshot> steps;
 
-        if (restoreHookRegistered)
-            SceneManager.sceneLoaded -= OnSceneLoadedDummy;
+        // ì»¤ìŠ¤í…€ í”Œë˜ê·¸(ìˆìœ¼ë©´ ë³µì›)
+        public List<string> customFlagKeys;
+        public List<KVBool> customFlagDict;
     }
-    private void OnSceneLoadedDummy(Scene s, LoadSceneMode m) { }
-
-    // ========= ½º³À¼¦: º¹¿ø À¯Æ¿ =========
 
     [Serializable]
-    private class AnchorSnapshot
+    private class BossSnapshot
     {
         public string path;
-        public Vector3 position;
-        public Quaternion rotation;
-        public Vector3 localScale;
-        public bool active;
+        public float currentHp;
+        public float maxHp;
+        public Dictionary<string, bool> boolFlags;
     }
 
-    [Serializable]
-    private class AnchorSnapshotBundle
-    {
-        public List<AnchorSnapshot> entries = new List<AnchorSnapshot>();
-    }
+    [Serializable] private class KV { public int key; public int val; }
+    [Serializable] private class KVBool { public string key; public bool val; }
+    [Serializable] private class FullSnapshot { public List<AnchorSnapshot> anchors; public List<PhaseManagerSnapshot> phases; public List<BossSnapshot> bosses; }
 
-    private void SnapshotRestore(string json)
+    // ====== ìŠ¤ëƒ…ìƒ· ì ìš© ======
+    private void ApplySnapshot(string json)
     {
         if (string.IsNullOrEmpty(json)) return;
+        var full = JsonUtility.FromJson<FullSnapshot>(json);
+        if (full == null) return;
 
-        var bundle = JsonUtility.FromJson<AnchorSnapshotBundle>(json);
-        if (bundle == null || bundle.entries == null) return;
-
-        foreach (var e in bundle.entries)
+        // 1) ì•µì»¤(Transform/Active) ë³µì›
+        if (full.anchors != null)
         {
-            if (e == null || string.IsNullOrEmpty(e.path)) continue;
+            foreach (var a in full.anchors)
+            {
+                var tr = FindByHierarchyPath(a.path);
+                if (!tr) continue;
+                if (tr.gameObject.activeSelf != a.active) tr.gameObject.SetActive(a.active);
+                tr.position = a.position;
+                tr.rotation = a.rotation;
+                tr.localScale = a.localScale;
+            }
+        }
 
-            var tr = FindByHierarchyPath(e.path);
-            if (tr == null) continue;
+        // 2) PhaseManager ì§„í–‰ ìƒíƒœ + ì»¤ìŠ¤í…€ í”Œë˜ê·¸ ë³µì›
+        if (full.phases != null)
+        {
+            foreach (var p in full.phases)
+            {
+                var pmTr = FindByHierarchyPath(p.phasePath);
+                if (!pmTr) continue;
 
-            var go = tr.gameObject;
+                var pm = pmTr.GetComponent<PhaseManager>();
+                if (!pm) continue;
 
-            // activeSelf Àû¿ë
-            if (go.activeSelf != e.active) go.SetActive(e.active);
+                if (pm.gameObject.activeSelf != p.phaseActiveSelf)
+                    pm.gameObject.SetActive(p.phaseActiveSelf);
 
-            // Transform Àû¿ë
-            tr.position = e.position;
-            tr.rotation = e.rotation;
-            tr.localScale = e.localScale;
+                pm.currentStepIndex = Mathf.Clamp(p.currentStepIndex, 0, Mathf.Max(0, pm.steps.Count - 1));
+
+                if (p.steps != null)
+                {
+                    for (int si = 0; si < p.steps.Count && si < pm.steps.Count; si++)
+                    {
+                        var src = p.steps[si];
+                        var dst = pm.steps[si];
+
+                        if (dst.useTimeLimit) dst.timer = Mathf.Max(0f, src.timer);
+                        dst.hpApplied = src.hpApplied;
+
+                        if (dst.checker != null && dst.checker.objects != null && src.items != null)
+                        {
+                            foreach (var item in src.items)
+                            {
+                                if (item == null || string.IsNullOrEmpty(item.objectPath)) continue;
+                                var objTr = FindByHierarchyPath(item.objectPath);
+                                if (!objTr) continue;
+
+                                var found = dst.checker.objects.Find(x => x != null && x.obj != null && x.obj.transform == objTr);
+                                if (found != null)
+                                {
+                                    found.destroyed = item.destroyed;
+
+                                    if (item.passCounts != null)
+                                    {
+                                        if (found.passCounts == null) found.passCounts = new Dictionary<int, int>();
+                                        else found.passCounts.Clear();
+
+                                        foreach (var kv in item.passCounts)
+                                            found.passCounts[kv.key] = kv.val;
+                                    }
+
+                                    if (found.obj != null)
+                                    {
+                                        if (found.destroyed)
+                                        {
+                                            var go = found.obj;
+                                            if (go.TryGetComponent<Renderer>(out var r)) r.enabled = false;
+                                            go.SetActive(false);
+                                        }
+                                        else
+                                        {
+                                            found.obj.SetActive(true);
+                                            if (found.obj.TryGetComponent<Renderer>(out var r2)) r2.enabled = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // í˜„ì¬ ì§„í–‰ ìŠ¤í…ë§Œ í™œì„±
+                            for (int j = 0; j < pm.steps.Count; j++)
+                            {
+                                var s = pm.steps[j];
+                                if (s?.checker == null) continue;
+
+                                bool shouldActive = (j == pm.currentStepIndex);
+                                if (s.checker.gameObject.activeSelf != shouldActive)
+                                    s.checker.gameObject.SetActive(shouldActive);
+
+                                foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+                                {
+                                    if (!child || child == s.checker.transform) continue;
+                                    if (child.gameObject.activeSelf != shouldActive)
+                                        child.gameObject.SetActive(shouldActive);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // (ì˜µì…˜) ì»¤ìŠ¤í…€ í”Œë˜ê·¸ ë³µì›
+                RestorePhaseCustomFlags(pm, p);
+
+                // UI ì¦‰ì‹œ ê°±ì‹ 
+                var updateMethod = pm.GetType().GetMethod("UpdatePhaseInfoUI", BindingFlags.NonPublic | BindingFlags.Instance);
+                updateMethod?.Invoke(pm, null);
+
+                var progMethod = pm.GetType().GetMethod("UpdateObjectProgressUI", BindingFlags.NonPublic | BindingFlags.Instance);
+                progMethod?.Invoke(pm, null);
+            }
+        }
+
+        // 3) Boss HP ë° ë‚´ë¶€ í”Œë˜ê·¸ ë³µì›
+        if (full.bosses != null)
+        {
+            foreach (var b in full.bosses)
+            {
+                var tr = FindByHierarchyPath(b.path);
+                if (!tr) continue;
+                var boss = tr.GetComponent<Boss>();
+                if (!boss) continue;
+
+                // HP ë³µì›
+                if (b.maxHp > 0f) boss.maxHp = b.maxHp; // ìŠ¤ëƒ…ìƒ·ì— ê°’ì´ ìˆìœ¼ë©´ ë§ì¶°ë‘ 
+                boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
+
+                // ë‚´ë¶€ bool í”Œë˜ê·¸(played75/50/25 ë“±) ë³µì›
+                if (b.boolFlags != null)
+                {
+                    var fields = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                    foreach (var f in fields)
+                    {
+                        if (f.FieldType == typeof(bool) && b.boolFlags.TryGetValue(f.Name, out var val))
+                        {
+                            try { f.SetValue(boss, val); } catch { /* ignore */ }
+                        }
+                    }
+                }
+
+                // HP UI ì´ë²¤íŠ¸ ê°±ì‹ 
+                try
+                {
+                    boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp));
+                }
+                catch { /* ignore */ }
+            }
         }
     }
 
+    private void RestorePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot p)
+    {
+        // Dictionary<string,bool> ë˜ëŠ” HashSet<string> ì§€ì›
+        var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        object target = null;
+        Type targetType = null;
+        bool isDict = false, isSet = false;
+
+        if (dictField != null)
+        {
+            target = dictField.GetValue(pm);
+            targetType = dictField.FieldType;
+        }
+        else if (dictProp != null)
+        {
+            target = dictProp.GetValue(pm);
+            targetType = dictProp.PropertyType;
+        }
+
+        if (targetType != null)
+        {
+            if (targetType == typeof(Dictionary<string, bool>)) isDict = true;
+            if (targetType == typeof(HashSet<string>)) isSet = true;
+        }
+
+        // ì—†ìœ¼ë©´ ìƒì„±í•´ì„œ ì£¼ì…
+        if (target == null)
+        {
+            if (isDict) target = new Dictionary<string, bool>();
+            else if (isSet) target = new HashSet<string>();
+
+            if (dictField != null) dictField.SetValue(pm, target);
+            else if (dictProp != null && dictProp.CanWrite) dictProp.SetValue(pm, target);
+        }
+
+        if (isDict && p.customFlagDict != null)
+        {
+            var d = (Dictionary<string, bool>)target;
+            d.Clear();
+            foreach (var kv in p.customFlagDict)
+                d[kv.key] = kv.val;
+        }
+        else if (isSet && p.customFlagKeys != null)
+        {
+            var s = (HashSet<string>)target;
+            s.Clear();
+            foreach (var k in p.customFlagKeys)
+                s.Add(k);
+        }
+        // íƒ€ì… ë¯¸ìŠ¤ë§¤ì¹˜ë©´ ë¬´ì‹œ
+    }
+
+    // ====== ê³„ì¸µ ê²½ë¡œ ìœ í‹¸ ======
     private static Transform FindByHierarchyPath(string path)
     {
-        // "Root/Child/Sub" Çü½ÄÀ» µû¶ó ·çÆ®ºÎÅÍ ¼øÂ÷ Å½»ö
+        if (string.IsNullOrEmpty(path)) return null;
         var parts = path.Split('/');
         if (parts.Length == 0) return null;
 
-        // ·çÆ® ÈÄº¸µéÀ» ÀüºÎ ¼öÁı
         var roots = SceneManager.GetActiveScene().GetRootGameObjects();
         Transform current = null;
 
         foreach (var r in roots)
         {
-            if (r.name == parts[0])
-            {
-                current = r.transform;
-                break;
-            }
+            if (r.name == parts[0]) { current = r.transform; break; }
         }
-        if (current == null) return null;
+        if (!current) return null;
 
         for (int i = 1; i < parts.Length; i++)
         {
-            var name = parts[i];
-            current = current.Find(name);
-            if (current == null) return null;
+            current = current.Find(parts[i]);
+            if (!current) return null;
         }
-
         return current;
-        // ¸¸¾à µ¿ÀÏ ÀÌ¸§ÀÌ ¿©·¯ °³¶ó ¸ğÈ£ÇÏ¸é, ÇÊ¿ä¿¡ µû¶ó ÀÎµ¦½º³ª GUID¸¦ °æ·Î¿¡ Æ÷ÇÔ½ÃÅ°´Â È®Àå °¡´É.
     }
 }
