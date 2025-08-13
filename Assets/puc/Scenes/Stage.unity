@@ -4685,7 +4685,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uBB49\uCE58\uBA74 \uD769\uC5B4\uC9C4\uB2E4!"
+  phaseTitle: "[2] \uBB49\uCE58\uBA74 \uD769\uC5B4\uC9C4\uB2E4!"
   steps:
   - checker: {fileID: 445718115}
     stepType: 0
@@ -11079,7 +11079,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
+  phaseTitle: "[1] \uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
   steps:
   - checker: {fileID: 1485739827}
     stepType: 0
@@ -14976,7 +14976,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC624\uB978\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
+  phaseTitle: "[3] \uC624\uB978\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
   steps:
   - checker: {fileID: 793850234}
     stepType: 0
@@ -19722,7 +19722,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: PHASE 1
+  phaseTitle: "[4] \uC67C\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
   steps:
   - checker: {fileID: 140107965}
     stepType: 0
@@ -21408,10 +21408,6 @@ MonoBehaviour:
   cutscenesSceneName: Cutscenes
   cutsceneIndex: 0
   usePhotonWhenConnected: 1
-  manualAnchors: []
-  useTagDiscovery: 1
-  anchorTag: CutsceneAnchor
-  includeInactiveTaggedObjects: 1
   syncSnapshotViaRoomProperty: 1
 --- !u!4 &1520879287
 Transform:
@@ -24269,10 +24265,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4470217909248964617, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd4029e10889f0148b80c243d1678e97, type: 3}
 --- !u!1 &1757775291
 GameObject:
