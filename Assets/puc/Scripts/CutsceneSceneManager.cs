@@ -14,7 +14,8 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 /// <summary>
 /// 컷씬 재생 → 종료 후 Stage로 복귀:
 /// 1) 보스 HP만 복원
-/// 2) 다음 페이즈의 Step 1로 강제 이동(가능하면 CutsceneTransit.TargetNextPhasePath 사용)
+/// 2) "정확히" 다음 페이즈의 Step 1로 강제 이동 (모든 페이즈 일괄 비활성 후 타깃만 활성)
+///    - 멀티플레이/중복 호출에도 결과가 동일하도록 idempotent 설계
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
@@ -124,7 +125,7 @@ public class CutsceneSceneManager : MonoBehaviour
             if (scene.name != targetScene) return;
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            // 스냅샷 소스 선택 (보스 HP만 포함)
+            // 스냅샷 소스(보스 HP만 포함)
             string json = CutsceneTransit.StateJson;
 
 #if PHOTON_UNITY_NETWORKING
@@ -138,7 +139,7 @@ public class CutsceneSceneManager : MonoBehaviour
             try
             {
                 RestoreBossHp(json);
-                ForceMoveToNextPhaseStep1();
+                ForceMoveToNextPhaseStep1_Idempotent();
             }
             catch (Exception ex)
             {
@@ -185,78 +186,89 @@ public class CutsceneSceneManager : MonoBehaviour
         }
     }
 
-    // ====== 다음 페이즈 Step 1로 강제 이동 ======
-    private void ForceMoveToNextPhaseStep1()
+    // ====== 다음 페이즈 Step 1로 강제 이동 (idempotent) ======
+    private void ForceMoveToNextPhaseStep1_Idempotent()
     {
-        // 우선 Transit에 저장된 경로가 있으면 그것을 사용
-        PhaseManager target = null;
-
-        if (!string.IsNullOrEmpty(CutsceneTransit.TargetNextPhasePath))
-        {
-            var tr = FindByHierarchyPath(CutsceneTransit.TargetNextPhasePath);
-            if (tr) target = tr.GetComponent<PhaseManager>();
-        }
-
-        // 경로가 없거나 찾지 못하면, 현재 활성 페이즈의 nextPhaseManager를 사용
-        if (target == null)
-        {
-            var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-            PhaseManager current = null;
-            foreach (var pm in pms)
-            {
-                if (pm != null && pm.gameObject.activeInHierarchy) { current = pm; break; }
-            }
-            if (current != null && current.nextPhaseManager != null)
-                target = current.nextPhaseManager;
-        }
-
+        PhaseManager target = ResolveTargetNextPhase();
         if (target == null)
         {
             Debug.LogWarning("[CutsceneSceneManager] 다음 페이즈를 찾지 못했습니다.");
             return;
         }
 
-        // 현재 활성 페이즈 비활성 → 타겟 페이즈 활성
-        PhaseManager prev = null;
+        // ★ 모든 페이즈를 일괄 비활성 → 타깃만 활성 (여러 클라이언트가 동시에 호출해도 같은 결과)
         var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
         foreach (var pm in all)
         {
-            if (pm != null && pm.gameObject.activeInHierarchy) { prev = pm; break; }
-        }
+            bool isTarget = (pm == target);
 
-        if (prev != null && prev != target)
-        {
-            prev.track?.SetActive(false);
-            prev.gameObject.SetActive(false);
-        }
+            if (pm.track != null)
+                pm.track.SetActive(isTarget);
 
-        target.track?.SetActive(true);
-        target.gameObject.SetActive(true);
+            pm.gameObject.SetActive(isTarget);
 
-        // Step 1(=index 0)으로 설정하고, 해당 스텝만 활성화
-        target.currentStepIndex = 0;
-        for (int i = 0; i < target.steps.Count; i++)
-        {
-            var s = target.steps[i];
-            if (s?.checker == null) continue;
-
-            bool shouldActive = (i == 0);
-            if (s.checker.gameObject.activeSelf != shouldActive)
-                s.checker.gameObject.SetActive(shouldActive);
-
-            foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+            if (isTarget)
             {
-                if (!child || child == s.checker.transform) continue;
-                if (child.gameObject.activeSelf != shouldActive)
-                    child.gameObject.SetActive(shouldActive);
+                // Step 1(=index 0)
+                pm.currentStepIndex = 0;
+
+                for (int i = 0; i < pm.steps.Count; i++)
+                {
+                    var s = pm.steps[i];
+                    if (s?.checker == null) continue;
+
+                    bool shouldActive = (i == 0);
+                    if (s.checker.gameObject.activeSelf != shouldActive)
+                        s.checker.gameObject.SetActive(shouldActive);
+
+                    foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+                    {
+                        if (!child || child == s.checker.transform) continue;
+                        if (child.gameObject.activeSelf != shouldActive)
+                            child.gameObject.SetActive(shouldActive);
+                    }
+                }
+
+                // UI 갱신(비공개 메서드일 수 있어 리플렉션)
+                var updateMethod = pm.GetType().GetMethod("UpdatePhaseInfoUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                updateMethod?.Invoke(pm, null);
+                var progMethod = pm.GetType().GetMethod("UpdateObjectProgressUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                progMethod?.Invoke(pm, null);
+            }
+        }
+    }
+
+    private PhaseManager ResolveTargetNextPhase()
+    {
+        // 1) Transit에 저장된 경로가 최우선
+        if (!string.IsNullOrEmpty(CutsceneTransit.TargetNextPhasePath))
+        {
+            var tr = FindByHierarchyPath(CutsceneTransit.TargetNextPhasePath);
+            if (tr)
+            {
+                var pm = tr.GetComponent<PhaseManager>();
+                if (pm) return pm;
             }
         }
 
-        // UI 갱신(비공개 메서드일 수 있어 리플렉션)
-        var updateMethod = target.GetType().GetMethod("UpdatePhaseInfoUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        updateMethod?.Invoke(target, null);
-        var progMethod = target.GetType().GetMethod("UpdateObjectProgressUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        progMethod?.Invoke(target, null);
+        // 2) 견고한 현재 탐색 후 nextPhaseManager
+        var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+        PhaseManager current = null;
+        foreach (var pm in pms)
+        {
+            if (!pm) continue;
+            bool trackActive = pm.track != null && pm.track.activeInHierarchy;
+            bool rootActive = pm.gameObject.activeInHierarchy;
+            if (trackActive || rootActive)
+            {
+                current = pm;
+                break;
+            }
+        }
+        if (current != null && current.nextPhaseManager != null)
+            return current.nextPhaseManager;
+
+        return null;
     }
 
     // ====== 경로 유틸 ======

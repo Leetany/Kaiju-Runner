@@ -4685,7 +4685,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uBB49\uCE58\uBA74 \uD769\uC5B4\uC9C4\uB2E4!"
+  phaseTitle: "[2] \uBB49\uCE58\uBA74 \uD769\uC5B4\uC9C4\uB2E4!"
   steps:
   - checker: {fileID: 445718115}
     stepType: 0
@@ -11105,7 +11105,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
+  phaseTitle: "[1] \uC6A9\uC758 \uBE44\uB298\uC744 \uD30C\uAD34\uD558\uB77C!"
   steps:
   - checker: {fileID: 1485739827}
     stepType: 0
@@ -15015,7 +15015,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: "\uC624\uB978\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
+  phaseTitle: "[3] \uC624\uB978\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
   steps:
   - checker: {fileID: 793850234}
     stepType: 0
@@ -19774,7 +19774,7 @@ MonoBehaviour:
   timerText: {fileID: 2120996443}
   objectProgressText: {fileID: 852304498}
   phaseInfoText: {fileID: 1407516319}
-  phaseTitle: PHASE 1
+  phaseTitle: "[4] \uC67C\uCABD \uB0A0\uAC1C \uAEBE\uAE30!"
   steps:
   - checker: {fileID: 140107965}
     stepType: 0
