@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,9 +10,12 @@ using ExitGames.Client.Photon;
 #endif
 
 /// <summary>
-/// Stage 씬 → 컷씬 전용 씬으로 "단일 전환" (Additive 미사용)
-/// 전환 직전, 보존 대상 오브젝트들의 Transform/Active 상태를 캡처하여 JSON으로 저장.
-/// 복귀 시 CutsceneSceneManager가 이 JSON을 이용해 상태를 복원.
+/// Stage → 컷씬 씬으로 단일 전환하기 직전, 아래 상태를 JSON으로 스냅샷:
+/// 1) 앵커 대상(수동/태그)의 Transform/Active
+/// 2) 모든 PhaseManager의 진행 상태(현재 스텝, 타이머, hpApplied, ObjectChecker 진행)
+/// 3) Boss 상태(currentHp, maxHp(옵션), 내부 컷씬 트리거 플래그들(played75/50/25 등))
+/// 4) Phase 커스텀 플래그(customFlags: Dictionary<string,bool>/HashSet<string> 등 - 있으면 자동 처리)
+/// 복귀 시 CutsceneSceneManager가 이 JSON을 사용해 복원한다.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
@@ -27,7 +31,7 @@ public class CutsceneLoader : MonoBehaviour
     [Header("보존 대상(수동 지정)")]
     public List<Transform> manualAnchors = new List<Transform>();
 
-    [Header("보존 대상(태그 자동 수집 사용)")]
+    [Header("보존 대상(태그 자동 수집)")]
     public bool useTagDiscovery = true;
     public string anchorTag = "CutsceneAnchor";
     public bool includeInactiveTaggedObjects = true;
@@ -38,7 +42,7 @@ public class CutsceneLoader : MonoBehaviour
     private const string ROOM_KEY_SNAPSHOT = "CUTSCENE_STAGE_SNAPSHOT";
 #endif
 
-    // ---- API ----
+    // ====== PUBLIC API ======
     public void PlayCutscene() => PlayCutscene(cutsceneIndex);
 
     public void PlayCutscene(int index)
@@ -48,8 +52,8 @@ public class CutsceneLoader : MonoBehaviour
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "MainScene" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // Stage 상태 캡처(JSON)
-        string snapshotJson = SnapshotCapture();
+        // 스냅샷(JSON) 생성
+        string snapshotJson = BuildSnapshotJson();
         CutsceneTransit.StateJson = snapshotJson;
 
 #if PHOTON_UNITY_NETWORKING
@@ -85,35 +89,65 @@ public class CutsceneLoader : MonoBehaviour
 #endif
     }
 
-    // ========= 스냅샷: 캡처 유틸 =========
+    // ====== 스냅샷 직렬화 모델 ======
+    [Serializable] private class AnchorSnapshot { public string path; public Vector3 position; public Quaternion rotation; public Vector3 localScale; public bool active; }
 
+    [Serializable] private class PhaseStepItemSnapshot { public string objectPath; public bool destroyed; public List<KV> passCounts; }
+    [Serializable] private class PhaseStepSnapshot { public float timer; public bool hpApplied; public List<PhaseStepItemSnapshot> items; }
     [Serializable]
-    private class AnchorSnapshot
+    private class PhaseManagerSnapshot
     {
-        public string path;         // 계층 경로(루트~해당 Transform)
-        public Vector3 position;    // world
-        public Quaternion rotation; // world
-        public Vector3 localScale;  // local
-        public bool active;         // activeSelf
+        public string phasePath;
+        public int currentStepIndex;
+        public bool phaseActiveSelf;
+        public List<PhaseStepSnapshot> steps;
+
+        // 커스텀 플래그(있으면 저장)
+        public List<string> customFlagKeys;      // HashSet이면 키만
+        public List<KVBool> customFlagDict;      // Dictionary<string,bool>이면 key/bool
     }
 
     [Serializable]
-    private class AnchorSnapshotBundle
+    private class BossSnapshot
     {
-        public List<AnchorSnapshot> entries = new List<AnchorSnapshot>();
+        public string path;            // Boss의 계층 경로
+        public float currentHp;
+        public float maxHp;            // 있으면 저장
+        public Dictionary<string, bool> boolFlags; // played75/50/25 같은 내부 플래그(리플렉션 수집)
     }
 
-    private string SnapshotCapture()
-    {
-        var targets = CollectTargets();
-        var bundle = new AnchorSnapshotBundle();
+    [Serializable] private class KV { public int key; public int val; public KV(int k, int v) { key = k; val = v; } }
+    [Serializable] private class KVBool { public string key; public bool val; public KVBool(string k, bool v) { key = k; val = v; } }
 
+    [Serializable]
+    private class FullSnapshot
+    {
+        public List<AnchorSnapshot> anchors = new();
+        public List<PhaseManagerSnapshot> phases = new();
+        public List<BossSnapshot> bosses = new();
+    }
+
+    // ====== 스냅샷 생성 ======
+    private string BuildSnapshotJson()
+    {
+        var full = new FullSnapshot
+        {
+            anchors = CaptureAnchors(),
+            phases = CapturePhaseManagers(),
+            bosses = CaptureBosses()
+        };
+        return JsonUtility.ToJson(full);
+    }
+
+    private List<AnchorSnapshot> CaptureAnchors()
+    {
+        var targets = CollectAnchorTargets();
+        var list = new List<AnchorSnapshot>(targets.Count);
         foreach (var tr in targets)
         {
-            if (tr == null) continue;
+            if (!tr) continue;
             var go = tr.gameObject;
-
-            bundle.entries.Add(new AnchorSnapshot
+            list.Add(new AnchorSnapshot
             {
                 path = GetHierarchyPath(tr),
                 position = tr.position,
@@ -122,51 +156,167 @@ public class CutsceneLoader : MonoBehaviour
                 active = go.activeSelf
             });
         }
-
-        return JsonUtility.ToJson(bundle);
+        return list;
     }
 
-    private List<Transform> CollectTargets()
+    private List<Transform> CollectAnchorTargets()
     {
         var set = new HashSet<Transform>();
+        foreach (var tr in manualAnchors) if (tr) set.Add(tr);
 
-        // 1) 수동 지정
-        foreach (var tr in manualAnchors)
-            if (tr != null) set.Add(tr);
-
-        // 2) 태그 자동 수집(옵션)
         if (useTagDiscovery && !string.IsNullOrEmpty(anchorTag))
         {
-            // 비활성도 포함해 찾을 수 있도록 모든 오브젝트 순회
             var all = Resources.FindObjectsOfTypeAll<Transform>();
             foreach (var tr in all)
             {
-                if (tr == null || tr.gameObject == null) continue;
-
-                // SceneObjects만 (Prefab 자산 제외)
-                if (!tr.gameObject.scene.IsValid()) continue;
-
+                if (!tr || !tr.gameObject.scene.IsValid()) continue;
                 if (includeInactiveTaggedObjects)
                 {
                     if (tr.CompareTag(anchorTag)) set.Add(tr);
                 }
                 else
                 {
-                    if (tr.gameObject.activeInHierarchy && tr.CompareTag(anchorTag))
-                        set.Add(tr);
+                    if (tr.gameObject.activeInHierarchy && tr.CompareTag(anchorTag)) set.Add(tr);
                 }
             }
         }
-
         return new List<Transform>(set);
+    }
+
+    private List<PhaseManagerSnapshot> CapturePhaseManagers()
+    {
+        var phases = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+        var list = new List<PhaseManagerSnapshot>(phases.Length);
+        foreach (var pm in phases)
+        {
+            if (!pm) continue;
+            var pmSnap = new PhaseManagerSnapshot
+            {
+                phasePath = GetHierarchyPath(pm.transform),
+                currentStepIndex = pm.currentStepIndex,
+                phaseActiveSelf = pm.gameObject.activeSelf,
+                steps = new List<PhaseStepSnapshot>()
+            };
+
+            // Step 상태들
+            for (int i = 0; i < pm.steps.Count; i++)
+            {
+                var s = pm.steps[i];
+                var sSnap = new PhaseStepSnapshot
+                {
+                    timer = s.useTimeLimit ? Mathf.Max(0f, s.timer) : 0f,
+                    hpApplied = s.hpApplied,
+                    items = new List<PhaseStepItemSnapshot>()
+                };
+
+                if (s.checker != null && s.checker.objects != null)
+                {
+                    foreach (var info in s.checker.objects)
+                    {
+                        if (info == null || info.obj == null) continue;
+                        var item = new PhaseStepItemSnapshot
+                        {
+                            objectPath = GetHierarchyPath(info.obj.transform),
+                            destroyed = info.destroyed,
+                            passCounts = new List<KV>()
+                        };
+                        if (info.passCounts != null)
+                        {
+                            foreach (var kv in info.passCounts)
+                                item.passCounts.Add(new KV(kv.Key, kv.Value));
+                        }
+                        sSnap.items.Add(item);
+                    }
+                }
+                pmSnap.steps.Add(sSnap);
+            }
+
+            // (옵션) 커스텀 플래그 수집
+            CapturePhaseCustomFlags(pm, pmSnap);
+
+            list.Add(pmSnap);
+        }
+        return list;
+    }
+
+    private void CapturePhaseCustomFlags(PhaseManager pm, PhaseManagerSnapshot pmSnap)
+    {
+        // Dictionary<string,bool> customFlags 지원
+        var dictField = pm.GetType().GetField("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField != null)
+        {
+            var val = dictField.GetValue(pm);
+            if (val is Dictionary<string, bool> dict)
+            {
+                pmSnap.customFlagDict = new List<KVBool>(dict.Count);
+                foreach (var kv in dict)
+                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+            }
+            else if (val is HashSet<string> set)
+            {
+                pmSnap.customFlagKeys = new List<string>(set);
+            }
+            return;
+        }
+
+        // Property로 노출된 경우도 시도
+        var dictProp = pm.GetType().GetProperty("customFlags", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictProp != null)
+        {
+            var val = dictProp.GetValue(pm);
+            if (val is Dictionary<string, bool> dict2)
+            {
+                pmSnap.customFlagDict = new List<KVBool>(dict2.Count);
+                foreach (var kv in dict2)
+                    pmSnap.customFlagDict.Add(new KVBool(kv.Key, kv.Value));
+            }
+            else if (val is HashSet<string> set2)
+            {
+                pmSnap.customFlagKeys = new List<string>(set2);
+            }
+        }
+    }
+
+    private List<BossSnapshot> CaptureBosses()
+    {
+        var bosses = UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+        var list = new List<BossSnapshot>(bosses.Length);
+
+        foreach (var boss in bosses)
+        {
+            if (!boss) continue;
+
+            var snap = new BossSnapshot
+            {
+                path = GetHierarchyPath(boss.transform),
+                currentHp = boss.currentHp,
+                maxHp = boss.maxHp,
+                boolFlags = new Dictionary<string, bool>()
+            };
+
+            // 내부 플래그(played75/50/25 등) 리플렉션으로 수집
+            var flags = boss.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            foreach (var f in flags)
+            {
+                if (f.FieldType == typeof(bool))
+                {
+                    // 관례적으로 "played" 접두사/컷씬 관련 이름을 우선, 아니면 모든 bool도 허용
+                    bool value = (bool)f.GetValue(boss);
+                    snap.boolFlags[f.Name] = value;
+                }
+            }
+
+            list.Add(snap);
+        }
+
+        return list;
     }
 
     private static string GetHierarchyPath(Transform t)
     {
-        // 루트부터 "Root/Child/SubChild" 형태로 경로를 만든다.
         var stack = new Stack<string>();
         var cur = t;
-        while (cur != null)
+        while (cur)
         {
             stack.Push(cur.name);
             cur = cur.parent;
@@ -175,9 +325,7 @@ public class CutsceneLoader : MonoBehaviour
     }
 }
 
-/// <summary>
-/// 컷씬 전환 파라미터 컨테이너(정적)
-/// </summary>
+/// <summary>컷씬 전환 파라미터(정적)</summary>
 public static class CutsceneTransit
 {
     public static string ReturnScene = "MainScene";
@@ -187,6 +335,5 @@ public static class CutsceneTransit
     public static void Reset()
     {
         // 필요 시 초기화
-        // ReturnScene = "MainScene"; CutsceneIndex = 0; StateJson = null;
     }
 }
