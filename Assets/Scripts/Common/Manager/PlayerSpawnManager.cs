@@ -108,7 +108,13 @@ public class PlayerSpawnManager : MonoBehaviour
         //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
         //SpawnAtEachScenePoint();
 
-        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        if(GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
+        {
+            return;
+        }
+
+        GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint"); ;
+        
         for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
         {
             spawnPoint[i] = points[i].transform.position;
