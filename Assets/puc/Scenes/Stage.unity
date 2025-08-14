@@ -12762,7 +12762,7 @@ MonoBehaviour:
     hpPercent: 0.1
     totalHpDecrease: 0
     hpApplied: 0
-    useTimeLimit: 0
+    useTimeLimit: 1
     timeLimit: 180
     timer: 0
     useAutoToggle: 0
@@ -16741,7 +16741,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1118730476
 Transform:
   m_ObjectHideFlags: 0
@@ -21907,7 +21907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1375784113
 Transform:
   m_ObjectHideFlags: 0
