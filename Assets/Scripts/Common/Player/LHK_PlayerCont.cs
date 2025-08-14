@@ -129,7 +129,7 @@ namespace PlayerScript
 
         private void OnDestroy()
         {
-            if (PV.IsMine)
+            if (PV.IsMine && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Stage")
             {
                 PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
             }
