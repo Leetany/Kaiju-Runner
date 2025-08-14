@@ -7,12 +7,15 @@ public class EnemyB : MonoBehaviour
     [Header("이동 속도 설정")]
     [SerializeField]
     private float moveSpeed = 3f;
-
     public float MoveSpeed
     {
         get => moveSpeed;
         set => moveSpeed = value;
     }
+
+    [Header("등장 후 제거까지 대기 시간")]
+    [SerializeField]
+    private float lifetimeAfterAppear = 3f; // 인스펙터에서 조절 가능
 
     private Rigidbody rb;
     private Renderer rend;
@@ -21,7 +24,7 @@ public class EnemyB : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rend = GetComponentInChildren<Renderer>(); // 자식 포함
+        rend = GetComponentInChildren<Renderer>();
     }
 
     void FixedUpdate()
@@ -33,14 +36,10 @@ public class EnemyB : MonoBehaviour
     {
         if (rend == null) return;
 
-        if (rend.isVisible)
+        if (!hasAppeared && rend.isVisible)
         {
             hasAppeared = true;
-        }
-
-        if (!rend.isVisible && hasAppeared)
-        {
-            Destroy(gameObject);
+            Destroy(gameObject, lifetimeAfterAppear); // 지정한 시간 후 삭제
         }
     }
 }
