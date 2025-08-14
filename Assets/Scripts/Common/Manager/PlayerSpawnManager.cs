@@ -12,8 +12,8 @@ public class PlayerSpawnManager : MonoBehaviour
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
     [SerializeField] Vector3 LobbySpawnPoint;
+    public Vector3 stagePlayerLastPoint;
     private Vector3[] spawnPoint;
-    [SerializeField] private Vector3[] playerLastPoint;
 
     private int gamePlayerNum = 4;
 
@@ -97,6 +97,11 @@ public class PlayerSpawnManager : MonoBehaviour
         PhotonNetwork.Instantiate(selectCharacter, LobbySpawnPoint, Quaternion.identity);
     }
 
+    private void SpawnLastPlayerPoint()
+    {
+        PhotonNetwork.Instantiate(selectCharacter, stagePlayerLastPoint, Quaternion.identity);
+    }
+
     public void SpawnAtMyPoint()
     {
         int index = PhotonNetwork.LocalPlayer.ActorNumber - 1;
@@ -115,6 +120,10 @@ public class PlayerSpawnManager : MonoBehaviour
             return;
         }
 
+        if(stagePlayerLastPoint != Vector3.zero)
+        {
+            SpawnLastPlayerPoint();
+        }
         
 
         GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");

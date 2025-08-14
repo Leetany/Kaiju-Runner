@@ -383,5 +383,13 @@ namespace StarterAssets
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
+
+        private void OnDestroy()
+        {
+            if(PV.IsMine)
+            {
+                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
+            }
+        }
     }
 }

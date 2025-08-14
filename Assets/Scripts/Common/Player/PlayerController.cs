@@ -381,7 +381,10 @@ namespace StarterAssets
 
         private void OnDestroy()
         {
-            
+            if(PV.IsMine)
+            {
+                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
+            }
         }
     }
 }

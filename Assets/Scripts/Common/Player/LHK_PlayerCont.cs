@@ -126,6 +126,14 @@ namespace PlayerScript
             animator.SetFloat("velocityY", velocity.y);
             animator.SetBool("isGrounded", controller.isGrounded);
         }
+
+        private void OnDestroy()
+        {
+            if (PV.IsMine)
+            {
+                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
+            }
+        }
     }
 }
 
