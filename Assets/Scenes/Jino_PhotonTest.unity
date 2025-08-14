@@ -2650,7 +2650,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectCharacter: 
   SelectCharUI: {fileID: 913176308}
-  spawnPoint: {x: 0, y: 0, z: 0}
+  LobbySpawnPoint: {x: 0.37, y: 0, z: 5.01}
+  spawnPoint:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  playerLastPoint:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
 --- !u!4 &1622831544
 Transform:
   m_ObjectHideFlags: 0
