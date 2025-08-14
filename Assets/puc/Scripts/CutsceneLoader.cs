@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 using ExitGames.Client.Photon;
-using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // 포톤 Hashtable 별칭
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 #endif
 
 /// <summary>
-/// 컷씬 진입 직전에 "보스 HP"만 JSON으로 스냅샷.
-/// 또한 현재 페이즈 경로와, 그 시점의 next 페이즈 경로를 같이 저장해
-/// 복귀 시 정확히 '저장된 현재 페이즈의 next'로 이동하도록 한다.
+/// 컷씬 진입 직전:
+/// - 보스 HP만 JSON 스냅샷 저장
+/// - 현재 페이즈 "경로"와 그 시점의 "다음 페이즈 경로" 저장(복귀 시 정확히 다음 페이즈로 진입)
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
@@ -34,7 +34,6 @@ public class CutsceneLoader : MonoBehaviour
 
     private bool _cutsceneLoading = false;
 
-    // === Public API ===
     public void PlayCutscene() => PlayCutscene(cutsceneIndex);
 
     public void PlayCutscene(int index)
@@ -47,7 +46,7 @@ public class CutsceneLoader : MonoBehaviour
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "Stage" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // 저장: 현재 페이즈 경로 + (그 시점의) next 페이즈 경로
+        // 저장: 현재 페이즈 경로 + (그 시점의) 다음 페이즈 경로
         CutsceneTransit.SavedCurrentPhasePath = ComputeCurrentPhasePathRobust();
         CutsceneTransit.SavedNextPhasePath = ComputeNextPhasePathFrom(CutsceneTransit.SavedCurrentPhasePath);
 
@@ -57,7 +56,6 @@ public class CutsceneLoader : MonoBehaviour
 
     private IEnumerator DeferredCutsceneLoad()
     {
-        // HP만 저장하므로 1프레임 대기만
         yield return null;
 
         // 보스 HP 스냅샷
@@ -125,30 +123,23 @@ public class CutsceneLoader : MonoBehaviour
     private string ComputeCurrentPhasePathRobust()
     {
         var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-        PhaseManager current = null;
+        PhaseManager candidate = null;
 
         foreach (var pm in pms)
         {
             if (!pm) continue;
 
-            // (1) track 활성 or (2) 루트 활성
             bool trackActive = pm.track != null && pm.track.activeInHierarchy;
             bool rootActive = pm.gameObject.activeInHierarchy;
 
             if (trackActive || rootActive)
             {
-                // 아직 끝나지 않은 페이즈를 우선
                 if (pm.steps != null && pm.currentStepIndex < pm.steps.Count)
-                {
-                    current = pm;
-                    break;
-                }
-                // 끝난 페이즈만 활성로 남아있다면 일단 후보로
-                if (current == null) current = pm;
+                    return GetHierarchyPath(pm.transform);
+                if (candidate == null) candidate = pm;
             }
         }
-
-        return current != null ? GetHierarchyPath(current.transform) : null;
+        return candidate ? GetHierarchyPath(candidate.transform) : null;
     }
 
     private string ComputeNextPhasePathFrom(string currentPhasePath)
@@ -156,9 +147,10 @@ public class CutsceneLoader : MonoBehaviour
         if (string.IsNullOrEmpty(currentPhasePath)) return null;
 
         var tr = FindByHierarchyPath(currentPhasePath);
-        if (tr == null) return null;
+        if (!tr) return null;
+
         var pm = tr.GetComponent<PhaseManager>();
-        if (pm == null || pm.nextPhaseManager == null) return null;
+        if (!pm || !pm.nextPhaseManager) return null;
 
         return GetHierarchyPath(pm.nextPhaseManager.transform);
     }
@@ -168,11 +160,7 @@ public class CutsceneLoader : MonoBehaviour
     {
         var stack = new Stack<string>();
         var cur = t;
-        while (cur)
-        {
-            stack.Push(cur.name);
-            cur = cur.parent;
-        }
+        while (cur) { stack.Push(cur.name); cur = cur.parent; }
         return string.Join("/", stack);
     }
 
@@ -185,10 +173,7 @@ public class CutsceneLoader : MonoBehaviour
         var roots = SceneManager.GetActiveScene().GetRootGameObjects();
         Transform current = null;
 
-        foreach (var r in roots)
-        {
-            if (r.name == parts[0]) { current = r.transform; break; }
-        }
+        foreach (var r in roots) { if (r.name == parts[0]) { current = r.transform; break; } }
         if (!current) return null;
 
         for (int i = 1; i < parts.Length; i++)
