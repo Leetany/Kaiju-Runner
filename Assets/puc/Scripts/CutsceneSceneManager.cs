@@ -16,6 +16,7 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 /// 1) (씬 로드 직후) 프리부트 가드: **다음 페이즈만 활성, 나머지는 전부 비활성** → 초기(1)페이즈 Start 자체 차단
 /// 2) 보스 HP만 복원 (Awake/Start 이후 지연)
 /// 3) 안정화 윈도우: 누가 다시 켜도 타깃만 남도록 몇 프레임 강제 유지 + HP 상향 초기화 억제
+/// ※ 비활성 오브젝트 포함하여 PhaseManager들을 수집하고, 타깃을 먼저 명시적으로 활성화
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
@@ -159,36 +160,39 @@ public class CutsceneSceneManager : MonoBehaviour
     // ---------- 프리부트 가드 ----------
     private static void PreBootPhaseLock(PhaseManager target)
     {
-        var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-
-        foreach (var pm in all)
+        // 0) 타깃을 먼저 "무조건" 활성화 (비활성 상태였어도 참조 가능)
+        if (target != null)
         {
-            bool isTarget = (pm == target);
+            if (!target.gameObject.activeSelf) target.gameObject.SetActive(true);
+            if (target.track != null && !target.track.activeSelf) target.track.SetActive(true);
 
-            // 타깃만 활성, 나머지는 비활성 → 비활성 객체는 Start가 호출되지 않음
-            if (pm.track != null) pm.track.SetActive(isTarget);
-            pm.gameObject.SetActive(isTarget);
-
-            // 타깃이면 Step 1로 초기 세팅
-            if (isTarget)
+            target.currentStepIndex = 0;
+            if (target.steps != null)
             {
-                pm.currentStepIndex = 0;
-                if (pm.steps != null)
+                for (int i = 0; i < target.steps.Count; i++)
                 {
-                    for (int i = 0; i < pm.steps.Count; i++)
+                    var s = target.steps[i];
+                    if (s?.checker == null) continue;
+                    bool on = (i == 0);
+                    if (s.checker.gameObject.activeSelf != on) s.checker.gameObject.SetActive(on);
+                    foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
                     {
-                        var s = pm.steps[i];
-                        if (s?.checker == null) continue;
-                        bool on = (i == 0);
-                        if (s.checker.gameObject.activeSelf != on) s.checker.gameObject.SetActive(on);
-                        foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
-                        {
-                            if (!child || child == s.checker.transform) continue;
-                            if (child.gameObject.activeSelf != on) child.gameObject.SetActive(on);
-                        }
+                        if (!child || child == s.checker.transform) continue;
+                        if (child.gameObject.activeSelf != on) child.gameObject.SetActive(on);
                     }
                 }
             }
+        }
+
+        // 1) 모든 PhaseManager를 "비활성 포함"으로 수집 후, 타깃만 남기고 전부 끔
+        var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var pm in all)
+        {
+            if (pm == null) continue;
+            if (pm == target) continue; // 타깃은 위에서 이미 온전히 세팅됨
+
+            if (pm.track != null && pm.track.activeSelf) pm.track.SetActive(false);
+            if (pm.gameObject.activeSelf) pm.gameObject.SetActive(false);
         }
     }
 
@@ -250,7 +254,7 @@ public class CutsceneSceneManager : MonoBehaviour
             if (cur && cur.nextPhaseManager) return cur.nextPhaseManager;
         }
 
-        // 3) 런타임 현재 활성 페이즈의 next
+        // 3) 런타임 현재 활성 페이즈의 next (여긴 active만 보면 됨)
         var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
         PhaseManager current = null;
         foreach (var pm in pms)
@@ -349,10 +353,12 @@ public class CutsceneSceneManager : MonoBehaviour
     {
         for (int f = 0; f < frames; f++)
         {
-            var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+            var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var pm in all)
             {
+                if (pm == null) continue;
                 bool isTarget = (pm == target);
+
                 if (pm.track != null && pm.track.activeSelf != isTarget) pm.track.SetActive(isTarget);
                 if (pm.gameObject.activeSelf != isTarget) pm.gameObject.SetActive(isTarget);
             }
@@ -369,7 +375,7 @@ public class CutsceneSceneManager : MonoBehaviour
         var parts = path.Split('/');
         if (parts.Length == 0) return null;
 
-        var roots = SceneManager.GetActiveScene().GetRootGameObjects();
+        var roots = SceneManager.GetActiveScene().GetRootGameObjects(); // 루트는 비활성 포함
         Transform current = null;
 
         foreach (var r in roots) { if (r.name == parts[0]) { current = r.transform; break; } }
@@ -377,7 +383,7 @@ public class CutsceneSceneManager : MonoBehaviour
 
         for (int i = 1; i < parts.Length; i++)
         {
-            current = current.Find(parts[i]);
+            current = current.Find(parts[i]); // 비활성 자식도 탐색됨
             if (!current) return null;
         }
         return current;
