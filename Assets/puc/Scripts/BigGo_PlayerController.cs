@@ -383,13 +383,5 @@ namespace StarterAssets
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
-
-        private void OnDestroy()
-        {
-            if(PV.IsMine && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Stage")
-            {
-                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
-            }
-        }
     }
 }

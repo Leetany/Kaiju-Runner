@@ -378,13 +378,5 @@ namespace StarterAssets
                 SoundManager.Instance.PlayFootstep(FootstepType.Landing);
             }
         }
-
-        private void OnDestroy()
-        {
-            if(PV.IsMine && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Stage")
-            {
-                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
-            }
-        }
     }
 }

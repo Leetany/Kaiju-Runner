@@ -126,14 +126,6 @@ namespace PlayerScript
             animator.SetFloat("velocityY", velocity.y);
             animator.SetBool("isGrounded", controller.isGrounded);
         }
-
-        private void OnDestroy()
-        {
-            if (PV.IsMine && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Stage")
-            {
-                PlayerSpawnManager.Instance.stagePlayerLastPoint = gameObject.transform.position;
-            }
-        }
     }
 }
 
