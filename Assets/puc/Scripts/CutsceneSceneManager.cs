@@ -13,9 +13,9 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 
 /// <summary>
 /// 컷씬 재생 → 종료 후 Stage로 복귀:
-/// 1) 보스 HP만 복원
-/// 2) "정확히" 다음 페이즈의 Step 1로 강제 이동 (모든 페이즈 일괄 비활성 후 타깃만 활성)
-///    - 멀티플레이/중복 호출에도 결과가 동일하도록 idempotent 설계
+/// 1) 보스 HP만 복원 (Awake/Start 이후 2프레임 지연 + 가드 대기)
+/// 2) '저장된 현재 페이즈'의 nextPhase로 강제 이동(실패 시 저장된 next 경로, 그래도 실패 시 런타임 탐색)
+///    - 모든 PhaseManager를 일괄 비활성 후 타깃만 활성 + Step 1로 설정 (idempotent)
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
@@ -136,16 +136,25 @@ public class CutsceneSceneManager : MonoBehaviour
                     json = s;
             }
 #endif
-            try
-            {
-                RestoreBossHp(json);
-                ForceMoveToNextPhaseStep1_Idempotent();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            // Start 이후로 복원을 미룬다 (보스/페이즈 초기화가 끝난 뒤 우리가 마지막에 덮어쓰기)
+            StartCoroutine(RestoreAfterStageInitialized(json));
         }
+    }
+
+    private IEnumerator RestoreAfterStageInitialized(string json)
+    {
+        // 모든 객체의 Awake/OnEnable/Start가 돌도록 2프레임 기다림
+        yield return null;
+        yield return null;
+
+        // 네트워크 스폰/지연 고려: 보스가 생성될 때까지 최대 10프레임 대기
+        int guard = 10;
+        while (guard-- > 0 && UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None).Length == 0)
+            yield return null;
+
+        // 이제 HP 복원(차감 상태 적용) → 다음 페이즈 Step1 진입
+        RestoreBossHp(json);
+        ForceMoveToNextPhase_FromSavedCurrent();
     }
 
     private string SafeGetReturnScene() =>
@@ -186,17 +195,54 @@ public class CutsceneSceneManager : MonoBehaviour
         }
     }
 
-    // ====== 다음 페이즈 Step 1로 강제 이동 (idempotent) ======
-    private void ForceMoveToNextPhaseStep1_Idempotent()
+    // ====== 저장된 현재 페이즈를 기준으로 nextPhase로 이동 (idempotent) ======
+    private void ForceMoveToNextPhase_FromSavedCurrent()
     {
-        PhaseManager target = ResolveTargetNextPhase();
+        PhaseManager target = null;
+
+        // 1) 저장된 '현재 페이즈 경로'를 이용해 next를 계산 (최우선)
+        if (!string.IsNullOrEmpty(CutsceneTransit.SavedCurrentPhasePath))
+        {
+            var curTr = FindByHierarchyPath(CutsceneTransit.SavedCurrentPhasePath);
+            var curPm = curTr ? curTr.GetComponent<PhaseManager>() : null;
+            if (curPm && curPm.nextPhaseManager)
+                target = curPm.nextPhaseManager;
+        }
+
+        // 2) 저장된 'next 페이즈 경로'가 있으면 그걸 사용
+        if (target == null && !string.IsNullOrEmpty(CutsceneTransit.SavedNextPhasePath))
+        {
+            var nextTr = FindByHierarchyPath(CutsceneTransit.SavedNextPhasePath);
+            var nextPm = nextTr ? nextTr.GetComponent<PhaseManager>() : null;
+            if (nextPm) target = nextPm;
+        }
+
+        // 3) 런타임 탐색(보조) — 현재 활성 페이즈의 next
+        if (target == null)
+        {
+            var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+            PhaseManager current = null;
+            foreach (var pm in pms)
+            {
+                if (!pm) continue;
+                bool trackActive = pm.track != null && pm.track.activeInHierarchy;
+                bool rootActive = pm.gameObject.activeInHierarchy;
+                if (trackActive || rootActive)
+                {
+                    current = pm;
+                    break;
+                }
+            }
+            if (current && current.nextPhaseManager) target = current.nextPhaseManager;
+        }
+
         if (target == null)
         {
             Debug.LogWarning("[CutsceneSceneManager] 다음 페이즈를 찾지 못했습니다.");
             return;
         }
 
-        // ★ 모든 페이즈를 일괄 비활성 → 타깃만 활성 (여러 클라이언트가 동시에 호출해도 같은 결과)
+        // === idempotent: 모든 페이즈 일괄 비활성 → 타깃만 활성 + Step1 ===
         var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
         foreach (var pm in all)
         {
@@ -209,7 +255,6 @@ public class CutsceneSceneManager : MonoBehaviour
 
             if (isTarget)
             {
-                // Step 1(=index 0)
                 pm.currentStepIndex = 0;
 
                 for (int i = 0; i < pm.steps.Count; i++)
@@ -229,46 +274,13 @@ public class CutsceneSceneManager : MonoBehaviour
                     }
                 }
 
-                // UI 갱신(비공개 메서드일 수 있어 리플렉션)
+                // UI 갱신(비공개일 수 있어 리플렉션)
                 var updateMethod = pm.GetType().GetMethod("UpdatePhaseInfoUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 updateMethod?.Invoke(pm, null);
                 var progMethod = pm.GetType().GetMethod("UpdateObjectProgressUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 progMethod?.Invoke(pm, null);
             }
         }
-    }
-
-    private PhaseManager ResolveTargetNextPhase()
-    {
-        // 1) Transit에 저장된 경로가 최우선
-        if (!string.IsNullOrEmpty(CutsceneTransit.TargetNextPhasePath))
-        {
-            var tr = FindByHierarchyPath(CutsceneTransit.TargetNextPhasePath);
-            if (tr)
-            {
-                var pm = tr.GetComponent<PhaseManager>();
-                if (pm) return pm;
-            }
-        }
-
-        // 2) 견고한 현재 탐색 후 nextPhaseManager
-        var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-        PhaseManager current = null;
-        foreach (var pm in pms)
-        {
-            if (!pm) continue;
-            bool trackActive = pm.track != null && pm.track.activeInHierarchy;
-            bool rootActive = pm.gameObject.activeInHierarchy;
-            if (trackActive || rootActive)
-            {
-                current = pm;
-                break;
-            }
-        }
-        if (current != null && current.nextPhaseManager != null)
-            return current.nextPhaseManager;
-
-        return null;
     }
 
     // ====== 경로 유틸 ======

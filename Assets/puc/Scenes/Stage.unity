@@ -11100,7 +11100,7 @@ MonoBehaviour:
   - checker: {fileID: 536235984}
     stepType: 0
     requiredPlayers: 1
-    requiredPassCount: 4
+    requiredPassCount: 1
     hpPercent: 0.1
     totalHpDecrease: 0
     hpApplied: 1
