@@ -11,7 +11,9 @@ public class PlayerSpawnManager : MonoBehaviour
     [SerializeField] private string selectCharacter;
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
-    [SerializeField] private GameObject[] spawnPoint;
+    [SerializeField] Vector3 LobbySpawnPoint;
+    public Vector3 stagePlayerLastPoint;
+    private Vector3[] spawnPoint;
 
     private int gamePlayerNum = 4;
 
@@ -28,15 +30,16 @@ public class PlayerSpawnManager : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        spawnPoint = new GameObject[gamePlayerNum];
-        
+        if(spawnPoint == null)
+        {
+            spawnPoint = new Vector3[gamePlayerNum];
+        }
     }
 
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         previewCharacter = null;
-        spawnPoint[0] = GameObject.FindWithTag("SpawnPoint");
     }
 
     public void ShowSelectUI()
@@ -75,7 +78,7 @@ public class PlayerSpawnManager : MonoBehaviour
             Destroy(previewCharacter);
             yield return new WaitForSeconds(0.1f);
         }
-        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), spawnPoint[0].transform.position, Quaternion.Euler(0, 180, 0));
+        previewCharacter = Instantiate((GameObject)Resources.Load("preview/" + charName), LobbySpawnPoint, Quaternion.Euler(0, 180, 0));
         yield return null;
     }
 
@@ -91,7 +94,12 @@ public class PlayerSpawnManager : MonoBehaviour
             SelectCharUI.SetActive(false);
         }
 
-        PhotonNetwork.Instantiate(selectCharacter, spawnPoint[0].transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(selectCharacter, LobbySpawnPoint, Quaternion.identity);
+    }
+
+    private void SpawnLastPlayerPoint()
+    {
+        PhotonNetwork.Instantiate(selectCharacter, stagePlayerLastPoint, Quaternion.identity);
     }
 
     public void SpawnAtMyPoint()
@@ -101,25 +109,33 @@ public class PlayerSpawnManager : MonoBehaviour
         if (index < 0 || index >= spawnPoint.Length)
             index = 0;
 
-        PhotonNetwork.Instantiate(selectCharacter, spawnPoint[index].transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(selectCharacter, spawnPoint[index], Quaternion.identity);
     }
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
-        //SpawnAtEachScenePoint();
-
 
         if (GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
         {
             return;
         }
 
+        if(stagePlayerLastPoint != Vector3.zero)
+        {
+            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+            {
+                SpawnAtMyPoint();
+            }
+
+            return;
+        }
+        
+
         GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
         for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)
         {
-            spawnPoint[i] = points[i];
+            spawnPoint[i] = points[i].transform.position;
         }
 
         // 본인만 스폰
