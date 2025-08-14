@@ -13,9 +13,9 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 
 /// <summary>
 /// 컷씬 재생 → 종료 후 Stage로 복귀:
-/// 1) 보스 HP만 복원 (Awake/Start 이후 2프레임 지연 + 가드 대기)
-/// 2) '저장된 현재 페이즈'의 nextPhase로 강제 이동(실패 시 저장된 next 경로, 그래도 실패 시 런타임 탐색)
-///    - 모든 PhaseManager를 일괄 비활성 후 타깃만 활성 + Step 1로 설정 (idempotent)
+/// 1) (씬 로드 직후) 프리부트 가드: **다음 페이즈만 활성, 나머지는 전부 비활성** → 초기(1)페이즈 Start 자체 차단
+/// 2) 보스 HP만 복원 (Awake/Start 이후 지연)
+/// 3) 안정화 윈도우: 누가 다시 켜도 타깃만 남도록 몇 프레임 강제 유지 + HP 상향 초기화 억제
 /// </summary>
 public class CutsceneSceneManager : MonoBehaviour
 {
@@ -125,9 +125,8 @@ public class CutsceneSceneManager : MonoBehaviour
             if (scene.name != targetScene) return;
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            // 스냅샷 소스(보스 HP만 포함)
+            // 0) 스냅샷 소스(보스 HP만 포함)
             string json = CutsceneTransit.StateJson;
-
 #if PHOTON_UNITY_NETWORKING
             if (preferRoomSnapshot && PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
             {
@@ -136,25 +135,13 @@ public class CutsceneSceneManager : MonoBehaviour
                     json = s;
             }
 #endif
-            // Start 이후로 복원을 미룬다 (보스/페이즈 초기화가 끝난 뒤 우리가 마지막에 덮어쓰기)
-            StartCoroutine(RestoreAfterStageInitialized(json));
+            // 1) 프리부트 가드: 다음 페이즈만 활성(나머지는 Start 자체가 안 돌도록 비활성)
+            var targetPm = ResolveTargetPhaseOnLoad();
+            PreBootPhaseLock(targetPm);
+
+            // 2) HP 복원/안정화 및 최종 보정은 러너에서 수행
+            RunPostLoadRestore(json, targetPm);
         }
-    }
-
-    private IEnumerator RestoreAfterStageInitialized(string json)
-    {
-        // 모든 객체의 Awake/OnEnable/Start가 돌도록 2프레임 기다림
-        yield return null;
-        yield return null;
-
-        // 네트워크 스폰/지연 고려: 보스가 생성될 때까지 최대 10프레임 대기
-        int guard = 10;
-        while (guard-- > 0 && UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None).Length == 0)
-            yield return null;
-
-        // 이제 HP 복원(차감 상태 적용) → 다음 페이즈 Step1 진입
-        RestoreBossHp(json);
-        ForceMoveToNextPhase_FromSavedCurrent();
     }
 
     private string SafeGetReturnScene() =>
@@ -169,121 +156,213 @@ public class CutsceneSceneManager : MonoBehaviour
 #endif
     }
 
-    // ====== 보스 HP 스냅샷 역직렬화 ======
-    [Serializable] private class BossSnapshot { public string path; public float currentHp; public float maxHp; }
-    [Serializable] private class BossSnapshotBundle { public List<BossSnapshot> bosses; }
-
-    private void RestoreBossHp(string json)
+    // ---------- 프리부트 가드 ----------
+    private static void PreBootPhaseLock(PhaseManager target)
     {
-        if (string.IsNullOrEmpty(json)) return;
-        var bundle = JsonUtility.FromJson<BossSnapshotBundle>(json);
-        if (bundle == null || bundle.bosses == null) return;
-
-        foreach (var b in bundle.bosses)
-        {
-            var tr = FindByHierarchyPath(b.path);
-            if (!tr) continue;
-
-            var boss = tr.GetComponent<Boss>();
-            if (!boss) continue;
-
-            if (b.maxHp > 0f) boss.maxHp = b.maxHp; // 정책에 따라 유지
-            boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
-
-            // HP UI 즉시 갱신(있으면)
-            try { boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp)); } catch { }
-        }
-    }
-
-    // ====== 저장된 현재 페이즈를 기준으로 nextPhase로 이동 (idempotent) ======
-    private void ForceMoveToNextPhase_FromSavedCurrent()
-    {
-        PhaseManager target = null;
-
-        // 1) 저장된 '현재 페이즈 경로'를 이용해 next를 계산 (최우선)
-        if (!string.IsNullOrEmpty(CutsceneTransit.SavedCurrentPhasePath))
-        {
-            var curTr = FindByHierarchyPath(CutsceneTransit.SavedCurrentPhasePath);
-            var curPm = curTr ? curTr.GetComponent<PhaseManager>() : null;
-            if (curPm && curPm.nextPhaseManager)
-                target = curPm.nextPhaseManager;
-        }
-
-        // 2) 저장된 'next 페이즈 경로'가 있으면 그걸 사용
-        if (target == null && !string.IsNullOrEmpty(CutsceneTransit.SavedNextPhasePath))
-        {
-            var nextTr = FindByHierarchyPath(CutsceneTransit.SavedNextPhasePath);
-            var nextPm = nextTr ? nextTr.GetComponent<PhaseManager>() : null;
-            if (nextPm) target = nextPm;
-        }
-
-        // 3) 런타임 탐색(보조) — 현재 활성 페이즈의 next
-        if (target == null)
-        {
-            var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
-            PhaseManager current = null;
-            foreach (var pm in pms)
-            {
-                if (!pm) continue;
-                bool trackActive = pm.track != null && pm.track.activeInHierarchy;
-                bool rootActive = pm.gameObject.activeInHierarchy;
-                if (trackActive || rootActive)
-                {
-                    current = pm;
-                    break;
-                }
-            }
-            if (current && current.nextPhaseManager) target = current.nextPhaseManager;
-        }
-
-        if (target == null)
-        {
-            Debug.LogWarning("[CutsceneSceneManager] 다음 페이즈를 찾지 못했습니다.");
-            return;
-        }
-
-        // === idempotent: 모든 페이즈 일괄 비활성 → 타깃만 활성 + Step1 ===
         var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+
         foreach (var pm in all)
         {
             bool isTarget = (pm == target);
 
-            if (pm.track != null)
-                pm.track.SetActive(isTarget);
-
+            // 타깃만 활성, 나머지는 비활성 → 비활성 객체는 Start가 호출되지 않음
+            if (pm.track != null) pm.track.SetActive(isTarget);
             pm.gameObject.SetActive(isTarget);
 
+            // 타깃이면 Step 1로 초기 세팅
             if (isTarget)
             {
                 pm.currentStepIndex = 0;
-
-                for (int i = 0; i < pm.steps.Count; i++)
+                if (pm.steps != null)
                 {
-                    var s = pm.steps[i];
-                    if (s?.checker == null) continue;
-
-                    bool shouldActive = (i == 0);
-                    if (s.checker.gameObject.activeSelf != shouldActive)
-                        s.checker.gameObject.SetActive(shouldActive);
-
-                    foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+                    for (int i = 0; i < pm.steps.Count; i++)
                     {
-                        if (!child || child == s.checker.transform) continue;
-                        if (child.gameObject.activeSelf != shouldActive)
-                            child.gameObject.SetActive(shouldActive);
+                        var s = pm.steps[i];
+                        if (s?.checker == null) continue;
+                        bool on = (i == 0);
+                        if (s.checker.gameObject.activeSelf != on) s.checker.gameObject.SetActive(on);
+                        foreach (Transform child in s.checker.GetComponentsInChildren<Transform>(true))
+                        {
+                            if (!child || child == s.checker.transform) continue;
+                            if (child.gameObject.activeSelf != on) child.gameObject.SetActive(on);
+                        }
                     }
                 }
-
-                // UI 갱신(비공개일 수 있어 리플렉션)
-                var updateMethod = pm.GetType().GetMethod("UpdatePhaseInfoUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                updateMethod?.Invoke(pm, null);
-                var progMethod = pm.GetType().GetMethod("UpdateObjectProgressUI", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                progMethod?.Invoke(pm, null);
             }
         }
     }
 
-    // ====== 경로 유틸 ======
+    // ---------- 복원 러너 ----------
+    private static void RunPostLoadRestore(string json, PhaseManager lockedTarget)
+    {
+        var go = new GameObject("CutsceneRestoreRunner");
+        UnityEngine.Object.DontDestroyOnLoad(go);
+        var r = go.AddComponent<CutsceneRestoreRunner>();
+        r.Begin(json, lockedTarget);
+    }
+
+    private sealed class CutsceneRestoreRunner : MonoBehaviour
+    {
+        public void Begin(string json, PhaseManager lockedTarget) => StartCoroutine(DoRestore(json, lockedTarget));
+
+        private IEnumerator DoRestore(string json, PhaseManager lockedTarget)
+        {
+            // Awake/OnEnable 이후 2프레임 대기 (타 스크립트 Start 마무리용)
+            yield return null; yield return null;
+
+            // 보스 스폰 대기(최대 ~2초@60fps)
+            int guard = 120;
+            while (guard-- > 0 && UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None).Length == 0)
+                yield return null;
+
+            var bundle = RestoreBossHp(json);
+
+            // 혹시 타 스크립트가 페이즈를 다시 켰다면, 몇 프레임 동안 타깃만 유지
+            if (lockedTarget)
+                yield return StartCoroutine(EnforcePhaseTargetWindow(lockedTarget, 60));
+
+            // HP 상향 초기화 방지(약 1초)
+            if (bundle != null)
+                yield return StartCoroutine(EnforceBossHpWindow(bundle, 60));
+
+            Destroy(gameObject);
+        }
+    }
+
+    // ---------- 타깃 페이즈 선정(경로 우선 폴백) ----------
+    private static PhaseManager ResolveTargetPhaseOnLoad()
+    {
+        PhaseManager target = null;
+
+        // 1) 저장된 next 경로
+        if (!string.IsNullOrEmpty(CutsceneTransit.SavedNextPhasePath))
+        {
+            var tr = FindByHierarchyPath(CutsceneTransit.SavedNextPhasePath);
+            if (tr) target = tr.GetComponent<PhaseManager>();
+            if (target) return target;
+        }
+
+        // 2) 저장된 current 경로 → next
+        if (!string.IsNullOrEmpty(CutsceneTransit.SavedCurrentPhasePath))
+        {
+            var tr = FindByHierarchyPath(CutsceneTransit.SavedCurrentPhasePath);
+            var cur = tr ? tr.GetComponent<PhaseManager>() : null;
+            if (cur && cur.nextPhaseManager) return cur.nextPhaseManager;
+        }
+
+        // 3) 런타임 현재 활성 페이즈의 next
+        var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+        PhaseManager current = null;
+        foreach (var pm in pms)
+        {
+            if (!pm) continue;
+            bool trackActive = pm.track != null && pm.track.activeInHierarchy;
+            bool rootActive = pm.gameObject.activeInHierarchy;
+            if (trackActive || rootActive) { current = pm; break; }
+        }
+        if (current && current.nextPhaseManager) return current.nextPhaseManager;
+
+        return null;
+    }
+
+    // ---------- HP 복원 ----------
+    [Serializable] private class BossSnapshot { public string path; public float currentHp; public float maxHp; }
+    [Serializable] private class BossSnapshotBundle { public List<BossSnapshot> bosses; }
+
+    private static BossSnapshotBundle RestoreBossHp(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return null;
+        var bundle = JsonUtility.FromJson<BossSnapshotBundle>(json);
+        if (bundle == null || bundle.bosses == null) return null;
+
+        var liveBosses = UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+
+        foreach (var b in bundle.bosses)
+        {
+            Boss boss = null;
+
+            // 경로 우선
+            var tr = FindByHierarchyPath(b.path);
+            if (tr) boss = tr.GetComponent<Boss>();
+
+            // 말단 이름 매칭
+            if (boss == null)
+            {
+                string leaf = LeafName(b.path);
+                foreach (var lb in liveBosses)
+                {
+                    if (!lb) continue;
+                    if (NormalizeName(lb.name) == NormalizeName(leaf)) { boss = lb; break; }
+                }
+            }
+
+            // 단일 보스면 그것으로
+            if (boss == null && liveBosses.Length == 1) boss = liveBosses[0];
+            if (boss == null) continue;
+
+            if (b.maxHp > 0f) boss.maxHp = b.maxHp;
+            boss.currentHp = Mathf.Clamp(b.currentHp, 0f, boss.maxHp);
+
+            try { boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp)); } catch { }
+        }
+        return bundle;
+    }
+
+    private static IEnumerator EnforceBossHpWindow(BossSnapshotBundle bundle, int frames)
+    {
+        for (int f = 0; f < frames; f++)
+        {
+            var liveBosses = UnityEngine.Object.FindObjectsByType<Boss>(FindObjectsSortMode.None);
+
+            foreach (var b in bundle.bosses)
+            {
+                Boss boss = null;
+
+                var tr = FindByHierarchyPath(b.path);
+                if (tr) boss = tr.GetComponent<Boss>();
+
+                if (boss == null)
+                {
+                    string leaf = LeafName(b.path);
+                    foreach (var lb in liveBosses)
+                    {
+                        if (!lb) continue;
+                        if (NormalizeName(lb.name) == NormalizeName(leaf)) { boss = lb; break; }
+                    }
+                }
+
+                if (boss == null && liveBosses.Length == 1) boss = liveBosses[0];
+                if (boss == null) continue;
+
+                if (boss.currentHp > b.currentHp)
+                {
+                    boss.currentHp = b.currentHp;
+                    try { boss.OnHpChanged?.Invoke(boss.currentHp / Mathf.Max(1f, boss.maxHp)); } catch { }
+                }
+            }
+            yield return null;
+        }
+    }
+
+    // ---------- 타깃 강제 유지(안정화 윈도우) ----------
+    private static IEnumerator EnforcePhaseTargetWindow(PhaseManager target, int frames)
+    {
+        for (int f = 0; f < frames; f++)
+        {
+            var all = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
+            foreach (var pm in all)
+            {
+                bool isTarget = (pm == target);
+                if (pm.track != null && pm.track.activeSelf != isTarget) pm.track.SetActive(isTarget);
+                if (pm.gameObject.activeSelf != isTarget) pm.gameObject.SetActive(isTarget);
+            }
+
+            if (target && target.currentStepIndex != 0) target.currentStepIndex = 0;
+            yield return null;
+        }
+    }
+
+    // ---------- 유틸 ----------
     private static Transform FindByHierarchyPath(string path)
     {
         if (string.IsNullOrEmpty(path)) return null;
@@ -293,10 +372,7 @@ public class CutsceneSceneManager : MonoBehaviour
         var roots = SceneManager.GetActiveScene().GetRootGameObjects();
         Transform current = null;
 
-        foreach (var r in roots)
-        {
-            if (r.name == parts[0]) { current = r.transform; break; }
-        }
+        foreach (var r in roots) { if (r.name == parts[0]) { current = r.transform; break; } }
         if (!current) return null;
 
         for (int i = 1; i < parts.Length; i++)
@@ -305,5 +381,18 @@ public class CutsceneSceneManager : MonoBehaviour
             if (!current) return null;
         }
         return current;
+    }
+
+    private static string LeafName(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return "";
+        var parts = path.Split('/');
+        return parts.Length == 0 ? "" : parts[parts.Length - 1];
+    }
+
+    private static string NormalizeName(string n)
+    {
+        if (string.IsNullOrEmpty(n)) return "";
+        return n.Replace("(Clone)", "").Trim();
     }
 }
