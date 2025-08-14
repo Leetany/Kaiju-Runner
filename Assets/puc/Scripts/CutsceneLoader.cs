@@ -12,7 +12,8 @@ using PhotonHashtable = ExitGames.Client.Photon.Hashtable; // 포톤 Hashtable �
 
 /// <summary>
 /// 컷씬 진입 직전에 "보스 HP"만 JSON으로 스냅샷.
-/// 복귀 후 CutsceneSceneManager가 HP를 복원하고, 정확히 "다음 페이즈의 Step 1"로 강제 이동.
+/// 또한 현재 페이즈 경로와, 그 시점의 next 페이즈 경로를 같이 저장해
+/// 복귀 시 정확히 '저장된 현재 페이즈의 next'로 이동하도록 한다.
 /// </summary>
 public class CutsceneLoader : MonoBehaviour
 {
@@ -46,8 +47,9 @@ public class CutsceneLoader : MonoBehaviour
         CutsceneTransit.ReturnScene = string.IsNullOrEmpty(active) ? "Stage" : active;
         CutsceneTransit.CutsceneIndex = Mathf.Max(0, index);
 
-        // 복귀 후 강제 진입할 "다음 페이즈" 경로를 미리 계산(견고한 기준으로)
-        CutsceneTransit.TargetNextPhasePath = ComputeNextPhasePathRobust();
+        // 저장: 현재 페이즈 경로 + (그 시점의) next 페이즈 경로
+        CutsceneTransit.SavedCurrentPhasePath = ComputeCurrentPhasePathRobust();
+        CutsceneTransit.SavedNextPhasePath = ComputeNextPhasePathFrom(CutsceneTransit.SavedCurrentPhasePath);
 
         // (HP만 스냅샷) 전환
         StartCoroutine(DeferredCutsceneLoad());
@@ -119,29 +121,46 @@ public class CutsceneLoader : MonoBehaviour
         return JsonUtility.ToJson(bundle);
     }
 
-    // ====== 다음 페이즈 경로 계산(견고판) ======
-    private string ComputeNextPhasePathRobust()
+    // ====== 현재/다음 페이즈 경로 계산 ======
+    private string ComputeCurrentPhasePathRobust()
     {
-        // 1) "현재" 판단: (a) pm.track가 활성, 또는 (b) pm.gameObject가 활성
         var pms = UnityEngine.Object.FindObjectsByType<PhaseManager>(FindObjectsSortMode.None);
         PhaseManager current = null;
 
         foreach (var pm in pms)
         {
             if (!pm) continue;
+
+            // (1) track 활성 or (2) 루트 활성
             bool trackActive = pm.track != null && pm.track.activeInHierarchy;
             bool rootActive = pm.gameObject.activeInHierarchy;
+
             if (trackActive || rootActive)
             {
-                current = pm;
-                break;
+                // 아직 끝나지 않은 페이즈를 우선
+                if (pm.steps != null && pm.currentStepIndex < pm.steps.Count)
+                {
+                    current = pm;
+                    break;
+                }
+                // 끝난 페이즈만 활성로 남아있다면 일단 후보로
+                if (current == null) current = pm;
             }
         }
 
-        if (current != null && current.nextPhaseManager != null)
-            return GetHierarchyPath(current.nextPhaseManager.transform);
+        return current != null ? GetHierarchyPath(current.transform) : null;
+    }
 
-        return null; // 복귀 시 재탐색 fallback
+    private string ComputeNextPhasePathFrom(string currentPhasePath)
+    {
+        if (string.IsNullOrEmpty(currentPhasePath)) return null;
+
+        var tr = FindByHierarchyPath(currentPhasePath);
+        if (tr == null) return null;
+        var pm = tr.GetComponent<PhaseManager>();
+        if (pm == null || pm.nextPhaseManager == null) return null;
+
+        return GetHierarchyPath(pm.nextPhaseManager.transform);
     }
 
     // ====== 경로 유틸 ======
@@ -156,6 +175,29 @@ public class CutsceneLoader : MonoBehaviour
         }
         return string.Join("/", stack);
     }
+
+    private static Transform FindByHierarchyPath(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return null;
+        var parts = path.Split('/');
+        if (parts.Length == 0) return null;
+
+        var roots = SceneManager.GetActiveScene().GetRootGameObjects();
+        Transform current = null;
+
+        foreach (var r in roots)
+        {
+            if (r.name == parts[0]) { current = r.transform; break; }
+        }
+        if (!current) return null;
+
+        for (int i = 1; i < parts.Length; i++)
+        {
+            current = current.Find(parts[i]);
+            if (!current) return null;
+        }
+        return current;
+    }
 }
 
 /// <summary>컷씬 전환 파라미터(정적)</summary>
@@ -167,6 +209,7 @@ public static class CutsceneTransit
     /// <summary>보스 HP 스냅샷(JSON)</summary>
     public static string StateJson = null;
 
-    /// <summary>컷씬 복귀 후 강제 진입할 "다음 페이즈"의 Transform 경로</summary>
-    public static string TargetNextPhasePath = null;
+    /// <summary>컷씬 직전의 '현재 페이즈'와 그때 계산된 '다음 페이즈' 경로</summary>
+    public static string SavedCurrentPhasePath = null;
+    public static string SavedNextPhasePath = null;
 }
