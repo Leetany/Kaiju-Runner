@@ -115,6 +115,8 @@ public class PlayerSpawnManager : MonoBehaviour
             return;
         }
 
+        
+
         GameObject[] points = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
         for (int i = 0; i < spawnPoint.Length && i < points.Length; i++)

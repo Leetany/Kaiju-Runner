@@ -378,5 +378,10 @@ namespace StarterAssets
                 SoundManager.Instance.PlayFootstep(FootstepType.Landing);
             }
         }
+
+        private void OnDestroy()
+        {
+            
+        }
     }
 }
