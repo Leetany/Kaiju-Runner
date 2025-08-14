@@ -13,7 +13,7 @@ public class PlayerSpawnManager : MonoBehaviour
     private GameObject previewCharacter;
     [SerializeField] Vector3 LobbySpawnPoint;
     private Vector3[] spawnPoint;
-    private Vector3[] playerLastPoint;
+    [SerializeField] private Vector3[] playerLastPoint;
 
     private int gamePlayerNum = 4;
 
@@ -39,7 +39,6 @@ public class PlayerSpawnManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnLoaded;
         previewCharacter = null;
     }
 
@@ -110,23 +109,6 @@ public class PlayerSpawnManager : MonoBehaviour
 
     void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        //spawnPoint = GameObject.FindWithTag("MainCamera").GetComponent<Transform>().position;
-        //SpawnAtEachScenePoint();
-
-        if (playerLastPoint != null)
-        {
-            for (int i = 0; i < playerLastPoint.Length; i++)
-            {
-                spawnPoint[i] = playerLastPoint[i];
-            }
-
-            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
-            {
-                SpawnAtMyPoint();
-            }
-
-            return;
-        }
 
         if (GameObject.FindGameObjectsWithTag("SpawnPoint") == null)
         {
@@ -147,29 +129,9 @@ public class PlayerSpawnManager : MonoBehaviour
         }
     }
 
-    private void OnSceneUnLoaded(Scene scene)
-    {
-        if (scene.name != "Stage")
-        {
-            return;
-        }
-
-        if(playerLastPoint == null)
-        {
-            playerLastPoint = new Vector3[gamePlayerNum];
-        }
-
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < playerLastPoint.Length; i++)
-        {
-            playerLastPoint[i] = players[i].transform.position;
-        }
-    }
-
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneUnloaded -= OnSceneUnLoaded;
     }
 }
 
