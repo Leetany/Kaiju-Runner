@@ -122,7 +122,12 @@ public class PlayerSpawnManager : MonoBehaviour
 
         if(stagePlayerLastPoint != Vector3.zero)
         {
-            SpawnLastPlayerPoint();
+            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+            {
+                SpawnAtMyPoint();
+            }
+
+            return;
         }
         
 
