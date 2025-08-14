@@ -12,8 +12,8 @@ public class PlayerSpawnManager : MonoBehaviour
     public GameObject SelectCharUI;
     private GameObject previewCharacter;
     [SerializeField] Vector3 LobbySpawnPoint;
-    [SerializeField] private Vector3[] spawnPoint;
-    [SerializeField] private Vector3[] playerLastPoint;
+    private Vector3[] spawnPoint;
+    private Vector3[] playerLastPoint;
 
     private int gamePlayerNum = 4;
 
@@ -154,8 +154,13 @@ public class PlayerSpawnManager : MonoBehaviour
             return;
         }
 
+        if(playerLastPoint == null)
+        {
+            playerLastPoint = new Vector3[gamePlayerNum];
+        }
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < spawnPoint.Length && i < players.Length; i++)
+        for (int i = 0; i < playerLastPoint.Length; i++)
         {
             playerLastPoint[i] = players[i].transform.position;
         }
