@@ -576,7 +576,6 @@ GameObject:
   - component: {fileID: 7843915273865366011}
   - component: {fileID: 1008239836273156479}
   - component: {fileID: 8681307462975884045}
-  - component: {fileID: 7459084696186441335}
   - component: {fileID: 235446116241252508}
   - component: {fileID: 5486802710577199908}
   - component: {fileID: 3074824159984465627}
@@ -701,22 +700,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &7459084696186441335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795875402796634186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e188a1c391d7cd4583ae07a8df805fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  windEffect: {fileID: 0}
-  targetTransform: {fileID: 8152477357214643222}
-  maxSpeed: 10
-  PV: {fileID: 5486802710577199908}
 --- !u!114 &235446116241252508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,8 +712,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a71f7b1f71057e5408f272ccc1c30cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 4
-  runSpeed: 8
+  walkSpeed: 5
+  runSpeed: 10
   jumpHeight: 2
   gravity: -9.81
   TopClamp: 70

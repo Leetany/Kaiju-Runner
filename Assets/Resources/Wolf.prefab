@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 5
-  runSpeed: 13
+  runSpeed: 10
   jumpHeight: 2
   gravity: -9.81
   TopClamp: 70
